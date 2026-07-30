@@ -73,17 +73,13 @@ a {
   gap: 13px;
 }
 
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--gold);
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
   border-radius: 50%;
-  color: var(--gold);
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: 22px;
-  font-weight: 600;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(182, 144, 78, 0.45);
 }
 
 .brand strong,

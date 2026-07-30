@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import {
   GREGORIAN_MONTH_NAMES,
@@ -391,7 +392,14 @@ export default function Home() {
     <main dir={languageConfig.direction}>
       <nav className="topbar" aria-label="Primary">
         <a className="brand" href="#top" aria-label="International Sacred Calendar home">
-          <span className="brand-mark" aria-hidden="true">13</span>
+          <Image
+            className="brand-logo"
+            src="/isc-logo-web.png"
+            alt=""
+            width={48}
+            height={48}
+            priority
+          />
           <span>
             <strong>International Sacred Calendar</strong>
             <small>{translations.brandSubtitle}</small>
@@ -909,7 +917,13 @@ export default function Home() {
 
       <footer>
         <div className="brand footer-brand">
-          <span className="brand-mark" aria-hidden="true">13</span>
+          <Image
+            className="brand-logo"
+            src="/isc-logo-web.png"
+            alt=""
+            width={48}
+            height={48}
+          />
           <span>
             <strong>International Sacred Calendar</strong>
             <small>{translations.footerTagline}</small>

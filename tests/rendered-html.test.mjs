@@ -29,6 +29,9 @@ test("server-renders the International Sacred Calendar converter", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>International Sacred Calendar<\/title>/i);
+  assert.match(html, /isc-logo-web\.png/);
+  assert.match(html, /favicon-32x32\.png/);
+  assert.match(html, /site\.webmanifest/);
   assert.match(html, /International Sacred Calendar/);
   assert.match(html, /Every date,/);
   assert.match(html, /Translate a date/);
