@@ -20,9 +20,9 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Sacred Calendar Converter",
+  title: "International Sacred Calendar",
   description:
-    "Convert dates between Sacred, Hebrew, Gregorian, and tabular Islamic calendars, and explore the 293-year Sacred rotation.",
+    "Convert dates with the International Sacred Calendar, explore rotation anniversaries, and compare Hebrew, Gregorian, and tabular Islamic dates.",
 };
 
 export default function RootLayout({

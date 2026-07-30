@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   HEBREW_YEARS_PER_ROTATION,
+  SACRED_LUNAR_BEAT_DAYS,
   SACRED_DAYS_PER_YEAR,
   SACRED_EPOCH_FIXED,
   SACRED_EPOCH_HEBREW,
@@ -10,6 +11,8 @@ import {
   dateFromFixed,
   fixedFromDate,
   fixedFromSacred,
+  moonAlignmentAtSacredMonth,
+  moonAlignmentsAround,
   sacredRotation,
   sacredRotationAnniversary,
   weekdayFromFixed,
@@ -104,4 +107,26 @@ test("lists rotation anniversaries at completed 293-year boundaries", () => {
     fixedFromSacred(sacredRotationAnniversary(20)) - SACRED_EPOCH_FIXED,
     20 * SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR,
   );
+});
+
+test("finds five past and five future mean-moon alignments", () => {
+  const selected = fixedFromDate(
+    "gregorian",
+    { year: 2026, month: 7, day: 29 },
+  );
+  const alignments = moonAlignmentsAround(selected, 5, 5);
+
+  assert.equal(alignments.length, 10);
+  assert.equal(alignments.filter((event) => event.fixed <= selected).length, 5);
+  assert.equal(alignments.filter((event) => event.fixed > selected).length, 5);
+  assert.ok(Math.abs(SACRED_LUNAR_BEAT_DAYS - 540.22116) < 0.0001);
+
+  for (const alignment of alignments) {
+    assert.equal(alignment.sacred.day, 1);
+    assert.ok(Math.abs(alignment.offsetHours) < 19);
+    assert.deepEqual(
+      moonAlignmentAtSacredMonth(alignment.sacred),
+      alignment,
+    );
+  }
 });

@@ -21,6 +21,13 @@ export interface RotationPosition {
   progress: number;
 }
 
+export interface MoonMonthAlignment {
+  sacred: CalendarDate;
+  fixed: number;
+  meanNewMoonFixed: number;
+  offsetHours: number;
+}
+
 const HEBREW_EPOCH = -1_373_429;
 const ISLAMIC_EPOCH = 227_015;
 
@@ -30,6 +37,17 @@ export const SACRED_DAYS_PER_YEAR = 364;
 export const SACRED_WEEKS_PER_YEAR = 52;
 export const SACRED_ROTATION_YEARS = 293;
 export const HEBREW_YEARS_PER_ROTATION = 292;
+export const MEAN_SYNODIC_MONTH_DAYS = 29.530588853;
+export const SACRED_LUNAR_BEAT_DAYS =
+  1 /
+  Math.abs(
+    1 / SACRED_DAYS_PER_MONTH - 1 / MEAN_SYNODIC_MONTH_DAYS,
+  );
+
+// Mean-phase reference: new moon on 2000-01-06 at approximately 18:14 UTC.
+const MEAN_NEW_MOON_REFERENCE_FIXED =
+  fixedFromGregorian({ year: 2000, month: 1, day: 6 }) +
+  (18 + 14 / 60) / 24;
 
 export const HEBREW_MONTH_NAMES = [
   "",
@@ -376,6 +394,83 @@ export function sacredRotationAnniversary(anniversary: number): CalendarDate {
     month: 1,
     day: 1,
   };
+}
+
+function sacredMonthIndex(date: CalendarDate): number {
+  return (date.year - 1) * SACRED_MONTHS_PER_YEAR + date.month - 1;
+}
+
+function sacredMonthFromIndex(index: number): CalendarDate {
+  return {
+    year: floorDiv(index, SACRED_MONTHS_PER_YEAR) + 1,
+    month: mod(index, SACRED_MONTHS_PER_YEAR) + 1,
+    day: 1,
+  };
+}
+
+function meanMoonOffsetAtMonthIndex(index: number): MoonMonthAlignment {
+  const sacred = sacredMonthFromIndex(index);
+  const fixed = fixedFromSacred(sacred);
+  const lunation = Math.round(
+    (fixed - MEAN_NEW_MOON_REFERENCE_FIXED) / MEAN_SYNODIC_MONTH_DAYS,
+  );
+  const meanNewMoonFixed =
+    MEAN_NEW_MOON_REFERENCE_FIXED + lunation * MEAN_SYNODIC_MONTH_DAYS;
+
+  return {
+    sacred,
+    fixed,
+    meanNewMoonFixed,
+    offsetHours: (fixed - meanNewMoonFixed) * 24,
+  };
+}
+
+/**
+ * Returns an approximate lunar alignment when this Sacred month boundary is
+ * the closest boundary to a mean new moon in the local 28-day sequence.
+ */
+export function moonAlignmentAtSacredMonth(
+  sacredDate: CalendarDate,
+): MoonMonthAlignment | null {
+  validateDate("sacred", sacredDate);
+  const index = sacredMonthIndex({ ...sacredDate, day: 1 });
+  if (index < 1) return null;
+
+  const previous = meanMoonOffsetAtMonthIndex(index - 1);
+  const current = meanMoonOffsetAtMonthIndex(index);
+  const next = meanMoonOffsetAtMonthIndex(index + 1);
+  const currentDistance = Math.abs(current.offsetHours);
+
+  return currentDistance <= Math.abs(previous.offsetHours) &&
+    currentDistance < Math.abs(next.offsetHours)
+    ? current
+    : null;
+}
+
+/**
+ * Finds approximate Sacred-month/new-moon alignments around a fixed date.
+ * The result contains the requested past events followed by future events.
+ */
+export function moonAlignmentsAround(
+  fixed: number,
+  pastCount = 5,
+  futureCount = 5,
+): MoonMonthAlignment[] {
+  assertInteger(fixed, "Fixed day");
+  const center = sacredFromFixed(fixed);
+  const centerIndex = sacredMonthIndex(center);
+  const searchStart = Math.max(1, centerIndex - 180);
+  const searchEnd = centerIndex + 180;
+  const events: MoonMonthAlignment[] = [];
+
+  for (let index = searchStart; index <= searchEnd; index++) {
+    const candidate = moonAlignmentAtSacredMonth(sacredMonthFromIndex(index));
+    if (candidate) events.push(candidate);
+  }
+
+  const past = events.filter((event) => event.fixed <= fixed).slice(-pastCount);
+  const future = events.filter((event) => event.fixed > fixed).slice(0, futureCount);
+  return [...past, ...future];
 }
 
 export function maxDayForDate(kind: CalendarKind, year: number, month: number): number {

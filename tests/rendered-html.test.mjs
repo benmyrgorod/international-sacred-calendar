@@ -22,20 +22,32 @@ async function render() {
   );
 }
 
-test("server-renders the Sacred Calendar converter", async () => {
+test("server-renders the International Sacred Calendar converter", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Sacred Calendar Converter<\/title>/i);
+  assert.match(html, /<title>International Sacred Calendar<\/title>/i);
+  assert.match(html, /International Sacred Calendar/);
   assert.match(html, /Every date,/);
   assert.match(html, /Translate a date/);
-  assert.match(html, /ROTATING CYCLE/);
-  assert.match(html, /ROTATION ANNIVERSARIES/);
+  assert.match(html, /Rotating cycle/);
+  assert.match(html, /Rotation anniversaries/);
   assert.match(html, /To the 20th anniversary/);
+  assert.match(html, /Rotation anniversaries 1–20/);
+  assert.match(html, /Five past and five future lunar alignments/);
+  assert.match(html, /ISC 5805/);
+  assert.match(html, /Español/);
+  assert.match(html, /Français/);
+  assert.match(html, /日本語/);
+  assert.equal((html.match(/class="milestone-button"/g) ?? []).length, 20);
+  assert.equal(
+    (html.match(/class="anniversary-tick[^"]*"/g) ?? []).length,
+    20,
+  );
   assert.match(html, /Creation-week anchor/);
-  assert.match(html, /Gregorian Calendar/);
+  assert.match(html, /Gregorian/);
   assert.doesNotMatch(html, /Georgian/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Building your site/i);
 });

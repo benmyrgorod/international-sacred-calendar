@@ -1,19 +1,25 @@
-# Sacred Calendar
+# International Sacred Calendar
 
-An interactive web converter and standalone TypeScript calendar module for:
+An interactive multilingual web converter and standalone TypeScript calendar
+module for:
 
-- Sacred Calendar
+- International Sacred Calendar
 - Hebrew Calendar
 - Gregorian civil calendar
 - Muslim (tabular Islamic) Calendar
 
 The converter accepts any of the four calendars as its source and any other as
 its destination. It also shows the uninterrupted weekday and the current
-position in the Sacred Calendar's long rotation.
+position in the International Sacred Calendar's long rotation.
 
-## Sacred Calendar definition
+The page includes English, Hebrew, Arabic, Italian, Greek, Russian, Simplified
+Chinese (Mandarin), Hindi, Spanish, French, and Japanese. Hebrew and Arabic
+switch the complete interface to right-to-left layout. The selected language
+is stored as a device-local preference.
 
-The Sacred Calendar follows the week-based calendar shown in the supplied
+## International Sacred Calendar definition
+
+The International Sacred Calendar follows the week-based calendar shown in the supplied
 definition:
 
 - 13 equal months
@@ -29,14 +35,14 @@ seasons and against Hebrew dates.
 
 ## Creation-week epoch and weekday reconciliation
 
-Sacred `Year 1 · Month 1 · Day 1` is anchored to **25 Elul AM 1**, the
+International Sacred `Year 1 · Month 1 · Day 1` is anchored to **25 Elul AM 1**, the
 traditional first day of Creation. This is five days before 1 Tishrei AM 2,
 the traditional sixth day of Creation.
 
 The module converts 25 Elul AM 1 with the arithmetic Hebrew calendar and uses
 its actual fixed weekday. That calculated date is a **Monday**. The Sacred
 Calendar therefore starts on Monday in this implementation; it does not force
-the first date onto Sunday. This is what keeps Sacred, Hebrew, Gregorian, and
+the first date onto Sunday. This is what keeps International Sacred, Hebrew, Gregorian, and
 Islamic conversions on the same uninterrupted seven-day week.
 
 The religious tradition describes Creation Week as beginning on Sunday, while
@@ -51,21 +57,21 @@ References for the traditional Creation-week date:
 
 ## What the approximately 293-year rotation means
 
-A Sacred year contains 364 days. A mean Hebrew year is approximately
+An International Sacred year contains 364 days. A mean Hebrew year is approximately
 365.246822 days. The Sacred year boundary therefore moves earlier by about
 1.2468 days for each average Hebrew year.
 
 The two counts nearly meet again at:
 
 ```text
-293 Sacred years × 364 days        = 106,652 days
+293 International Sacred years × 364 days = 106,652 days
 292 mean Hebrew years × 365.246822 = 106,652.072 days
 ```
 
-After 292 average Hebrew years, 293 whole Sacred years have elapsed. Their year
+After 292 average Hebrew years, 293 whole International Sacred years have elapsed. Their year
 boundaries are only about `0.072` day, or **1 hour 44 minutes**, apart.
 
-This is a **year-boundary/date realignment**, not a weekday rotation. Sacred
+This is a **year-boundary/date realignment**, not a weekday rotation. International Sacred
 weekdays do not rotate or break: 364 is always exactly 52 weeks. The
 293-to-292 relationship is an approximation based on the mean Hebrew year;
 individual Hebrew years vary between 353 and 385 days.
@@ -73,16 +79,54 @@ individual Hebrew years vary between 353 and 385 days.
 ### Rotation anniversaries
 
 A rotation anniversary is the first day after a whole number of 293-year
-Sacred rotations:
+International Sacred rotations. The site lists every anniversary from 1
+through 20:
 
 - 1st anniversary: Sacred Year 294, Month 1, Day 1
 - 2nd anniversary: Sacred Year 587, Month 1, Day 1
 - 20th anniversary: Sacred Year 5861, Month 1, Day 1
 
 The web page lists the equivalent Hebrew, Gregorian, and tabular Islamic dates
-for these milestones. Its 20th-anniversary countdown is recalculated from the
-date currently selected in the converter and reports complete Sacred years
-plus the remaining days.
+for all 20 milestones. Clicking a milestone opens its month in the calendar
+grid. The 20th-anniversary countdown is recalculated from the date currently
+selected in the converter and reports complete International Sacred years plus
+the remaining days.
+
+## Approximate 1.48-year moon alignment
+
+International Sacred months begin every 28 days. NASA gives the mean synodic
+month—the phase cycle from new moon to new moon—as **29.53059 days**. The beat
+period between those two intervals is:
+
+```text
+1 / |1/28 - 1/29.530588853| = 540.22 days ≈ 1.48 years
+```
+
+That supports the requested “about 1.5 years” recurrence: a Sacred month
+boundary and the **mean** new moon return near one another about every 540
+days. It is not a Hebrew-calendar synchronization rule, and it is not a
+prediction of the exact observed new moon.
+
+The library uses a mean-phase reference and finds the Sacred month boundary
+closest to each mean new moon recurrence. The page lists five past and five
+future alignments around the selected date, including the offset in hours.
+True astronomical new moons vary, so these events are explicitly labeled as
+approximations.
+
+Reference:
+
+- [NASA: Eclipses and the Moon's Orbit](https://eclipse.gsfc.nasa.gov/SEhelp/moonorbit.html)
+
+## Calendar grid
+
+The 28-day grid displays one International Sacred month at a time. It marks:
+
+- the currently selected date;
+- approximate moon/month-start alignments;
+- 293-year rotation anniversaries.
+
+The prefix for International Sacred dates is **ISC**, for example
+`ISC 5805 · 04 · 12`.
 
 ## Calendar conventions
 
@@ -130,6 +174,8 @@ Public conversion helpers include:
 - `convertDate`
 - `sacredRotation`
 - `sacredRotationAnniversary`
+- `moonAlignmentAtSacredMonth`
+- `moonAlignmentsAround`
 - `weekdayFromFixed`
 - date validation and month-length helpers
 

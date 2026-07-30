@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   GREGORIAN_MONTH_NAMES,
   HEBREW_MONTH_NAMES,
   ISLAMIC_MONTH_NAMES,
+  SACRED_LUNAR_BEAT_DAYS,
   SACRED_DAYS_PER_MONTH,
   SACRED_DAYS_PER_YEAR,
   SACRED_EPOCH_FIXED,
@@ -16,41 +17,55 @@ import {
   fixedFromDate,
   fixedFromGregorian,
   fixedFromSacred,
+  gregorianFromFixed,
   hebrewYearMonths,
   isHebrewLeapYear,
   maxDayForDate,
+  moonAlignmentAtSacredMonth,
+  moonAlignmentsAround,
   sacredFromFixed,
   sacredRotation,
   sacredRotationAnniversary,
-  weekdayFromFixed,
   type CalendarDate,
   type CalendarKind,
 } from "@/lib/sacred-calendar";
+import {
+  LANGUAGES,
+  MOON_TRANSLATIONS,
+  TRANSLATIONS,
+  type LanguageCode,
+  type TranslationPack,
+} from "@/lib/translations";
 
-const CALENDARS: Array<{
-  id: CalendarKind;
-  label: string;
-  short: string;
-}> = [
-  { id: "sacred", label: "Sacred Calendar", short: "Sacred" },
-  { id: "hebrew", label: "Hebrew Calendar", short: "Hebrew" },
-  {
-    id: "gregorian",
-    label: "Gregorian Calendar",
-    short: "Gregorian",
-  },
-  { id: "islamic", label: "Muslim Calendar", short: "Islamic" },
-];
+const CALENDARS: CalendarKind[] = ["sacred", "hebrew", "gregorian", "islamic"];
 
 const DEFAULT_FIXED = fixedFromGregorian({ year: 2026, month: 7, day: 29 });
 
-function monthLabel(kind: CalendarKind, year: number, month: number): string {
-  if (kind === "sacred") return `Month ${month}`;
+function calendarLabel(kind: CalendarKind, translations: TranslationPack): string {
+  if (kind === "sacred") return "International Sacred Calendar";
+  if (kind === "hebrew") return translations.hebrew;
+  if (kind === "gregorian") return translations.gregorian;
+  return translations.muslim;
+}
+
+function monthLabel(
+  kind: CalendarKind,
+  year: number,
+  month: number,
+  translations: TranslationPack,
+  locale: string,
+): string {
+  if (kind === "sacred") return `${translations.month} ${month}`;
   if (kind === "hebrew") {
     if (month === 12 && isHebrewLeapYear(year)) return "Adar I";
     return HEBREW_MONTH_NAMES[month];
   }
-  if (kind === "gregorian") return GREGORIAN_MONTH_NAMES[month];
+  if (kind === "gregorian") {
+    return new Intl.DateTimeFormat(locale, {
+      month: "long",
+      timeZone: "UTC",
+    }).format(new Date(Date.UTC(2024, month - 1, 1)));
+  }
   return ISLAMIC_MONTH_NAMES[month];
 }
 
@@ -58,15 +73,32 @@ function formatYear(year: number): string {
   return year > 0 ? `${year} CE` : `${1 - year} BCE`;
 }
 
-function formatDate(kind: CalendarKind, date: CalendarDate): string {
+function formatDate(
+  kind: CalendarKind,
+  date: CalendarDate,
+  translations: TranslationPack,
+  locale: string,
+): string {
   if (kind === "sacred") {
-    return `Month ${date.month} · Day ${date.day} · Year ${date.year}`;
+    return `${translations.year} ${date.year} · ${translations.month} ${date.month} · ${translations.day} ${date.day}`;
   }
   if (kind === "gregorian") {
-    return `${GREGORIAN_MONTH_NAMES[date.month]} ${date.day}, ${formatYear(date.year)}`;
+    if (locale === "en-US") {
+      return `${GREGORIAN_MONTH_NAMES[date.month]} ${date.day}, ${formatYear(date.year)}`;
+    }
+    const formatted = new Date(0);
+    formatted.setUTCFullYear(date.year, date.month - 1, date.day);
+    formatted.setUTCHours(0, 0, 0, 0);
+    return new Intl.DateTimeFormat(locale, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      era: date.year <= 0 ? "short" : undefined,
+      timeZone: "UTC",
+    }).format(formatted);
   }
   if (kind === "hebrew") {
-    return `${date.day} ${monthLabel(kind, date.year, date.month)} ${date.year} AM`;
+    return `${date.day} ${monthLabel(kind, date.year, date.month, translations, locale)} ${date.year} AM`;
   }
   const islamicYear = date.year > 0 ? date.year : 1 - date.year;
   const islamicEra = date.year > 0 ? "AH" : "BH";
@@ -76,7 +108,7 @@ function formatDate(kind: CalendarKind, date: CalendarDate): string {
 function dateCode(kind: CalendarKind, date: CalendarDate): string {
   const prefix =
     kind === "sacred"
-      ? "SC"
+      ? "ISC"
       : kind === "hebrew"
         ? "AM"
         : kind === "islamic"
@@ -91,6 +123,17 @@ function dateCode(kind: CalendarKind, date: CalendarDate): string {
       ? 1 - date.year
       : date.year;
   return `${prefix} ${displayYear} · ${String(date.month).padStart(2, "0")} · ${String(date.day).padStart(2, "0")}`;
+}
+
+function localizedWeekday(fixed: number, locale: string): string {
+  const gregorian = gregorianFromFixed(fixed);
+  const date = new Date(0);
+  date.setUTCFullYear(gregorian.year, gregorian.month - 1, gregorian.day);
+  date.setUTCHours(0, 0, 0, 0);
+  return new Intl.DateTimeFormat(locale, {
+    weekday: "long",
+    timeZone: "UTC",
+  }).format(date);
 }
 
 function equivalentFor(kind: CalendarKind, fixed: number): CalendarDate {
@@ -112,10 +155,14 @@ function safeDate(kind: CalendarKind, candidate: CalendarDate): CalendarDate {
 function CalendarFields({
   kind,
   date,
+  translations,
+  locale,
   onChange,
 }: {
   kind: CalendarKind;
   date: CalendarDate;
+  translations: TranslationPack;
+  locale: string;
   onChange: (date: CalendarDate) => void;
 }) {
   const monthCount =
@@ -131,25 +178,25 @@ function CalendarFields({
   return (
     <div className="date-fields">
       <label>
-        <span>Month</span>
+        <span>{translations.month}</span>
         <select
-          aria-label="Source month"
+          aria-label={translations.month}
           value={date.month}
           onChange={(event) => update({ month: Number(event.target.value) })}
         >
           {Array.from({ length: monthCount }, (_, index) => index + 1).map(
             (month) => (
               <option key={month} value={month}>
-                {monthLabel(kind, date.year, month)}
+                {monthLabel(kind, date.year, month, translations, locale)}
               </option>
             ),
           )}
         </select>
       </label>
       <label>
-        <span>Day</span>
+        <span>{translations.day}</span>
         <input
-          aria-label="Source day"
+          aria-label={translations.day}
           type="number"
           min={1}
           max={maxDayForDate(kind, date.year, date.month)}
@@ -158,9 +205,9 @@ function CalendarFields({
         />
       </label>
       <label>
-        <span>Year</span>
+        <span>{translations.year}</span>
         <input
-          aria-label="Source year"
+          aria-label={translations.year}
           type="number"
           min={1}
           value={displayedYear}
@@ -172,9 +219,9 @@ function CalendarFields({
       </label>
       {usesEra ? (
         <label className="era-field">
-          <span>Era</span>
+          <span>{translations.era}</span>
           <select
-            aria-label="Source era"
+            aria-label={translations.era}
             value={isBeforeEra ? "before" : "after"}
             onChange={(event) => {
               const entered = Math.max(1, displayedYear);
@@ -191,11 +238,29 @@ function CalendarFields({
 }
 
 export default function Home() {
+  const [language, setLanguage] = useState<LanguageCode>("en");
+  const [gridOffset, setGridOffset] = useState(0);
   const [from, setFrom] = useState<CalendarKind>("gregorian");
   const [to, setTo] = useState<CalendarKind>("sacred");
   const [sourceDate, setSourceDate] = useState<CalendarDate>(() =>
     equivalentFor("gregorian", DEFAULT_FIXED),
   );
+  const languageConfig =
+    LANGUAGES.find((candidate) => candidate.code === language) ?? LANGUAGES[0];
+  const translations = TRANSLATIONS[language];
+  const moonTranslations = MOON_TRANSLATIONS[language];
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem("isc-language") as LanguageCode | null;
+    const next = LANGUAGES.some((candidate) => candidate.code === stored)
+      ? (stored as LanguageCode)
+      : "en";
+    const config = LANGUAGES.find((candidate) => candidate.code === next) ?? LANGUAGES[0];
+    document.documentElement.lang = config.locale;
+    document.documentElement.dir = config.direction;
+    const frame = window.requestAnimationFrame(() => setLanguage(next));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const calculation = useMemo(() => {
     try {
@@ -229,12 +294,14 @@ export default function Home() {
     }
     setFrom(next);
     setSourceDate(equivalentFor(next, fixed));
+    setGridOffset(0);
   }
 
   function swapCalendars() {
     setFrom(to);
     setTo(from);
     setSourceDate(calculation.result);
+    setGridOffset(0);
   }
 
   function useToday() {
@@ -245,14 +312,23 @@ export default function Home() {
       day: today.getDate(),
     });
     setSourceDate(equivalentFor(from, fixed));
+    setGridOffset(0);
   }
 
-  const sourceWeekday = weekdayFromFixed(calculation.fixed);
+  function changeLanguage(next: LanguageCode) {
+    setLanguage(next);
+    window.localStorage.setItem("isc-language", next);
+    const config = LANGUAGES.find((candidate) => candidate.code === next) ?? LANGUAGES[0];
+    document.documentElement.lang = config.locale;
+    document.documentElement.dir = config.direction;
+  }
+
+  const sourceWeekday = localizedWeekday(calculation.fixed, languageConfig.locale);
   const sacredDayOfYear =
     (calculation.sacred.month - 1) * SACRED_DAYS_PER_MONTH +
     calculation.sacred.day;
   const remainingYears = SACRED_ROTATION_YEARS - calculation.rotation.yearInCycle;
-  const anniversaries = [1, 2, 20].map((number) => {
+  const anniversaries = Array.from({ length: 20 }, (_, index) => index + 1).map((number) => {
     const sacred = sacredRotationAnniversary(number);
     const fixed = fixedFromSacred(sacred);
     return {
@@ -264,64 +340,106 @@ export default function Home() {
       islamic: dateFromFixed("islamic", fixed),
     };
   });
-  const twentieth = anniversaries[2];
+  const twentieth = anniversaries[19];
   const daysToTwentieth = twentieth.fixed - calculation.fixed;
   const countdownYears = Math.floor(Math.abs(daysToTwentieth) / SACRED_DAYS_PER_YEAR);
   const countdownDays = Math.abs(daysToTwentieth) % SACRED_DAYS_PER_YEAR;
+  const anniversaryTimelineProgress = Math.min(
+    1,
+    Math.max(
+      0,
+      (calculation.fixed - SACRED_EPOCH_FIXED) /
+        (twentieth.fixed - SACRED_EPOCH_FIXED),
+    ),
+  );
+  const baseGridMonth =
+    (calculation.sacred.year - 1) * SACRED_MONTHS_PER_YEAR +
+    calculation.sacred.month -
+    1;
+  const visibleGridMonth = Math.max(0, baseGridMonth + gridOffset);
+  const gridSacred: CalendarDate = {
+    year: Math.floor(visibleGridMonth / SACRED_MONTHS_PER_YEAR) + 1,
+    month: (visibleGridMonth % SACRED_MONTHS_PER_YEAR) + 1,
+    day: 1,
+  };
+  const gridStartFixed = fixedFromSacred(gridSacred);
+  const gridMoonAlignment = moonAlignmentAtSacredMonth(gridSacred);
+  const gridRotationAnniversary =
+    gridSacred.month === 1 &&
+    gridSacred.year > 1 &&
+    (gridSacred.year - 1) % SACRED_ROTATION_YEARS === 0
+      ? (gridSacred.year - 1) / SACRED_ROTATION_YEARS
+      : null;
+  const moonAlignments = moonAlignmentsAround(calculation.fixed, 5, 5);
+  const gridWeekdays = Array.from({ length: 7 }, (_, index) =>
+    localizedWeekday(gridStartFixed + index, languageConfig.locale),
+  );
 
   return (
-    <main>
+    <main dir={languageConfig.direction}>
       <nav className="topbar" aria-label="Primary">
-        <a className="brand" href="#top" aria-label="Sacred Calendar home">
+        <a className="brand" href="#top" aria-label="International Sacred Calendar home">
           <span className="brand-mark" aria-hidden="true">13</span>
           <span>
-            <strong>Sacred Calendar</strong>
-            <small>Converter &amp; cycle atlas</small>
+            <strong>International Sacred Calendar</strong>
+            <small>{translations.brandSubtitle}</small>
           </span>
         </a>
         <div className="nav-links">
-          <a href="#converter">Convert</a>
-          <a href="#cycle">Cycle</a>
-          <a href="#definition">Definition</a>
+          <a href="#converter">{translations.navConvert}</a>
+          <a href="#cycle">{translations.navCycle}</a>
+          <a href="#calendar">{moonTranslations.calendarKicker}</a>
+          <a href="#definition">{translations.navDefinition}</a>
         </div>
+        <label className="language-picker">
+          <span className="sr-only">Language</span>
+          <select
+            aria-label="Language"
+            value={language}
+            onChange={(event) => changeLanguage(event.target.value as LanguageCode)}
+          >
+            {LANGUAGES.map((candidate) => (
+              <option value={candidate.code} key={candidate.code}>
+                {candidate.label}
+              </option>
+            ))}
+          </select>
+        </label>
       </nav>
 
       <section className="hero" id="top">
         <div className="eyebrow">
           <span aria-hidden="true">✦</span>
-          A week-based measure of sacred time
+          {translations.eyebrow}
         </div>
         <h1>
-          Every date,
+          {translations.heroLead}
           <br />
-          <em>held in one rhythm.</em>
+          <em>{translations.heroEmphasis}</em>
         </h1>
-        <p className="hero-copy">
-          Move freely between Sacred, Hebrew, Gregorian, and Muslim
-          calendars—while preserving the uninterrupted seven-day week.
-        </p>
+        <p className="hero-copy">{translations.heroCopy}</p>
         <div className="hero-facts" aria-label="Sacred Calendar facts">
-          <div><strong>13</strong><span>equal months</span></div>
+          <div><strong>13</strong><span>{translations.equalMonths}</span></div>
           <i aria-hidden="true">×</i>
-          <div><strong>28</strong><span>days each</span></div>
+          <div><strong>28</strong><span>{translations.daysEach}</span></div>
           <i aria-hidden="true">=</i>
-          <div><strong>364</strong><span>days per year</span></div>
+          <div><strong>364</strong><span>{translations.daysPerYear}</span></div>
         </div>
       </section>
 
       <section className="converter-section" id="converter">
         <div className="section-heading">
-          <span>01 — CONVERTER</span>
-          <h2>Translate a date</h2>
-          <p>Choose any calendar as your starting point and any other as the destination.</p>
+          <span>01 — {translations.converterKicker}</span>
+          <h2>{translations.converterTitle}</h2>
+          <p>{translations.converterBody}</p>
         </div>
 
         <div className="converter-shell">
           <div className="converter-card source-card">
             <div className="card-kicker">
-              <span>FROM</span>
+              <span>{translations.from}</span>
               <button type="button" className="text-button" onClick={useToday}>
-                Use today
+                {translations.useToday}
               </button>
             </div>
             <label className="calendar-select-label">
@@ -333,16 +451,26 @@ export default function Home() {
                 onChange={(event) => changeFrom(event.target.value as CalendarKind)}
               >
                 {CALENDARS.map((calendar) => (
-                  <option value={calendar.id} key={calendar.id}>
-                    {calendar.label}
+                  <option value={calendar} key={calendar}>
+                    {calendarLabel(calendar, translations)}
                   </option>
                 ))}
               </select>
             </label>
-            <CalendarFields kind={from} date={sourceDate} onChange={setSourceDate} />
+            <CalendarFields
+              kind={from}
+              date={sourceDate}
+              translations={translations}
+              locale={languageConfig.locale}
+              onChange={(date) => {
+                setSourceDate(date);
+                setGridOffset(0);
+              }}
+            />
             <div className="weekday-line">
               <span className="status-dot" aria-hidden="true" />
-              {sourceWeekday} · fixed day {calculation.fixed.toLocaleString("en-US")}
+              {sourceWeekday} · {translations.fixedDay}{" "}
+              {calculation.fixed.toLocaleString(languageConfig.locale)}
             </div>
           </div>
 
@@ -357,7 +485,10 @@ export default function Home() {
           </button>
 
           <div className="converter-card result-card" aria-live="polite">
-            <div className="card-kicker"><span>TO</span><span>CONVERTED DATE</span></div>
+            <div className="card-kicker">
+              <span>{translations.to}</span>
+              <span>{translations.convertedDate}</span>
+            </div>
             <label className="calendar-select-label">
               <span className="sr-only">Destination calendar</span>
               <select
@@ -367,8 +498,8 @@ export default function Home() {
                 onChange={(event) => setTo(event.target.value as CalendarKind)}
               >
                 {CALENDARS.map((calendar) => (
-                  <option value={calendar.id} key={calendar.id}>
-                    {calendar.label}
+                  <option value={calendar} key={calendar}>
+                    {calendarLabel(calendar, translations)}
                   </option>
                 ))}
               </select>
@@ -377,7 +508,14 @@ export default function Home() {
               <p className="error-message">{calculation.error}</p>
             ) : (
               <>
-                <div className="result-date">{formatDate(to, calculation.result)}</div>
+                <div className="result-date">
+                  {formatDate(
+                    to,
+                    calculation.result,
+                    translations,
+                    languageConfig.locale,
+                  )}
+                </div>
                 <div className="result-meta">
                   <span>{sourceWeekday}</span>
                   <span>{dateCode(to, calculation.result)}</span>
@@ -386,31 +524,22 @@ export default function Home() {
             )}
           </div>
         </div>
-        <p className="converter-note">
-          Gregorian dates use the proleptic civil calendar. Muslim dates use the
-          arithmetic tabular calendar; local observation may vary by a day.
-        </p>
+        <p className="converter-note">{translations.gregorianNote}</p>
       </section>
 
       <section className="cycle-section" id="cycle">
         <div className="cycle-intro">
-          <span className="section-number">02 — ROTATING CYCLE</span>
-          <h2>A long arc back toward alignment.</h2>
-          <p>
-            A Sacred year is exactly 364 days. Over a long interval,
-            <strong> 293 Sacred years</strong> nearly equal
-            <strong> 292 mean Hebrew years</strong>—a difference of about
-            1 hour 44 minutes. This realigns year boundaries, not weekdays:
-            the Sacred week remains continuous because 364 is exactly 52 weeks.
-          </p>
+          <span className="section-number">02 — {translations.cycleKicker}</span>
+          <h2>{translations.cycleTitle}</h2>
+          <p>{translations.cycleBody}</p>
         </div>
 
         <div className="cycle-display">
           <div className="orbit" aria-hidden="true">
             <div className="orbit-inner">
-              <span>Cycle</span>
+              <span>{translations.cycle}</span>
               <strong>{calculation.rotation.cycle}</strong>
-              <small>of Sacred time</small>
+              <small>{translations.ofSacredTime}</small>
             </div>
             <span
               className="orbit-marker"
@@ -421,56 +550,89 @@ export default function Home() {
           </div>
           <div className="cycle-details">
             <div>
-              <span>Current Sacred date</span>
+              <span>{translations.currentSacredDate}</span>
               <strong>
                 Y{calculation.sacred.year} · M{calculation.sacred.month} · D{calculation.sacred.day}
               </strong>
             </div>
             <div className="cycle-grid">
               <article>
-                <span>Year in rotation</span>
+                <span>{translations.yearInRotation}</span>
                 <strong>{calculation.rotation.yearInCycle}</strong>
-                <small>of {SACRED_ROTATION_YEARS}</small>
+                <small>{translations.of} {SACRED_ROTATION_YEARS}</small>
               </article>
               <article>
-                <span>Day of year</span>
+                <span>{translations.dayOfYear}</span>
                 <strong>{sacredDayOfYear}</strong>
-                <small>of {SACRED_DAYS_PER_YEAR}</small>
+                <small>{translations.of} {SACRED_DAYS_PER_YEAR}</small>
               </article>
               <article>
-                <span>Until next cycle</span>
+                <span>{translations.untilNextCycle}</span>
                 <strong>{remainingYears}</strong>
-                <small>Sacred years</small>
+                <small>{translations.sacredYears}</small>
               </article>
             </div>
             <div className="progress-track" aria-label={`${Math.round(calculation.rotation.progress * 100)}% through the rotation`}>
               <span style={{ width: `${calculation.rotation.progress * 100}%` }} />
             </div>
-            <p>{Math.round(calculation.rotation.progress * 100)}% through this 293-year rotation</p>
+            <p>
+              {Math.round(calculation.rotation.progress * 100)}%{" "}
+              {translations.throughRotation}
+            </p>
           </div>
         </div>
 
         <div className="anniversary-panel">
           <div className="anniversary-heading">
             <div>
-              <span className="section-number">ROTATION ANNIVERSARIES</span>
-              <h3>When the long count turns</h3>
-              <p>
-                Each anniversary marks another complete 293-Sacred-year interval
-                from the Creation-week anchor.
-              </p>
+              <span className="section-number">{translations.anniversariesKicker}</span>
+              <h3>{translations.anniversariesTitle}</h3>
+              <p>{translations.anniversariesBody}</p>
             </div>
             <div className="countdown-card">
-              <span>To the 20th anniversary</span>
+              <span>{translations.toTwentieth}</span>
               <strong>
-                {countdownYears.toLocaleString("en-US")}
-                <small> Sacred years</small>
+                {countdownYears.toLocaleString(languageConfig.locale)}
+                <small> {translations.sacredYears}</small>
               </strong>
               <p>
                 {daysToTwentieth >= 0
-                  ? `${countdownDays} days remain after those full years`
-                  : `${countdownDays} days beyond those full years ago`}
+                  ? `${countdownDays.toLocaleString(languageConfig.locale)} ${translations.daysRemain}`
+                  : `${countdownDays.toLocaleString(languageConfig.locale)} ${translations.daysAgo}`}
               </p>
+            </div>
+          </div>
+
+          <div className="anniversary-visual">
+            <div className="anniversary-rail" aria-label={translations.toTwentieth}>
+              <span
+                className="anniversary-rail-fill"
+                style={{ width: `${anniversaryTimelineProgress * 100}%` }}
+              />
+              {anniversaries.map((anniversary) => (
+                <span
+                  className={`anniversary-tick ${
+                    anniversary.fixed <= calculation.fixed ? "completed" : ""
+                  }`}
+                  style={{ insetInlineStart: `${(anniversary.number / 20) * 100}%` }}
+                  title={`#${anniversary.number} · ISC ${anniversary.sacred.year}`}
+                  key={anniversary.number}
+                >
+                  <i />
+                </span>
+              ))}
+              <span
+                className="current-position"
+                style={{ insetInlineStart: `${anniversaryTimelineProgress * 100}%` }}
+              >
+                <i />
+                <em>{translations.currentSacredDate}</em>
+              </span>
+            </div>
+            <div className="anniversary-visual-labels">
+              <span>ISC 1 · 1 · 1</span>
+              <span>ISC {calculation.sacred.year} · {calculation.sacred.month} · {calculation.sacred.day}</span>
+              <span>#20 · ISC {twentieth.sacred.year} · 1 · 1</span>
             </div>
           </div>
 
@@ -478,29 +640,39 @@ export default function Home() {
             <table>
               <thead>
                 <tr>
-                  <th>Milestone</th>
-                  <th>Sacred</th>
-                  <th>Hebrew</th>
-                  <th>Gregorian</th>
-                  <th>Muslim</th>
-                  <th>Weekday</th>
+                  <th>{translations.milestone}</th>
+                  <th>{translations.sacred}</th>
+                  <th>{translations.hebrew}</th>
+                  <th>{translations.gregorian}</th>
+                  <th>{translations.muslim}</th>
+                  <th>{translations.weekday}</th>
                 </tr>
               </thead>
               <tbody>
                 {anniversaries.map((anniversary) => (
                   <tr key={anniversary.number}>
                     <th>
-                      {anniversary.number === 1
-                        ? "1st"
-                        : anniversary.number === 2
-                          ? "2nd"
-                          : "20th"}
+                      <button
+                        type="button"
+                        className="milestone-button"
+                        onClick={() => {
+                          const targetMonth =
+                            (anniversary.sacred.year - 1) * SACRED_MONTHS_PER_YEAR;
+                          setGridOffset(targetMonth - baseGridMonth);
+                          document
+                            .getElementById("calendar")
+                            ?.scrollIntoView({ behavior: "smooth" });
+                        }}
+                        title={moonTranslations.rotationAnniversary}
+                      >
+                        #{anniversary.number.toLocaleString(languageConfig.locale)}
+                      </button>
                     </th>
-                    <td>{formatDate("sacred", anniversary.sacred)}</td>
-                    <td>{formatDate("hebrew", anniversary.hebrew)}</td>
-                    <td>{formatDate("gregorian", anniversary.gregorian)}</td>
-                    <td>{formatDate("islamic", anniversary.islamic)}</td>
-                    <td>{weekdayFromFixed(anniversary.fixed)}</td>
+                    <td>{formatDate("sacred", anniversary.sacred, translations, languageConfig.locale)}</td>
+                    <td>{formatDate("hebrew", anniversary.hebrew, translations, languageConfig.locale)}</td>
+                    <td>{formatDate("gregorian", anniversary.gregorian, translations, languageConfig.locale)}</td>
+                    <td>{formatDate("islamic", anniversary.islamic, translations, languageConfig.locale)}</td>
+                    <td>{localizedWeekday(anniversary.fixed, languageConfig.locale)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -509,18 +681,156 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="calendar-section" id="calendar">
+        <div className="section-heading calendar-heading">
+          <span>03 — {moonTranslations.calendarKicker}</span>
+          <h2>{moonTranslations.calendarTitle}</h2>
+          <p>{moonTranslations.calendarBody}</p>
+        </div>
+
+        <div className="calendar-toolbar">
+          <button
+            type="button"
+            onClick={() => setGridOffset((current) => Math.max(-baseGridMonth, current - 1))}
+            aria-label={moonTranslations.previousMonth}
+          >
+            ← <span>{moonTranslations.previousMonth}</span>
+          </button>
+          <div>
+            <span>International Sacred Calendar</span>
+            <strong>
+              ISC {gridSacred.year} · {translations.month} {gridSacred.month}
+            </strong>
+          </div>
+          <button
+            type="button"
+            onClick={() => setGridOffset((current) => current + 1)}
+            aria-label={moonTranslations.nextMonth}
+          >
+            <span>{moonTranslations.nextMonth}</span> →
+          </button>
+        </div>
+
+        <div className="calendar-grid" role="grid">
+          {gridWeekdays.map((weekday) => (
+            <div className="calendar-weekday" role="columnheader" key={weekday}>
+              {weekday}
+            </div>
+          ))}
+          {Array.from({ length: SACRED_DAYS_PER_MONTH }, (_, index) => index + 1).map(
+            (day) => {
+              const selected =
+                gridSacred.year === calculation.sacred.year &&
+                gridSacred.month === calculation.sacred.month &&
+                day === calculation.sacred.day;
+              const hasMoonAlignment = day === 1 && Boolean(gridMoonAlignment);
+              const hasRotationAnniversary =
+                day === 1 && gridRotationAnniversary !== null;
+
+              return (
+                <div
+                  className={[
+                    "calendar-day",
+                    selected ? "selected" : "",
+                    hasMoonAlignment || hasRotationAnniversary ? "has-event" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  role="gridcell"
+                  aria-selected={selected}
+                  key={day}
+                >
+                  <span className="day-number">{day}</span>
+                  <div className="day-events">
+                    {selected ? (
+                      <span className="event-pill selected-pill">
+                        {moonTranslations.selectedDate}
+                      </span>
+                    ) : null}
+                    {hasMoonAlignment ? (
+                      <span className="event-pill moon-pill">
+                        ◐ {moonTranslations.lunarAlignment}
+                      </span>
+                    ) : null}
+                    {hasRotationAnniversary ? (
+                      <span className="event-pill rotation-pill">
+                        ✦ {moonTranslations.rotationAnniversary} #{gridRotationAnniversary}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+              );
+            },
+          )}
+        </div>
+
+        <div className="lunar-alignment-section">
+          <div className="lunar-copy">
+            <span className="section-number">28 ↔ 29.530588853</span>
+            <h3>{moonTranslations.alignmentsTitle}</h3>
+            <p>{moonTranslations.alignmentsBody}</p>
+            <div className="beat-stat">
+              <strong>{SACRED_LUNAR_BEAT_DAYS.toFixed(1)}</strong>
+              <span>{translations.day} · ≈ 1.48 {translations.year}</span>
+            </div>
+            <small>{moonTranslations.approximation}</small>
+          </div>
+
+          <div className="alignment-list">
+            {moonAlignments.map((alignment) => {
+              const isPast = alignment.fixed <= calculation.fixed;
+              const gregorian = dateFromFixed("gregorian", alignment.fixed);
+              const hebrew = dateFromFixed("hebrew", alignment.fixed);
+              const islamic = dateFromFixed("islamic", alignment.fixed);
+
+              return (
+                <article key={`${alignment.sacred.year}-${alignment.sacred.month}`}>
+                  <div className="alignment-index">
+                    <span>{isPast ? moonTranslations.past : moonTranslations.future}</span>
+                    <strong>
+                      ISC {alignment.sacred.year} · {alignment.sacred.month} · 1
+                    </strong>
+                  </div>
+                  <div>
+                    <span>{translations.gregorian}</span>
+                    <strong>
+                      {formatDate("gregorian", gregorian, translations, languageConfig.locale)}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>{translations.hebrew} / {translations.muslim}</span>
+                    <strong>
+                      {formatDate("hebrew", hebrew, translations, languageConfig.locale)}
+                      {" · "}
+                      {formatDate("islamic", islamic, translations, languageConfig.locale)}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>{moonTranslations.meanOffset}</span>
+                    <strong>
+                      {alignment.offsetHours >= 0 ? "+" : ""}
+                      {alignment.offsetHours.toFixed(1)} h
+                    </strong>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       <section className="definition-section" id="definition">
         <div className="section-heading">
-          <span>03 — THE DEFINITION</span>
-          <h2>Simple structure.<br />Continuous week.</h2>
+          <span>04 — {translations.definitionKicker}</span>
+          <h2>{translations.definitionTitle}</h2>
         </div>
 
         <div className="definition-grid">
           <article className="principle-card large">
             <span className="principle-index">I</span>
             <div>
-              <h3>Thirteen equal months</h3>
-              <p>Each month is four complete weeks. The same date always lands on the same weekday.</p>
+              <h3>{translations.equalMonthsTitle}</h3>
+              <p>{translations.equalMonthsBody}</p>
             </div>
             <div className="month-mini">
               {Array.from({ length: 28 }, (_, index) => (
@@ -532,24 +842,23 @@ export default function Home() {
           </article>
           <article className="principle-card">
             <span className="principle-index">II</span>
-            <h3>Fifty-two full weeks</h3>
-            <p>No leap day or extra day sits outside the seven-day cycle.</p>
+            <h3>{translations.fullWeeksTitle}</h3>
+            <p>{translations.fullWeeksBody}</p>
             <div className="equation">
               {SACRED_MONTHS_PER_YEAR} × 4 = <strong>{SACRED_WEEKS_PER_YEAR}</strong>
             </div>
           </article>
           <article className="principle-card accent">
             <span className="principle-index">III</span>
-            <h3>Creation-week anchor</h3>
+            <h3>{translations.creationAnchorTitle}</h3>
             <p>
-              Sacred 1 · 1 · 1 is fixed to Hebrew 25 Elul AM 1. In the calculated Hebrew calendar,
-              that day is <strong>{weekdayFromFixed(SACRED_EPOCH_FIXED)}</strong>, so the converter
-              preserves it rather than forcing a Sunday reset.
+              {translations.creationAnchorBody}{" "}
+              <strong>{localizedWeekday(SACRED_EPOCH_FIXED, languageConfig.locale)}</strong>
             </p>
           </article>
           <article className="principle-card quote-card">
-            <blockquote>“Time can follow meaning as well as the heavens.”</blockquote>
-            <p>A fourth calendar: not solar, lunar, or lunisolar, but week-based.</p>
+            <blockquote>{translations.quote}</blockquote>
+            <p>{translations.quoteBody}</p>
           </article>
         </div>
       </section>
@@ -557,13 +866,13 @@ export default function Home() {
       <footer>
         <div className="brand footer-brand">
           <span className="brand-mark" aria-hidden="true">13</span>
-          <span><strong>Sacred Calendar</strong><small>Thirteen months · One rhythm</small></span>
+          <span>
+            <strong>International Sacred Calendar</strong>
+            <small>{translations.footerTagline}</small>
+          </span>
         </div>
-        <p>
-          Built from a 13 × 28 definition. Hebrew conversion follows the arithmetic Hebrew calendar;
-          Muslim conversion follows the tabular Islamic calendar.
-        </p>
-        <a href="#top">Back to top ↑</a>
+        <p>{translations.footerBody}</p>
+        <a href="#top">{translations.backToTop} ↑</a>
       </footer>
     </main>
   );
