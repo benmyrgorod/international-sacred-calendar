@@ -396,8 +396,8 @@ export default function Home() {
             className="brand-logo"
             src="/isc-logo-web.png"
             alt=""
-            width={48}
-            height={48}
+            width={60}
+            height={60}
             priority
           />
           <span>

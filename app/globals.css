@@ -54,7 +54,7 @@ a {
 }
 
 .topbar {
-  min-height: 84px;
+  min-height: 96px;
   padding: 0 5vw;
   display: flex;
   align-items: center;
@@ -82,6 +82,16 @@ a {
   box-shadow: 0 0 0 1px rgba(182, 144, 78, 0.45);
 }
 
+.topbar .brand {
+  gap: 16px;
+}
+
+.topbar .brand-logo {
+  width: 60px;
+  height: 60px;
+  flex-basis: 60px;
+}
+
 .brand strong,
 .brand small {
   display: block;
@@ -100,6 +110,14 @@ a {
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.15em;
+}
+
+.topbar .brand strong {
+  font-size: 20px;
+}
+
+.topbar .brand small {
+  font-size: 10px;
 }
 
 .nav-links {
@@ -1381,8 +1399,14 @@ footer > a {
 
 @media (max-width: 620px) {
   .topbar {
-    min-height: 72px;
+    min-height: 80px;
     padding: 0 20px;
+  }
+
+  .topbar .brand-logo {
+    width: 52px;
+    height: 52px;
+    flex-basis: 52px;
   }
 
   .nav-links {
