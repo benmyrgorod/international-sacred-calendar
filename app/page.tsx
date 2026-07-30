@@ -41,6 +41,15 @@ const CALENDARS: CalendarKind[] = ["sacred", "hebrew", "gregorian", "islamic"];
 
 const DEFAULT_FIXED = fixedFromGregorian({ year: 2026, month: 7, day: 29 });
 
+function currentLocalFixed(): number {
+  const today = new Date();
+  return fixedFromGregorian({
+    year: today.getFullYear(),
+    month: today.getMonth() + 1,
+    day: today.getDate(),
+  });
+}
+
 function calendarLabel(kind: CalendarKind, translations: TranslationPack): string {
   if (kind === "sacred") return "International Sacred Calendar";
   if (kind === "hebrew") return translations.hebrew;
@@ -240,6 +249,7 @@ function CalendarFields({
 export default function Home() {
   const [language, setLanguage] = useState<LanguageCode>("en");
   const [gridOffset, setGridOffset] = useState(0);
+  const [todayFixed, setTodayFixed] = useState(DEFAULT_FIXED);
   const [from, setFrom] = useState<CalendarKind>("gregorian");
   const [to, setTo] = useState<CalendarKind>("sacred");
   const [sourceDate, setSourceDate] = useState<CalendarDate>(() =>
@@ -258,7 +268,10 @@ export default function Home() {
     const config = LANGUAGES.find((candidate) => candidate.code === next) ?? LANGUAGES[0];
     document.documentElement.lang = config.locale;
     document.documentElement.dir = config.direction;
-    const frame = window.requestAnimationFrame(() => setLanguage(next));
+    const frame = window.requestAnimationFrame(() => {
+      setLanguage(next);
+      setTodayFixed(currentLocalFixed());
+    });
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
@@ -305,12 +318,8 @@ export default function Home() {
   }
 
   function useToday() {
-    const today = new Date();
-    const fixed = fixedFromGregorian({
-      year: today.getFullYear(),
-      month: today.getMonth() + 1,
-      day: today.getDate(),
-    });
+    const fixed = currentLocalFixed();
+    setTodayFixed(fixed);
     setSourceDate(equivalentFor(from, fixed));
     setGridOffset(0);
   }
@@ -356,6 +365,9 @@ export default function Home() {
     (calculation.sacred.year - 1) * SACRED_MONTHS_PER_YEAR +
     calculation.sacred.month -
     1;
+  const todaySacred = sacredFromFixed(todayFixed);
+  const todayGridMonth =
+    (todaySacred.year - 1) * SACRED_MONTHS_PER_YEAR + todaySacred.month - 1;
   const visibleGridMonth = Math.max(0, baseGridMonth + gridOffset);
   const gridSacred: CalendarDate = {
     year: Math.floor(visibleGridMonth / SACRED_MONTHS_PER_YEAR) + 1,
@@ -711,6 +723,28 @@ export default function Home() {
           </button>
         </div>
 
+        <div className="calendar-jumps" aria-label={moonTranslations.quickFind}>
+          <span>{moonTranslations.quickFind}</span>
+          <div>
+            <button
+              type="button"
+              className={visibleGridMonth === baseGridMonth ? "active" : ""}
+              onClick={() => setGridOffset(0)}
+            >
+              <span className="jump-symbol selected-symbol" aria-hidden="true">◎</span>
+              {moonTranslations.findSelectedDate}
+            </button>
+            <button
+              type="button"
+              className={visibleGridMonth === todayGridMonth ? "active" : ""}
+              onClick={() => setGridOffset(todayGridMonth - baseGridMonth)}
+            >
+              <span className="jump-symbol today-symbol" aria-hidden="true">●</span>
+              {moonTranslations.findToday}
+            </button>
+          </div>
+        </div>
+
         <div className="calendar-grid" role="grid">
           {gridWeekdays.map((weekday) => (
             <div className="calendar-weekday" role="columnheader" key={weekday}>
@@ -719,10 +753,9 @@ export default function Home() {
           ))}
           {Array.from({ length: SACRED_DAYS_PER_MONTH }, (_, index) => index + 1).map(
             (day) => {
-              const selected =
-                gridSacred.year === calculation.sacred.year &&
-                gridSacred.month === calculation.sacred.month &&
-                day === calculation.sacred.day;
+              const cellFixed = gridStartFixed + day - 1;
+              const selected = cellFixed === calculation.fixed;
+              const isToday = cellFixed === todayFixed;
               const hasMoonAlignment = day === 1 && Boolean(gridMoonAlignment);
               const hasRotationAnniversary =
                 day === 1 && gridRotationAnniversary !== null;
@@ -732,12 +765,14 @@ export default function Home() {
                   className={[
                     "calendar-day",
                     selected ? "selected" : "",
+                    isToday ? "today" : "",
                     hasMoonAlignment || hasRotationAnniversary ? "has-event" : "",
                   ]
                     .filter(Boolean)
                     .join(" ")}
                   role="gridcell"
                   aria-selected={selected}
+                  aria-current={isToday ? "date" : undefined}
                   key={day}
                 >
                   <span className="day-number">{day}</span>
@@ -745,6 +780,11 @@ export default function Home() {
                     {selected ? (
                       <span className="event-pill selected-pill">
                         {moonTranslations.selectedDate}
+                      </span>
+                    ) : null}
+                    {isToday ? (
+                      <span className="event-pill today-pill">
+                        {moonTranslations.today}
                       </span>
                     ) : null}
                     {hasMoonAlignment ? (

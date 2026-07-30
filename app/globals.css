@@ -913,6 +913,64 @@ h1 em {
   color: var(--forest);
 }
 
+.calendar-jumps {
+  min-height: 58px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  background: #fffdf8;
+}
+
+.calendar-jumps > span {
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.calendar-jumps > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.calendar-jumps button {
+  min-height: 34px;
+  padding: 7px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.calendar-jumps button:hover,
+.calendar-jumps button.active {
+  border-color: var(--gold);
+  background: rgba(182, 144, 78, 0.1);
+}
+
+.jump-symbol {
+  color: var(--forest);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.today-symbol {
+  color: var(--gold);
+  font-size: 10px;
+}
+
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -944,6 +1002,15 @@ h1 em {
 
 .calendar-day.selected {
   background: var(--sage);
+}
+
+.calendar-day.today {
+  box-shadow: inset 0 0 0 3px var(--gold);
+}
+
+.calendar-day.today .day-number {
+  color: var(--forest);
+  font-weight: 600;
 }
 
 .calendar-day.has-event::after {
@@ -987,6 +1054,11 @@ h1 em {
 .selected-pill {
   color: var(--forest);
   background: rgba(21, 56, 45, 0.1);
+}
+
+.today-pill {
+  color: #fffdf8;
+  background: var(--gold);
 }
 
 .moon-pill {
@@ -1385,6 +1457,21 @@ footer > a {
 
   .calendar-toolbar > div span {
     font-size: 7px;
+  }
+
+  .calendar-jumps {
+    padding: 10px 8px;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .calendar-jumps > div {
+    width: 100%;
+  }
+
+  .calendar-jumps button {
+    flex: 1;
+    justify-content: center;
   }
 
   .calendar-weekday {

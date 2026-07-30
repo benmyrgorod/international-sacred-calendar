@@ -37,6 +37,10 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /To the 20th anniversary/);
   assert.match(html, /Rotation anniversaries 1–20/);
   assert.match(html, /Five past and five future lunar alignments/);
+  assert.match(html, /Quick find/);
+  assert.match(html, /Current date/);
+  assert.match(html, /calendar-day selected today/);
+  assert.match(html, /today-pill/);
   assert.match(html, /ISC 5805/);
   assert.match(html, /Español/);
   assert.match(html, /Français/);
