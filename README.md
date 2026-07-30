@@ -1,5 +1,7 @@
 # International Sacred Calendar
 
+URL: https://sacredcal.one
+
 An interactive multilingual web converter and standalone TypeScript calendar
 module for:
 
