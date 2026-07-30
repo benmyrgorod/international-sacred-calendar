@@ -607,6 +607,120 @@ h1 em {
   font-size: 10px;
 }
 
+.anniversary-panel {
+  margin-top: 112px;
+  padding-top: 62px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.anniversary-heading {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: end;
+}
+
+.anniversary-heading h3 {
+  margin: 10px 0 8px;
+  font-size: clamp(38px, 4.5vw, 58px);
+  font-weight: 500;
+}
+
+.anniversary-heading > div:first-child p {
+  max-width: 590px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.countdown-card {
+  min-width: 260px;
+  padding: 20px 24px;
+  border: 1px solid rgba(217, 199, 158, 0.34);
+  background: rgba(217, 199, 158, 0.06);
+}
+
+.countdown-card > span {
+  color: var(--gold-light);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.countdown-card strong {
+  display: block;
+  margin-top: 5px;
+  color: #f7f0e2;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 36px;
+  font-weight: 500;
+}
+
+.countdown-card strong small {
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.countdown-card p {
+  margin: 2px 0 0;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 9px;
+}
+
+.anniversary-table-wrap {
+  margin-top: 34px;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.anniversary-table-wrap table {
+  width: 100%;
+  min-width: 1040px;
+  border-collapse: collapse;
+}
+
+.anniversary-table-wrap th,
+.anniversary-table-wrap td {
+  padding: 18px 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.09);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  text-align: left;
+  vertical-align: top;
+}
+
+.anniversary-table-wrap thead th {
+  color: rgba(255, 255, 255, 0.42);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.anniversary-table-wrap tbody th {
+  color: var(--gold-light);
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.anniversary-table-wrap tbody td {
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.anniversary-table-wrap tr:last-child th,
+.anniversary-table-wrap tr:last-child td {
+  border-bottom: 0;
+}
+
+.anniversary-table-wrap th:last-child,
+.anniversary-table-wrap td:last-child {
+  border-right: 0;
+}
+
 .definition-section {
   background: var(--cream);
 }
@@ -773,6 +887,11 @@ footer > a {
     gap: 80px;
   }
 
+  .anniversary-heading {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
   .definition-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -858,6 +977,16 @@ footer > a {
 
   .orbit-marker {
     display: none;
+  }
+
+  .anniversary-panel {
+    margin-top: 82px;
+    padding-top: 48px;
+  }
+
+  .countdown-card {
+    width: 100%;
+    min-width: 0;
   }
 
   .cycle-grid {

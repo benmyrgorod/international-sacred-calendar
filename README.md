@@ -70,13 +70,27 @@ weekdays do not rotate or break: 364 is always exactly 52 weeks. The
 293-to-292 relationship is an approximation based on the mean Hebrew year;
 individual Hebrew years vary between 353 and 385 days.
 
+### Rotation anniversaries
+
+A rotation anniversary is the first day after a whole number of 293-year
+Sacred rotations:
+
+- 1st anniversary: Sacred Year 294, Month 1, Day 1
+- 2nd anniversary: Sacred Year 587, Month 1, Day 1
+- 20th anniversary: Sacred Year 5861, Month 1, Day 1
+
+The web page lists the equivalent Hebrew, Gregorian, and tabular Islamic dates
+for these milestones. Its 20th-anniversary countdown is recalculated from the
+date currently selected in the converter and reports complete Sacred years
+plus the remaining days.
+
 ## Calendar conventions
 
 - **Hebrew:** arithmetic Hebrew calendar with its 19-year leap cycle and
   postponement rules.
 - **Gregorian:** the standard proleptic Gregorian civil calendar.
-- **Muslim:** tabular Islamic calendar. Observational or local religious dates
-  may differ by one day.
+- **Muslim:** tabular Islamic calendar. Dates before 1 AH are shown as BH
+  (Before Hijra). Observational or local religious dates may differ by one day.
 - **Weekday:** all calendars pass through one integer fixed-day count, where
   Gregorian 1 January 1 CE is fixed day 1, a Monday.
 
@@ -115,6 +129,7 @@ Public conversion helpers include:
 - `fixedFromIslamic` / `islamicFromFixed`
 - `convertDate`
 - `sacredRotation`
+- `sacredRotationAnniversary`
 - `weekdayFromFixed`
 - date validation and month-length helpers
 

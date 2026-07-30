@@ -9,7 +9,9 @@ import {
   convertDate,
   dateFromFixed,
   fixedFromDate,
+  fixedFromSacred,
   sacredRotation,
+  sacredRotationAnniversary,
   weekdayFromFixed,
   type CalendarKind,
 } from "../lib/sacred-calendar.ts";
@@ -25,6 +27,14 @@ test("matches the tabular Islamic epoch anchor", () => {
   assert.deepEqual(
     convertDate({ year: 2023, month: 7, day: 19 }, "gregorian", "islamic"),
     { year: 1445, month: 1, day: 1 },
+  );
+});
+
+test("supports proleptic tabular Islamic dates before the Hijra", () => {
+  const beforeHijra = { year: -200, month: 3, day: 5 };
+  assert.deepEqual(
+    dateFromFixed("islamic", fixedFromDate("islamic", beforeHijra)),
+    beforeHijra,
   );
 });
 
@@ -72,4 +82,26 @@ test("calculates the 293-year Sacred rotation", () => {
     SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR -
     HEBREW_YEARS_PER_ROTATION * meanHebrewYear;
   assert.ok(Math.abs(difference * 24 + 1.73002) < 0.0001);
+});
+
+test("lists rotation anniversaries at completed 293-year boundaries", () => {
+  assert.deepEqual(sacredRotationAnniversary(1), {
+    year: 294,
+    month: 1,
+    day: 1,
+  });
+  assert.deepEqual(sacredRotationAnniversary(2), {
+    year: 587,
+    month: 1,
+    day: 1,
+  });
+  assert.deepEqual(sacredRotationAnniversary(20), {
+    year: 5861,
+    month: 1,
+    day: 1,
+  });
+  assert.equal(
+    fixedFromSacred(sacredRotationAnniversary(20)) - SACRED_EPOCH_FIXED,
+    20 * SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR,
+  );
 });

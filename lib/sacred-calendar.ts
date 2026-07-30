@@ -264,10 +264,7 @@ export function fixedFromIslamic(date: CalendarDate): number {
 
 export function islamicFromFixed(fixed: number): CalendarDate {
   assertInteger(fixed, "Fixed day");
-  const year = Math.max(
-    1,
-    floorDiv(30 * (fixed - ISLAMIC_EPOCH) + 10_646, 10_631),
-  );
+  const year = floorDiv(30 * (fixed - ISLAMIC_EPOCH) + 10_646, 10_631);
   const month = Math.min(
     12,
     Math.ceil(
@@ -364,6 +361,23 @@ export function sacredRotation(date: CalendarDate): RotationPosition {
   };
 }
 
+/**
+ * Returns the first Sacred date after a whole number of 293-year rotations.
+ * Anniversary 1 is Sacred Year 294, Month 1, Day 1.
+ */
+export function sacredRotationAnniversary(anniversary: number): CalendarDate {
+  assertInteger(anniversary, "Rotation anniversary");
+  if (anniversary < 1) {
+    throw new RangeError("Rotation anniversary must be 1 or later.");
+  }
+
+  return {
+    year: anniversary * SACRED_ROTATION_YEARS + 1,
+    month: 1,
+    day: 1,
+  };
+}
+
 export function maxDayForDate(kind: CalendarKind, year: number, month: number): number {
   switch (kind) {
     case "sacred":
@@ -383,7 +397,7 @@ export function validateDate(kind: CalendarKind, date: CalendarDate): void {
   assertInteger(month, "Month");
   assertInteger(day, "Day");
 
-  if (kind !== "gregorian" && year < 1) {
+  if ((kind === "sacred" || kind === "hebrew") && year < 1) {
     throw new RangeError(`${kind} year must be 1 or later.`);
   }
   if (kind === "gregorian" && year === 0) {

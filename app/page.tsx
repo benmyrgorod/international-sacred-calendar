@@ -15,11 +15,13 @@ import {
   dateFromFixed,
   fixedFromDate,
   fixedFromGregorian,
+  fixedFromSacred,
   hebrewYearMonths,
   isHebrewLeapYear,
   maxDayForDate,
   sacredFromFixed,
   sacredRotation,
+  sacredRotationAnniversary,
   weekdayFromFixed,
   type CalendarDate,
   type CalendarKind,
@@ -66,7 +68,9 @@ function formatDate(kind: CalendarKind, date: CalendarDate): string {
   if (kind === "hebrew") {
     return `${date.day} ${monthLabel(kind, date.year, date.month)} ${date.year} AM`;
   }
-  return `${date.day} ${ISLAMIC_MONTH_NAMES[date.month]} ${date.year} AH`;
+  const islamicYear = date.year > 0 ? date.year : 1 - date.year;
+  const islamicEra = date.year > 0 ? "AH" : "BH";
+  return `${date.day} ${ISLAMIC_MONTH_NAMES[date.month]} ${islamicYear} ${islamicEra}`;
 }
 
 function dateCode(kind: CalendarKind, date: CalendarDate): string {
@@ -76,11 +80,16 @@ function dateCode(kind: CalendarKind, date: CalendarDate): string {
       : kind === "hebrew"
         ? "AM"
         : kind === "islamic"
-          ? "AH"
+          ? date.year > 0
+            ? "AH"
+            : "BH"
           : date.year > 0
             ? "CE"
             : "BCE";
-  const displayYear = kind === "gregorian" && date.year <= 0 ? 1 - date.year : date.year;
+  const displayYear =
+    (kind === "gregorian" || kind === "islamic") && date.year <= 0
+      ? 1 - date.year
+      : date.year;
   return `${prefix} ${displayYear} · ${String(date.month).padStart(2, "0")} · ${String(date.day).padStart(2, "0")}`;
 }
 
@@ -111,8 +120,9 @@ function CalendarFields({
 }) {
   const monthCount =
     kind === "sacred" ? 13 : kind === "hebrew" ? hebrewYearMonths(date.year) : 12;
-  const isBce = kind === "gregorian" && date.year <= 0;
-  const displayedYear = isBce ? 1 - date.year : date.year;
+  const usesEra = kind === "gregorian" || kind === "islamic";
+  const isBeforeEra = usesEra && date.year <= 0;
+  const displayedYear = isBeforeEra ? 1 - date.year : date.year;
 
   function update(patch: Partial<CalendarDate>) {
     onChange(safeDate(kind, { ...date, ...patch }));
@@ -156,23 +166,23 @@ function CalendarFields({
           value={displayedYear}
           onChange={(event) => {
             const entered = Math.max(1, Number(event.target.value) || 1);
-            update({ year: isBce ? 1 - entered : entered });
+            update({ year: isBeforeEra ? 1 - entered : entered });
           }}
         />
       </label>
-      {kind === "gregorian" ? (
+      {usesEra ? (
         <label className="era-field">
           <span>Era</span>
           <select
             aria-label="Source era"
-            value={isBce ? "bce" : "ce"}
+            value={isBeforeEra ? "before" : "after"}
             onChange={(event) => {
               const entered = Math.max(1, displayedYear);
-              update({ year: event.target.value === "bce" ? 1 - entered : entered });
+              update({ year: event.target.value === "before" ? 1 - entered : entered });
             }}
           >
-            <option value="ce">CE</option>
-            <option value="bce">BCE</option>
+            <option value="after">{kind === "gregorian" ? "CE" : "AH"}</option>
+            <option value="before">{kind === "gregorian" ? "BCE" : "BH"}</option>
           </select>
         </label>
       ) : null}
@@ -242,6 +252,22 @@ export default function Home() {
     (calculation.sacred.month - 1) * SACRED_DAYS_PER_MONTH +
     calculation.sacred.day;
   const remainingYears = SACRED_ROTATION_YEARS - calculation.rotation.yearInCycle;
+  const anniversaries = [1, 2, 20].map((number) => {
+    const sacred = sacredRotationAnniversary(number);
+    const fixed = fixedFromSacred(sacred);
+    return {
+      number,
+      fixed,
+      sacred,
+      hebrew: dateFromFixed("hebrew", fixed),
+      gregorian: dateFromFixed("gregorian", fixed),
+      islamic: dateFromFixed("islamic", fixed),
+    };
+  });
+  const twentieth = anniversaries[2];
+  const daysToTwentieth = twentieth.fixed - calculation.fixed;
+  const countdownYears = Math.floor(Math.abs(daysToTwentieth) / SACRED_DAYS_PER_YEAR);
+  const countdownDays = Math.abs(daysToTwentieth) % SACRED_DAYS_PER_YEAR;
 
   return (
     <main>
@@ -421,6 +447,64 @@ export default function Home() {
               <span style={{ width: `${calculation.rotation.progress * 100}%` }} />
             </div>
             <p>{Math.round(calculation.rotation.progress * 100)}% through this 293-year rotation</p>
+          </div>
+        </div>
+
+        <div className="anniversary-panel">
+          <div className="anniversary-heading">
+            <div>
+              <span className="section-number">ROTATION ANNIVERSARIES</span>
+              <h3>When the long count turns</h3>
+              <p>
+                Each anniversary marks another complete 293-Sacred-year interval
+                from the Creation-week anchor.
+              </p>
+            </div>
+            <div className="countdown-card">
+              <span>To the 20th anniversary</span>
+              <strong>
+                {countdownYears.toLocaleString("en-US")}
+                <small> Sacred years</small>
+              </strong>
+              <p>
+                {daysToTwentieth >= 0
+                  ? `${countdownDays} days remain after those full years`
+                  : `${countdownDays} days beyond those full years ago`}
+              </p>
+            </div>
+          </div>
+
+          <div className="anniversary-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Milestone</th>
+                  <th>Sacred</th>
+                  <th>Hebrew</th>
+                  <th>Gregorian</th>
+                  <th>Muslim</th>
+                  <th>Weekday</th>
+                </tr>
+              </thead>
+              <tbody>
+                {anniversaries.map((anniversary) => (
+                  <tr key={anniversary.number}>
+                    <th>
+                      {anniversary.number === 1
+                        ? "1st"
+                        : anniversary.number === 2
+                          ? "2nd"
+                          : "20th"}
+                    </th>
+                    <td>{formatDate("sacred", anniversary.sacred)}</td>
+                    <td>{formatDate("hebrew", anniversary.hebrew)}</td>
+                    <td>{formatDate("gregorian", anniversary.gregorian)}</td>
+                    <td>{formatDate("islamic", anniversary.islamic)}</td>
+                    <td>{weekdayFromFixed(anniversary.fixed)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>

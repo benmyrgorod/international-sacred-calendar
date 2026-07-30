@@ -32,6 +32,8 @@ test("server-renders the Sacred Calendar converter", async () => {
   assert.match(html, /Every date,/);
   assert.match(html, /Translate a date/);
   assert.match(html, /ROTATING CYCLE/);
+  assert.match(html, /ROTATION ANNIVERSARIES/);
+  assert.match(html, /To the 20th anniversary/);
   assert.match(html, /Creation-week anchor/);
   assert.match(html, /Gregorian Calendar/);
   assert.doesNotMatch(html, /Georgian/);
