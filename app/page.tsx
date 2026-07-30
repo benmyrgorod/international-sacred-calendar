@@ -895,6 +895,10 @@ export default function Home() {
               {translations.creationAnchorBody}{" "}
               <strong>{localizedWeekday(SACRED_EPOCH_FIXED, languageConfig.locale)}</strong>
             </p>
+            <div className="creation-weekday-note">
+              <strong>Sunday ↔ Monday</strong>
+              <span>{translations.creationAnchorNote}</span>
+            </div>
           </article>
           <article className="principle-card quote-card">
             <blockquote>{translations.quote}</blockquote>

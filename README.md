@@ -48,7 +48,9 @@ Islamic conversions on the same uninterrupted seven-day week.
 The religious tradition describes Creation Week as beginning on Sunday, while
 the proleptic arithmetic Hebrew calendar's postponement rules yield Monday for
 the fixed 25 Elul AM 1 calculation. The converter deliberately preserves the
-calculated Hebrew result, as requested.
+calculated Hebrew result, as requested. This implementation therefore uses
+Monday for conversion consistency; it does **not** claim that Jewish tradition
+assigns the first day of Creation to Monday.
 
 References for the traditional Creation-week date:
 

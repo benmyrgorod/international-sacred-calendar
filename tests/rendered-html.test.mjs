@@ -51,6 +51,8 @@ test("server-renders the International Sacred Calendar converter", async () => {
     20,
   );
   assert.match(html, /Creation-week anchor/);
+  assert.match(html, /Sunday ↔ Monday/);
+  assert.match(html, /Sunday is the traditional weekday/);
   assert.match(html, /Gregorian/);
   assert.doesNotMatch(html, /Georgian/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Building your site/i);
