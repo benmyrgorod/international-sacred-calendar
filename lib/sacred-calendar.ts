@@ -135,6 +135,22 @@ export const SAKA_MONTH_NAMES = [
   "Phalguna",
 ] as const;
 
+export const THAI_BUDDHIST_MONTH_NAMES = [
+  "",
+  "Makarakhom",
+  "Kumphaphan",
+  "Minakhom",
+  "Mesayon",
+  "Phruetsaphakhom",
+  "Mithunayon",
+  "Karakadakhom",
+  "Singhakhom",
+  "Kanyayon",
+  "Tulakhom",
+  "Phruetsachikayon",
+  "Thanwakhom",
+] as const;
+
 export const WEEKDAY_NAMES = [
   "Monday",
   "Tuesday",

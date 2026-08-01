@@ -7,6 +7,7 @@ import {
   HEBREW_MONTH_NAMES,
   ISLAMIC_MONTH_NAMES,
   SAKA_MONTH_NAMES,
+  THAI_BUDDHIST_MONTH_NAMES,
   SACRED_LUNAR_BEAT_DAYS,
   SACRED_DAYS_PER_MONTH,
   SACRED_DAYS_PER_YEAR,
@@ -121,7 +122,8 @@ function monthLabel(
     return `${leapMonth ? "Leap " : ""}${translations.month} ${month}`;
   }
   if (kind === "saka") return SAKA_MONTH_NAMES[month];
-  if (kind === "gregorian" || kind === "julian" || kind === "buddhist") {
+  if (kind === "buddhist") return THAI_BUDDHIST_MONTH_NAMES[month];
+  if (kind === "gregorian" || kind === "julian") {
     return new Intl.DateTimeFormat(locale, {
       month: "long",
       timeZone: "UTC",
@@ -254,11 +256,7 @@ function formatGridCalendarDate(
     return `${date.day} ${SAKA_MONTH_NAMES[date.month]} ${date.year}`;
   }
   if (kind === "buddhist") {
-    const month = new Intl.DateTimeFormat(locale, {
-      month: "short",
-      timeZone: "UTC",
-    }).format(new Date(Date.UTC(2024, date.month - 1, 1)));
-    return `${month} ${date.day}, ${date.year} BE`;
+    return `${date.day} ${THAI_BUDDHIST_MONTH_NAMES[date.month]} ${date.year} BE`;
   }
 
   const month = new Intl.DateTimeFormat(locale, {
@@ -844,6 +842,11 @@ export default function Home() {
                 <span
                   className={`anniversary-tick ${
                     anniversary.fixed <= calculation.fixed ? "completed" : ""
+                  } ${
+                    anniversary.number === 20 &&
+                    anniversary.fixed > calculation.fixed
+                      ? "future-twentieth"
+                      : ""
                   }`}
                   style={{ insetInlineStart: `${(anniversary.number / 20) * 100}%` }}
                   title={`#${anniversary.number} · ISC ${anniversary.sacred.year}`}
@@ -885,7 +888,15 @@ export default function Home() {
               </thead>
               <tbody>
                 {anniversaries.map((anniversary) => (
-                  <tr key={anniversary.number}>
+                  <tr
+                    className={
+                      anniversary.number === 20 &&
+                      anniversary.fixed > calculation.fixed
+                        ? "future-twentieth-row"
+                        : undefined
+                    }
+                    key={anniversary.number}
+                  >
                     <th>
                       <button
                         type="button"
@@ -1254,6 +1265,9 @@ export default function Home() {
               const julian = dateFromFixed("julian", alignment.fixed);
               const hebrew = dateFromFixed("hebrew", alignment.fixed);
               const islamic = dateFromFixed("islamic", alignment.fixed);
+              const chinese = dateFromFixed("chinese", alignment.fixed);
+              const saka = dateFromFixed("saka", alignment.fixed);
+              const buddhist = dateFromFixed("buddhist", alignment.fixed);
 
               return (
                 <article
@@ -1287,6 +1301,16 @@ export default function Home() {
                     <strong>
                       {alignment.offsetHours >= 0 ? "+" : ""}
                       {alignment.offsetHours.toFixed(1)} h
+                    </strong>
+                  </div>
+                  <div className="alignment-extended-dates">
+                    <span>Chinese / Saka / Buddhist</span>
+                    <strong>
+                      {formatDate("chinese", chinese, translations, languageConfig.locale)}
+                      {" · "}
+                      {formatDate("saka", saka, translations, languageConfig.locale)}
+                      {" · "}
+                      {formatDate("buddhist", buddhist, translations, languageConfig.locale)}
                     </strong>
                   </div>
                 </article>

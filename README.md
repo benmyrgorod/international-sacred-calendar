@@ -12,7 +12,7 @@ module for:
 - Muslim (tabular Islamic) Calendar
 - Chinese Traditional Calendar, including leap months
 - Indian National Calendar (standardized Saka solar calendar)
-- Buddhist Calendar (Thai solar calendar)
+- Thai Buddhist Calendar (B.E.)
 
 The converter accepts any of the eight calendars as its source and any other as
 its destination. It also shows the uninterrupted weekday and the current
@@ -187,8 +187,10 @@ alignments and 293-year rotation anniversaries.
 - **Indian National (Saka):** the standardized Indian National solar calendar, with
   Chaitra beginning on 21 or 22 March. This is not one of the many regional
   Hindu lunar calendars, whose month rules vary by tradition and location.
-- **Buddhist:** the Thai solar Buddhist Era calendar, using Gregorian month and
-  leap-year structure with the Buddhist Era year numbering.
+- **Thai Buddhist:** the Thai solar Buddhist Era calendar. It shares its
+  month/day structure with the Gregorian calendar, but the interface uses Thai
+  month names and Buddhist Era year numbering so Buddhist dates remain clearly
+  identified.
 - **Weekday:** all calendars pass through one integer fixed-day count, where
   Gregorian 1 January 1 CE is fixed day 1, a Monday.
 

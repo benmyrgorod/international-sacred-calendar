@@ -767,6 +767,14 @@ h1 em {
   background: var(--gold-light);
 }
 
+.anniversary-tick.future-twentieth i {
+  width: 12px;
+  height: 12px;
+  border-color: #fff4cf;
+  background: #b98232;
+  box-shadow: 0 0 0 5px rgba(185, 130, 50, 0.2);
+}
+
 .current-position {
   z-index: 3;
 }
@@ -875,6 +883,15 @@ h1 em {
   color: rgba(255, 255, 255, 0.76);
   font-size: 11px;
   line-height: 1.45;
+}
+
+.anniversary-table-wrap .future-twentieth-row th,
+.anniversary-table-wrap .future-twentieth-row td {
+  background: rgba(185, 130, 50, 0.2);
+}
+
+.anniversary-table-wrap .future-twentieth-row th {
+  box-shadow: inset 4px 0 0 #d9c79e;
 }
 
 .anniversary-table-wrap tr:last-child th,
@@ -1446,6 +1463,16 @@ h1 em {
   color: var(--gold);
   font-family: var(--font-cormorant), Georgia, serif;
   font-size: 17px;
+}
+
+.alignment-extended-dates {
+  grid-column: 1 / -1;
+  padding-top: 12px;
+  border-top: 1px solid rgba(21, 56, 45, 0.1);
+}
+
+.alignment-extended-dates strong {
+  font-size: 11px;
 }
 
 .definition-section {

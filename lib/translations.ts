@@ -18,57 +18,57 @@ export const EXTENDED_CALENDAR_NAMES: Record<
   en: {
     chinese: "Chinese Traditional Calendar",
     saka: "Indian National Calendar (Saka)",
-    buddhist: "Buddhist Calendar (Thai Solar)",
+    buddhist: "Thai Buddhist Calendar (B.E.)",
   },
   he: {
     chinese: "הלוח הסיני המסורתי",
     saka: "הלוח הלאומי ההודי (סאקה)",
-    buddhist: "הלוח הבודהיסטי (שמשי תאילנדי)",
+    buddhist: "הלוח הבודהיסטי התאילנדי (B.E.)",
   },
   ar: {
     chinese: "التقويم الصيني التقليدي",
     saka: "التقويم الوطني الهندي (ساكا)",
-    buddhist: "التقويم البوذي (الشمسي التايلاندي)",
+    buddhist: "التقويم البوذي التايلاندي (B.E.)",
   },
   it: {
     chinese: "Calendario tradizionale cinese",
     saka: "Calendario nazionale indiano (Saka)",
-    buddhist: "Calendario buddhista (solare thailandese)",
+    buddhist: "Calendario buddhista thailandese (E.B.)",
   },
   el: {
     chinese: "Παραδοσιακό κινεζικό ημερολόγιο",
     saka: "Ινδικό Εθνικό Ημερολόγιο (Σάκα)",
-    buddhist: "Βουδιστικό ημερολόγιο (Ταϊλανδικό ηλιακό)",
+    buddhist: "Ταϊλανδικό βουδιστικό ημερολόγιο (B.E.)",
   },
   ru: {
     chinese: "Традиционный китайский календарь",
     saka: "Национальный календарь Индии (Сака)",
-    buddhist: "Буддийский календарь (тайский солнечный)",
+    buddhist: "Тайский буддийский календарь (B.E.)",
   },
   zh: {
     chinese: "中国传统历法",
     saka: "印度国家历（塞迦历）",
-    buddhist: "佛历（泰国太阳历）",
+    buddhist: "泰国佛历（佛历纪元）",
   },
   hi: {
     chinese: "पारंपरिक चीनी कैलेंडर",
     saka: "भारतीय राष्ट्रीय कैलेंडर (शक)",
-    buddhist: "बौद्ध कैलेंडर (थाई सौर)",
+    buddhist: "थाई बौद्ध कैलेंडर (B.E.)",
   },
   es: {
     chinese: "Calendario chino tradicional",
     saka: "Calendario nacional indio (Saka)",
-    buddhist: "Calendario budista (solar tailandés)",
+    buddhist: "Calendario budista tailandés (E.B.)",
   },
   fr: {
     chinese: "Calendrier chinois traditionnel",
     saka: "Calendrier national indien (Saka)",
-    buddhist: "Calendrier bouddhiste (solaire thaïlandais)",
+    buddhist: "Calendrier bouddhiste thaïlandais (E.B.)",
   },
   ja: {
     chinese: "中国伝統暦",
     saka: "インド国定暦（サカ暦）",
-    buddhist: "仏暦（タイ太陽暦）",
+    buddhist: "タイ仏暦（B.E.）",
   },
 };
 

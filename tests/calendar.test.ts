@@ -11,6 +11,7 @@ import {
   SACRED_EPOCH_FIXED,
   SACRED_EPOCH_HEBREW,
   SACRED_ROTATION_YEARS,
+  THAI_BUDDHIST_MONTH_NAMES,
   convertDate,
   dateFromFixed,
   fixedFromDate,
@@ -137,6 +138,7 @@ test("matches Chinese, Saka, and Thai Buddhist calendar anchors", () => {
     convertDate({ year: 2026, month: 7, day: 31 }, "gregorian", "buddhist"),
     { year: 2569, month: 7, day: 31 },
   );
+  assert.equal(THAI_BUDDHIST_MONTH_NAMES[7], "Karakadakhom");
 });
 
 test("converts any supported calendar to any other", () => {
