@@ -289,7 +289,7 @@ function CalendarFields({
 export default function Home() {
   const [language, setLanguage] = useState<LanguageCode>("en");
   const [gridOffset, setGridOffset] = useState(0);
-  const [weekStart, setWeekStart] = useState<WeekStart>("sunday");
+  const [weekStart, setWeekStart] = useState<WeekStart>("monday");
   const [todayFixed, setTodayFixed] = useState(DEFAULT_FIXED);
   const [from, setFrom] = useState<CalendarKind>("gregorian");
   const [to, setTo] = useState<CalendarKind>("sacred");
@@ -429,10 +429,7 @@ export default function Home() {
   const importantDates = IMPORTANT_DATES.map((event) => ({
     ...event,
     sacred: dateFromFixed("sacred", event.fixed),
-    hebrew: dateFromFixed("hebrew", event.fixed),
     gregorian: dateFromFixed("gregorian", event.fixed),
-    julian: dateFromFixed("julian", event.fixed),
-    islamic: dateFromFixed("islamic", event.fixed),
   }));
   const weekStartFixed = weekStart === "sunday" ? 0 : 1;
   const leadingGridDays =
@@ -797,28 +794,6 @@ export default function Home() {
                   <span>{importantDateCopy.originalDate}</span>
                 </div>
                 <h3>{title}</h3>
-                <dl className="important-date-calendars">
-                  <div>
-                    <dt>{translations.sacred}</dt>
-                    <dd>{formatDate("sacred", event.sacred, translations, languageConfig.locale)}</dd>
-                  </div>
-                  <div>
-                    <dt>{translations.hebrew}</dt>
-                    <dd>{formatDate("hebrew", event.hebrew, translations, languageConfig.locale)}</dd>
-                  </div>
-                  <div>
-                    <dt>{translations.gregorian}</dt>
-                    <dd>{formatDate("gregorian", event.gregorian, translations, languageConfig.locale)}</dd>
-                  </div>
-                  <div>
-                    <dt>{translations.julian}</dt>
-                    <dd>{formatDate("julian", event.julian, translations, languageConfig.locale)}</dd>
-                  </div>
-                  <div>
-                    <dt>{translations.muslim}</dt>
-                    <dd>{formatDate("islamic", event.islamic, translations, languageConfig.locale)}</dd>
-                  </div>
-                </dl>
                 <div className="important-date-recurrence">
                   <span>{importantDateCopy.annualRecurrence}</span>
                   <strong>

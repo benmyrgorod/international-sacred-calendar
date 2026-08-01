@@ -58,7 +58,7 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Sunday is the traditional weekday/);
   assert.match(html, /Gregorian/);
   assert.match(html, /Julian/);
-  assert.match(html, /<option value="sunday" selected="">Sunday<\/option>/);
+  assert.match(html, /<option value="monday" selected="">Monday<\/option>/);
   assert.match(html, /Discovery of the International Sacred Calendar/);
   assert.match(html, /40th birthday of Ovadia Binyamin/);
   assert.match(html, /Discovery anniversary/);

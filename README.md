@@ -131,9 +131,9 @@ The 28-day grid displays one International Sacred month at a time. It marks:
 - approximate moon/month-start alignments;
 - 293-year rotation anniversaries.
 
-The week-start selector supports Sunday or Monday. Sunday is selected by
-default; because International Sacred Month 1 Day 1 calculates to Monday, the
-Sunday-first view includes an empty Sunday cell before Day 1.
+The week-start selector supports Monday or Sunday. Monday is selected by
+default, matching the calculated weekday of International Sacred Month 1 Day
+1. The optional Sunday-first view includes an empty Sunday cell before Day 1.
 
 The prefix for International Sacred dates is **ISC**, for example
 `ISC 5805 · 04 · 12`.
