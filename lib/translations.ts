@@ -925,6 +925,7 @@ export interface MoonTranslationPack {
   nextMonth: string;
   lunarAlignment: string;
   newMoon: string;
+  fullMoon: string;
   majorHoliday: string;
   internationalHoliday: string;
   rotationAnniversary: string;
@@ -954,6 +955,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "Next month",
     lunarAlignment: "Moon alignment",
     newMoon: "New moon",
+    fullMoon: "Full moon",
     majorHoliday: "Major holiday",
     internationalHoliday: "International holiday",
     rotationAnniversary: "293-year anniversary",
@@ -981,6 +983,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "החודש הבא",
     lunarAlignment: "יישור ירח",
     newMoon: "ירח חדש",
+    fullMoon: "ירח מלא",
     majorHoliday: "חג מרכזי",
     internationalHoliday: "יום בינלאומי",
     rotationAnniversary: "יום שנה של 293 שנים",
@@ -1008,6 +1011,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "الشهر التالي",
     lunarAlignment: "محاذاة القمر",
     newMoon: "المحاق",
+    fullMoon: "البدر",
     majorHoliday: "عيد رئيسي",
     internationalHoliday: "مناسبة دولية",
     rotationAnniversary: "ذكرى 293 سنة",
@@ -1035,6 +1039,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "Mese successivo",
     lunarAlignment: "Allineamento lunare",
     newMoon: "Luna nuova",
+    fullMoon: "Luna piena",
     majorHoliday: "Festa principale",
     internationalHoliday: "Ricorrenza internazionale",
     rotationAnniversary: "Anniversario di 293 anni",
@@ -1062,6 +1067,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "Επόμενος μήνας",
     lunarAlignment: "Σεληνιακή ευθυγράμμιση",
     newMoon: "Νέα Σελήνη",
+    fullMoon: "Πανσέληνος",
     majorHoliday: "Μεγάλη εορτή",
     internationalHoliday: "Διεθνής εορτή",
     rotationAnniversary: "Επέτειος 293 ετών",
@@ -1089,6 +1095,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "Следующий месяц",
     lunarAlignment: "Лунное совпадение",
     newMoon: "Новолуние",
+    fullMoon: "Полнолуние",
     majorHoliday: "Большой праздник",
     internationalHoliday: "Международный праздник",
     rotationAnniversary: "293-летняя годовщина",
@@ -1116,6 +1123,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "下个月",
     lunarAlignment: "月相对齐",
     newMoon: "新月",
+    fullMoon: "满月",
     majorHoliday: "重要节日",
     internationalHoliday: "国际节日",
     rotationAnniversary: "293年纪念日",
@@ -1143,6 +1151,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "अगला महीना",
     lunarAlignment: "चंद्र संरेखण",
     newMoon: "अमावस्या",
+    fullMoon: "पूर्णिमा",
     majorHoliday: "प्रमुख त्योहार",
     internationalHoliday: "अंतरराष्ट्रीय दिवस",
     rotationAnniversary: "293-वर्षीय वर्षगाँठ",
@@ -1170,6 +1179,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "Mes siguiente",
     lunarAlignment: "Alineación lunar",
     newMoon: "Luna nueva",
+    fullMoon: "Luna llena",
     majorHoliday: "Festividad principal",
     internationalHoliday: "Día internacional",
     rotationAnniversary: "Aniversario de 293 años",
@@ -1197,6 +1207,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "Mois suivant",
     lunarAlignment: "Alignement lunaire",
     newMoon: "Nouvelle lune",
+    fullMoon: "Pleine lune",
     majorHoliday: "Fête majeure",
     internationalHoliday: "Journée internationale",
     rotationAnniversary: "Anniversaire de 293 ans",
@@ -1224,6 +1235,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "次の月",
     lunarAlignment: "月相整列",
     newMoon: "新月",
+    fullMoon: "満月",
     majorHoliday: "主要な祝日",
     internationalHoliday: "国際的な記念日",
     rotationAnniversary: "293年記念日",
@@ -1251,6 +1263,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     nextMonth: "다음 달",
     lunarAlignment: "달 정렬",
     newMoon: "삭",
+    fullMoon: "보름달",
     majorHoliday: "주요 명절",
     internationalHoliday: "국제 기념일",
     rotationAnniversary: "293년 기념일",

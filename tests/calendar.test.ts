@@ -45,6 +45,7 @@ import {
   dateFromFixed,
   fixedFromDate,
   fixedFromSacred,
+  meanFullMoonsBetween,
   meanNewMoonsBetween,
   moonAlignmentAtSacredMonth,
   moonAlignmentsAround,
@@ -461,6 +462,28 @@ test("lists mean new moons by their UTC calendar day", () => {
   );
   assert.ok(events[0].meanNewMoonFixed > events[0].fixed);
   assert.ok(events[0].meanNewMoonFixed < events[0].fixed + 1);
+});
+
+test("lists mean full moons by their UTC calendar day", () => {
+  const januaryStart = fixedFromDate("gregorian", {
+    year: 2000,
+    month: 1,
+    day: 1,
+  });
+  const januaryEnd = fixedFromDate("gregorian", {
+    year: 2000,
+    month: 1,
+    day: 31,
+  });
+  const events = meanFullMoonsBetween(januaryStart, januaryEnd);
+
+  assert.equal(events.length, 1);
+  assert.equal(
+    events[0].fixed,
+    fixedFromDate("gregorian", { year: 2000, month: 1, day: 21 }),
+  );
+  assert.ok(events[0].meanFullMoonFixed > events[0].fixed);
+  assert.ok(events[0].meanFullMoonFixed < events[0].fixed + 1);
 });
 
 test("lists major holidays for each selected calendar", () => {

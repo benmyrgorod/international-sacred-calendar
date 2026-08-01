@@ -130,6 +130,8 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Discovery anniversary/);
   assert.match(html, /class="new-moon-marker"/);
   assert.match(html, /New moon/);
+  assert.match(html, /class="full-moon-marker"/);
+  assert.match(html, /Full moon/);
   assert.match(
     html,
     /class="holiday-marker holiday-marker-gregorian"[^>]*>\s*✝\s*<\/i>/,

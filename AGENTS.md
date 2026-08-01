@@ -22,8 +22,9 @@ correct calendar name; never change it to “Georgian.”
   Sunday.
 - The long rotation uses 293 ISC years versus 292 mean Hebrew years. It is a
   near-alignment of year boundaries, not a weekday reset.
-- Lunar alignments and new-moon dates use mean-lunation approximations. Keep
-  approximation labels visible and do not describe them as observations.
+- Lunar alignments plus new- and full-moon dates use mean-lunation
+  approximations. Keep approximation labels visible and do not describe them
+  as observations.
 - Planetary hours divide daylight and night into twelve equal parts each. They
   are generally not 60 minutes. Pre-sunrise hours belong to the preceding
   night. The sequence and calculator live in `lib/planetary-hours.ts`.

@@ -153,6 +153,7 @@ The 28-day grid displays one International Sacred month at a time. It marks:
 - a secondary date from the selected converter source calendar in every day
   cell (Gregorian by default);
 - approximate mean new-moon dates;
+- approximate mean full-moon dates;
 - approximate moon/month-start alignments;
 - major holidays from the selected grid calendar;
 - international holidays and observances on their Gregorian anniversaries;
@@ -315,6 +316,7 @@ Public conversion helpers include:
 - `moonAlignmentAtSacredMonth`
 - `moonAlignmentsAround`
 - `meanNewMoonsBetween`
+- `meanFullMoonsBetween`
 - `majorHolidaysBetween`
 - `majorHolidaySymbol` (calendar-specific holiday marker used by the legend and grid)
 - `internationalHolidaysBetween`

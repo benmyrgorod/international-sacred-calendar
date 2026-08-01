@@ -25,6 +25,7 @@ import {
   hebrewYearMonths,
   isHebrewLeapYear,
   maxDayForDate,
+  meanFullMoonsBetween,
   meanNewMoonsBetween,
   moonAlignmentAtSacredMonth,
   moonAlignmentsAround,
@@ -725,6 +726,10 @@ export default function Home() {
   };
   const gridStartFixed = fixedFromSacred(gridSacred);
   const gridNewMoons = meanNewMoonsBetween(
+    gridStartFixed,
+    gridStartFixed + SACRED_DAYS_PER_MONTH - 1,
+  );
+  const gridFullMoons = meanFullMoonsBetween(
     gridStartFixed,
     gridStartFixed + SACRED_DAYS_PER_MONTH - 1,
   );
@@ -1587,6 +1592,10 @@ export default function Home() {
             {moonTranslations.newMoon}
           </span>
           <span>
+            <i className="full-moon-marker" aria-hidden="true">○</i>
+            {moonTranslations.fullMoon}
+          </span>
+          <span>
             <i className="moon-marker" aria-hidden="true">◐</i>
             {moonTranslations.lunarAlignment}
           </span>
@@ -1626,6 +1635,9 @@ export default function Home() {
               const hasNewMoon = gridNewMoons.some(
                 (event) => event.fixed === cellFixed,
               );
+              const hasFullMoon = gridFullMoons.some(
+                (event) => event.fixed === cellFixed,
+              );
               const holidays = gridHolidays.filter(
                 (event) => event.fixed === cellFixed,
               );
@@ -1659,6 +1671,7 @@ export default function Home() {
                     internationalHolidays.length > 0 ||
                     holidays.length > 0 ||
                     hasNewMoon ||
+                    hasFullMoon ||
                     hasMoonAlignment ||
                     hasRotationAnniversary ||
                     historyEvents.length > 0 ||
@@ -1697,6 +1710,11 @@ export default function Home() {
                     {hasNewMoon ? (
                       <span className="event-pill new-moon-pill">
                         ● {moonTranslations.newMoon}
+                      </span>
+                    ) : null}
+                    {hasFullMoon ? (
+                      <span className="event-pill full-moon-pill">
+                        ○ {moonTranslations.fullMoon}
                       </span>
                     ) : null}
                     {holidays.map((holiday) => (

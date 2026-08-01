@@ -1773,6 +1773,14 @@ h1 em {
   background: #1c2824;
 }
 
+.full-moon-marker {
+  color: var(--forest);
+  border: 1px solid var(--gold);
+  background: #fffdf8;
+  font-size: 14px !important;
+  font-weight: 700;
+}
+
 .holiday-marker {
   color: #fffdf8;
   background: #9a6b2f;
@@ -1940,6 +1948,13 @@ h1 em {
 .new-moon-pill {
   color: #fffdf8;
   background: #1c2824;
+}
+
+.full-moon-pill {
+  color: var(--forest);
+  border: 1px solid var(--gold);
+  background: #fffdf8;
+  font-weight: 700;
 }
 
 .holiday-pill {
