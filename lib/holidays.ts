@@ -118,6 +118,20 @@ function islamicHolidayNames(year: number, month: number, day: number): string[]
   return [];
 }
 
+function chineseHolidayNames(
+  month: number,
+  day: number,
+  leapMonth: boolean,
+): string[] {
+  if (leapMonth) return [];
+  if (month === 1 && day === 1) return ["Chinese New Year"];
+  if (month === 1 && day === 15) return ["Lantern Festival"];
+  if (month === 5 && day === 5) return ["Dragon Boat Festival"];
+  if (month === 8 && day === 15) return ["Mid-Autumn Festival"];
+  if (month === 9 && day === 9) return ["Double Ninth Festival"];
+  return [];
+}
+
 export function majorHolidaysBetween(
   kind: CalendarKind,
   startFixed: number,
@@ -148,6 +162,22 @@ export function majorHolidaysBetween(
         break;
       case "islamic":
         names = islamicHolidayNames(date.year, date.month, date.day);
+        break;
+      case "chinese":
+        names = chineseHolidayNames(
+          date.month,
+          date.day,
+          Boolean(date.leapMonth),
+        );
+        break;
+      case "saka":
+        names = date.month === 1 && date.day === 1 ? ["Saka New Year"] : [];
+        break;
+      case "buddhist":
+        names =
+          date.month === 4 && date.day === 13
+            ? ["Songkran (Thai New Year)"]
+            : [];
         break;
     }
 

@@ -11,6 +11,67 @@ export type LanguageCode =
   | "fr"
   | "ja";
 
+export const EXTENDED_CALENDAR_NAMES: Record<
+  LanguageCode,
+  { chinese: string; saka: string; buddhist: string }
+> = {
+  en: {
+    chinese: "Chinese Traditional Calendar",
+    saka: "Indian National Calendar (Saka)",
+    buddhist: "Buddhist Calendar (Thai Solar)",
+  },
+  he: {
+    chinese: "הלוח הסיני המסורתי",
+    saka: "הלוח הלאומי ההודי (סאקה)",
+    buddhist: "הלוח הבודהיסטי (שמשי תאילנדי)",
+  },
+  ar: {
+    chinese: "التقويم الصيني التقليدي",
+    saka: "التقويم الوطني الهندي (ساكا)",
+    buddhist: "التقويم البوذي (الشمسي التايلاندي)",
+  },
+  it: {
+    chinese: "Calendario tradizionale cinese",
+    saka: "Calendario nazionale indiano (Saka)",
+    buddhist: "Calendario buddhista (solare thailandese)",
+  },
+  el: {
+    chinese: "Παραδοσιακό κινεζικό ημερολόγιο",
+    saka: "Ινδικό Εθνικό Ημερολόγιο (Σάκα)",
+    buddhist: "Βουδιστικό ημερολόγιο (Ταϊλανδικό ηλιακό)",
+  },
+  ru: {
+    chinese: "Традиционный китайский календарь",
+    saka: "Национальный календарь Индии (Сака)",
+    buddhist: "Буддийский календарь (тайский солнечный)",
+  },
+  zh: {
+    chinese: "中国传统历法",
+    saka: "印度国家历（塞迦历）",
+    buddhist: "佛历（泰国太阳历）",
+  },
+  hi: {
+    chinese: "पारंपरिक चीनी कैलेंडर",
+    saka: "भारतीय राष्ट्रीय कैलेंडर (शक)",
+    buddhist: "बौद्ध कैलेंडर (थाई सौर)",
+  },
+  es: {
+    chinese: "Calendario chino tradicional",
+    saka: "Calendario nacional indio (Saka)",
+    buddhist: "Calendario budista (solar tailandés)",
+  },
+  fr: {
+    chinese: "Calendrier chinois traditionnel",
+    saka: "Calendrier national indien (Saka)",
+    buddhist: "Calendrier bouddhiste (solaire thaïlandais)",
+  },
+  ja: {
+    chinese: "中国伝統暦",
+    saka: "インド国定暦（サカ暦）",
+    buddhist: "仏暦（タイ太陽暦）",
+  },
+};
+
 const english = {
   brandSubtitle: "Converter & cycle atlas",
   navConvert: "Convert",
@@ -20,7 +81,7 @@ const english = {
   heroLead: "Every date,",
   heroEmphasis: "held in one rhythm.",
   heroCopy:
-    "Move freely between Sacred, Hebrew, Gregorian, Julian, and Muslim calendars—while preserving the uninterrupted seven-day week.",
+    "Move freely among all eight supported calendars—while preserving the uninterrupted seven-day week.",
   equalMonths: "equal months",
   daysEach: "days each",
   daysPerYear: "days per year",
@@ -97,7 +158,7 @@ const hebrew: TranslationPack = {
   eyebrow: "מדד שבועי לזמן מקודש",
   heroLead: "כל תאריך,",
   heroEmphasis: "בקצב אחד.",
-  heroCopy: "המרה חופשית בין הלוח המקודש, העברי, הגרגוריאני, היוליאני והמוסלמי, תוך שמירה על שבוע רציף בן שבעה ימים.",
+  heroCopy: "עברו בחופשיות בין כל שמונת לוחות השנה הנתמכים, תוך שמירה על שבוע רציף בן שבעה ימים.",
   equalMonths: "חודשים שווים",
   daysEach: "ימים בכל חודש",
   daysPerYear: "ימים בשנה",
@@ -163,7 +224,7 @@ const arabic: TranslationPack = {
   eyebrow: "مقياس أسبوعي للزمن المقدّس",
   heroLead: "كل تاريخ،",
   heroEmphasis: "في إيقاع واحد.",
-  heroCopy: "حوّل بحرية بين التقويم المقدّس والعبري والميلادي واليولياني والإسلامي مع الحفاظ على أسبوع متصل من سبعة أيام.",
+  heroCopy: "تنقّل بحرية بين جميع التقاويم الثمانية المدعومة مع الحفاظ على أسبوع متصل من سبعة أيام.",
   equalMonths: "شهراً متساوياً",
   daysEach: "يوماً لكل شهر",
   daysPerYear: "يوماً في السنة",
@@ -229,7 +290,7 @@ const italian: TranslationPack = {
   eyebrow: "Una misura settimanale del tempo sacro",
   heroLead: "Ogni data,",
   heroEmphasis: "in un solo ritmo.",
-  heroCopy: "Converti liberamente tra i calendari Sacro, Ebraico, Gregoriano, Giuliano e Musulmano, preservando la settimana ininterrotta di sette giorni.",
+  heroCopy: "Passa liberamente tra tutti gli otto calendari supportati, preservando la settimana ininterrotta di sette giorni.",
   equalMonths: "mesi uguali",
   daysEach: "giorni ciascuno",
   daysPerYear: "giorni all’anno",
@@ -295,7 +356,7 @@ const greek: TranslationPack = {
   eyebrow: "Μια εβδομαδιαία μέτρηση του ιερού χρόνου",
   heroLead: "Κάθε ημερομηνία,",
   heroEmphasis: "σε έναν ρυθμό.",
-  heroCopy: "Μετακινηθείτε ελεύθερα ανάμεσα στο Ιερό, Εβραϊκό, Γρηγοριανό, Ιουλιανό και Μουσουλμανικό ημερολόγιο, διατηρώντας την αδιάκοπη επταήμερη εβδομάδα.",
+  heroCopy: "Μετακινηθείτε ελεύθερα μεταξύ και των οκτώ υποστηριζόμενων ημερολογίων, διατηρώντας την αδιάκοπη επταήμερη εβδομάδα.",
   equalMonths: "ίσοι μήνες",
   daysEach: "ημέρες ο καθένας",
   daysPerYear: "ημέρες τον χρόνο",
@@ -361,7 +422,7 @@ const russian: TranslationPack = {
   eyebrow: "Недельная мера священного времени",
   heroLead: "Любая дата,",
   heroEmphasis: "в едином ритме.",
-  heroCopy: "Свободно переводите даты между Священным, Еврейским, Григорианским, Юлианским и Мусульманским календарями, сохраняя непрерывную семидневную неделю.",
+  heroCopy: "Свободно переводите даты между всеми восемью поддерживаемыми календарями, сохраняя непрерывную семидневную неделю.",
   equalMonths: "равных месяцев",
   daysEach: "дней в каждом",
   daysPerYear: "дней в году",
@@ -427,7 +488,7 @@ const chinese: TranslationPack = {
   eyebrow: "以星期为基础的神圣时间尺度",
   heroLead: "每一个日期，",
   heroEmphasis: "同在一个节律中。",
-  heroCopy: "在神圣历、希伯来历、公历、儒略历和伊斯兰历之间自由转换，同时保持连续不断的七日星期。",
+  heroCopy: "在全部八种受支持的历法之间自由转换，同时保持连续不断的七日星期。",
   equalMonths: "个等长月份",
   daysEach: "天／月",
   daysPerYear: "天／年",
@@ -493,7 +554,7 @@ const hindi: TranslationPack = {
   eyebrow: "पवित्र समय का सप्ताह-आधारित माप",
   heroLead: "हर तारीख,",
   heroEmphasis: "एक ही लय में।",
-  heroCopy: "पवित्र, हिब्रू, ग्रेगोरियन, जूलियन और मुस्लिम कैलेंडरों के बीच स्वतंत्र रूप से तारीख बदलें, सात दिनों के निरंतर सप्ताह को बनाए रखते हुए।",
+  heroCopy: "सभी आठ समर्थित कैलेंडरों के बीच स्वतंत्र रूप से तारीख बदलें, सात दिनों के निरंतर सप्ताह को बनाए रखते हुए।",
   equalMonths: "समान महीने",
   daysEach: "दिन प्रत्येक",
   daysPerYear: "दिन प्रति वर्ष",
@@ -559,7 +620,7 @@ const spanish: TranslationPack = {
   eyebrow: "Una medida semanal del tiempo sagrado",
   heroLead: "Cada fecha,",
   heroEmphasis: "en un solo ritmo.",
-  heroCopy: "Convierte libremente entre los calendarios Sagrado Internacional, Hebreo, Gregoriano, Juliano y Musulmán, preservando la semana ininterrumpida de siete días.",
+  heroCopy: "Convierte libremente entre los ocho calendarios compatibles, preservando la semana ininterrumpida de siete días.",
   equalMonths: "meses iguales",
   daysEach: "días cada uno",
   daysPerYear: "días al año",
@@ -625,7 +686,7 @@ const french: TranslationPack = {
   eyebrow: "Une mesure hebdomadaire du temps sacré",
   heroLead: "Chaque date,",
   heroEmphasis: "dans un même rythme.",
-  heroCopy: "Convertissez librement entre les calendriers Sacré International, Hébraïque, Grégorien, Julien et Musulman, tout en préservant la semaine ininterrompue de sept jours.",
+  heroCopy: "Convertissez librement entre les huit calendriers pris en charge, tout en préservant la semaine ininterrompue de sept jours.",
   equalMonths: "mois égaux",
   daysEach: "jours chacun",
   daysPerYear: "jours par an",
@@ -691,7 +752,7 @@ const japanese: TranslationPack = {
   eyebrow: "週を基礎とする聖なる時間の尺度",
   heroLead: "すべての日付を、",
   heroEmphasis: "ひとつのリズムに。",
-  heroCopy: "国際聖暦、ヘブライ暦、グレゴリオ暦、ユリウス暦、イスラム暦の間で、途切れない7日週を保ちながら自由に変換します。",
+  heroCopy: "対応する8つの暦の間で、途切れない7日週を保ちながら自由に変換します。",
   equalMonths: "等しい月",
   daysEach: "日／月",
   daysPerYear: "日／年",

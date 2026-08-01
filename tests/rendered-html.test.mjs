@@ -33,6 +33,10 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /favicon-32x32\.png/);
   assert.match(html, /site\.webmanifest/);
   assert.match(html, /International Sacred Calendar/);
+  assert.match(html, /all eight supported calendars/);
+  assert.match(html, /Chinese Traditional Calendar/);
+  assert.match(html, /Indian National Calendar \(Saka\)/);
+  assert.match(html, /Buddhist Calendar \(Thai Solar\)/);
   assert.match(html, /Every date,/);
   assert.match(html, /Translate a date/);
   assert.match(html, /Rotating cycle/);

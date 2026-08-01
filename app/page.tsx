@@ -6,6 +6,7 @@ import {
   GREGORIAN_MONTH_NAMES,
   HEBREW_MONTH_NAMES,
   ISLAMIC_MONTH_NAMES,
+  SAKA_MONTH_NAMES,
   SACRED_LUNAR_BEAT_DAYS,
   SACRED_DAYS_PER_MONTH,
   SACRED_DAYS_PER_YEAR,
@@ -14,6 +15,7 @@ import {
   SACRED_ROTATION_YEARS,
   SACRED_WEEKS_PER_YEAR,
   convertDate,
+  chineseMonthsInYear,
   dateFromFixed,
   fixedFromDate,
   fixedFromGregorian,
@@ -36,6 +38,7 @@ import {
   majorHolidaysBetween,
 } from "@/lib/holidays";
 import {
+  EXTENDED_CALENDAR_NAMES,
   IMPORTANT_DATE_TRANSLATIONS,
   LANGUAGES,
   MOON_TRANSLATIONS,
@@ -50,6 +53,9 @@ const CALENDARS: CalendarKind[] = [
   "gregorian",
   "julian",
   "islamic",
+  "chinese",
+  "saka",
+  "buddhist",
 ];
 type WeekStart = "sunday" | "monday";
 
@@ -83,12 +89,19 @@ function currentLocalFixed(): number {
   });
 }
 
-function calendarLabel(kind: CalendarKind, translations: TranslationPack): string {
+function calendarLabel(
+  kind: CalendarKind,
+  translations: TranslationPack,
+  language: LanguageCode,
+): string {
   if (kind === "sacred") return "International Sacred Calendar";
   if (kind === "hebrew") return translations.hebrew;
   if (kind === "gregorian") return translations.gregorian;
   if (kind === "julian") return translations.julian;
-  return translations.muslim;
+  if (kind === "islamic") return translations.muslim;
+  if (kind === "chinese") return EXTENDED_CALENDAR_NAMES[language].chinese;
+  if (kind === "saka") return EXTENDED_CALENDAR_NAMES[language].saka;
+  return EXTENDED_CALENDAR_NAMES[language].buddhist;
 }
 
 function monthLabel(
@@ -97,13 +110,18 @@ function monthLabel(
   month: number,
   translations: TranslationPack,
   locale: string,
+  leapMonth = false,
 ): string {
   if (kind === "sacred") return `${translations.month} ${month}`;
   if (kind === "hebrew") {
     if (month === 12 && isHebrewLeapYear(year)) return "Adar I";
     return HEBREW_MONTH_NAMES[month];
   }
-  if (kind === "gregorian" || kind === "julian") {
+  if (kind === "chinese") {
+    return `${leapMonth ? "Leap " : ""}${translations.month} ${month}`;
+  }
+  if (kind === "saka") return SAKA_MONTH_NAMES[month];
+  if (kind === "gregorian" || kind === "julian" || kind === "buddhist") {
     return new Intl.DateTimeFormat(locale, {
       month: "long",
       timeZone: "UTC",
@@ -147,7 +165,19 @@ function formatDate(
     }).format(formatted);
   }
   if (kind === "hebrew") {
-    return `${date.day} ${monthLabel(kind, date.year, date.month, translations, locale)} ${date.year} AM`;
+    return `${date.day} ${monthLabel(kind, date.year, date.month, translations, locale, date.leapMonth)} ${date.year} AM`;
+  }
+  if (kind === "chinese") {
+    return `${date.day} ${monthLabel(kind, date.year, date.month, translations, locale, date.leapMonth)} · Chinese year ${date.year}`;
+  }
+  if (kind === "saka") {
+    return `${date.day} ${SAKA_MONTH_NAMES[date.month]} ${date.year} Saka`;
+  }
+  if (kind === "buddhist") {
+    const monthName = monthLabel(kind, date.year, date.month, translations, locale);
+    return locale === "en-US"
+      ? `${monthName} ${date.day}, ${date.year} BE`
+      : `${date.day} ${monthName} ${date.year} BE`;
   }
   const islamicYear = date.year > 0 ? date.year : 1 - date.year;
   const islamicEra = date.year > 0 ? "AH" : "BH";
@@ -168,6 +198,12 @@ function dateCode(kind: CalendarKind, date: CalendarDate): string {
           ? date.year > 0
             ? "AH"
             : "BH"
+          : kind === "chinese"
+            ? "Chinese"
+            : kind === "saka"
+              ? "Saka"
+              : kind === "buddhist"
+                ? "BE"
           : date.year > 0
             ? "CE"
             : "BCE";
@@ -176,7 +212,10 @@ function dateCode(kind: CalendarKind, date: CalendarDate): string {
     date.year <= 0
       ? 1 - date.year
       : date.year;
-  return `${prefix} ${displayYear} · ${String(date.month).padStart(2, "0")} · ${String(date.day).padStart(2, "0")}`;
+  const monthCode = `${String(date.month).padStart(2, "0")}${
+    kind === "chinese" && date.leapMonth ? "L" : ""
+  }`;
+  return `${prefix} ${displayYear} · ${monthCode} · ${String(date.day).padStart(2, "0")}`;
 }
 
 function localizedWeekday(fixed: number, locale: string): string {
@@ -208,6 +247,19 @@ function formatGridCalendarDate(
     const era = date.year > 0 ? "AH" : "BH";
     return `${date.day} ${ISLAMIC_MONTH_NAMES[date.month]} ${year} ${era}`;
   }
+  if (kind === "chinese") {
+    return `${date.day} ${date.leapMonth ? "Leap " : ""}M${date.month} · ${date.year}`;
+  }
+  if (kind === "saka") {
+    return `${date.day} ${SAKA_MONTH_NAMES[date.month]} ${date.year}`;
+  }
+  if (kind === "buddhist") {
+    const month = new Intl.DateTimeFormat(locale, {
+      month: "short",
+      timeZone: "UTC",
+    }).format(new Date(Date.UTC(2024, date.month - 1, 1)));
+    return `${month} ${date.day}, ${date.year} BE`;
+  }
 
   const month = new Intl.DateTimeFormat(locale, {
     month: "short",
@@ -225,6 +277,27 @@ function equivalentFor(kind: CalendarKind, fixed: number): CalendarDate {
 }
 
 function safeDate(kind: CalendarKind, candidate: CalendarDate): CalendarDate {
+  if (kind === "chinese") {
+    const year = Math.max(1, candidate.year);
+    const months = chineseMonthsInYear(year);
+    const selectedMonth =
+      months.find(
+        (month) =>
+          month.month === candidate.month &&
+          month.leapMonth === Boolean(candidate.leapMonth),
+      ) ??
+      months.find(
+        (month) => month.month === candidate.month && !month.leapMonth,
+      ) ??
+      months[0];
+    return {
+      year,
+      month: selectedMonth.month,
+      day: Math.min(Math.max(1, candidate.day), selectedMonth.days),
+      leapMonth: selectedMonth.leapMonth,
+    };
+  }
+
   const maxMonth =
     kind === "sacred"
       ? 13
@@ -251,6 +324,18 @@ function CalendarFields({
 }) {
   const monthCount =
     kind === "sacred" ? 13 : kind === "hebrew" ? hebrewYearMonths(date.year) : 12;
+  const monthOptions =
+    kind === "chinese"
+      ? chineseMonthsInYear(date.year).map((month) => ({
+          value: `${month.month}${month.leapMonth ? "L" : ""}`,
+          month: month.month,
+          leapMonth: month.leapMonth,
+        }))
+      : Array.from({ length: monthCount }, (_, index) => ({
+          value: `${index + 1}`,
+          month: index + 1,
+          leapMonth: false,
+        }));
   const usesEra =
     kind === "gregorian" || kind === "julian" || kind === "islamic";
   const isBeforeEra = usesEra && date.year <= 0;
@@ -266,16 +351,27 @@ function CalendarFields({
         <span>{translations.month}</span>
         <select
           aria-label={translations.month}
-          value={date.month}
-          onChange={(event) => update({ month: Number(event.target.value) })}
+          value={`${date.month}${date.leapMonth ? "L" : ""}`}
+          onChange={(event) => {
+            const leapMonth = event.target.value.endsWith("L");
+            update({
+              month: Number.parseInt(event.target.value, 10),
+              leapMonth,
+            });
+          }}
         >
-          {Array.from({ length: monthCount }, (_, index) => index + 1).map(
-            (month) => (
-              <option key={month} value={month}>
-                {monthLabel(kind, date.year, month, translations, locale)}
+          {monthOptions.map((month) => (
+              <option key={month.value} value={month.value}>
+                {monthLabel(
+                  kind,
+                  date.year,
+                  month.month,
+                  translations,
+                  locale,
+                  month.leapMonth,
+                )}
               </option>
-            ),
-          )}
+            ))}
         </select>
       </label>
       <label>
@@ -284,7 +380,12 @@ function CalendarFields({
           aria-label={translations.day}
           type="number"
           min={1}
-          max={maxDayForDate(kind, date.year, date.month)}
+          max={maxDayForDate(
+            kind,
+            date.year,
+            date.month,
+            Boolean(date.leapMonth),
+          )}
           value={date.day}
           onChange={(event) => update({ day: Number(event.target.value) || 1 })}
         />
@@ -431,6 +532,9 @@ export default function Home() {
       gregorian: dateFromFixed("gregorian", fixed),
       julian: dateFromFixed("julian", fixed),
       islamic: dateFromFixed("islamic", fixed),
+      chinese: dateFromFixed("chinese", fixed),
+      saka: dateFromFixed("saka", fixed),
+      buddhist: dateFromFixed("buddhist", fixed),
     };
   });
   const twentieth = anniversaries[19];
@@ -579,7 +683,7 @@ export default function Home() {
               >
                 {CALENDARS.map((calendar) => (
                   <option value={calendar} key={calendar}>
-                    {calendarLabel(calendar, translations)}
+                    {calendarLabel(calendar, translations, language)}
                   </option>
                 ))}
               </select>
@@ -626,7 +730,7 @@ export default function Home() {
               >
                 {CALENDARS.map((calendar) => (
                   <option value={calendar} key={calendar}>
-                    {calendarLabel(calendar, translations)}
+                    {calendarLabel(calendar, translations, language)}
                   </option>
                 ))}
               </select>
@@ -773,6 +877,9 @@ export default function Home() {
                   <th>{translations.gregorian}</th>
                   <th>{translations.julian}</th>
                   <th>{translations.muslim}</th>
+                  <th>Chinese</th>
+                  <th>Saka</th>
+                  <th>Buddhist</th>
                   <th>{translations.weekday}</th>
                 </tr>
               </thead>
@@ -801,6 +908,9 @@ export default function Home() {
                     <td>{formatDate("gregorian", anniversary.gregorian, translations, languageConfig.locale)}</td>
                     <td>{formatDate("julian", anniversary.julian, translations, languageConfig.locale)}</td>
                     <td>{formatDate("islamic", anniversary.islamic, translations, languageConfig.locale)}</td>
+                    <td>{formatDate("chinese", anniversary.chinese, translations, languageConfig.locale)}</td>
+                    <td>{formatDate("saka", anniversary.saka, translations, languageConfig.locale)}</td>
+                    <td>{formatDate("buddhist", anniversary.buddhist, translations, languageConfig.locale)}</td>
                     <td>{localizedWeekday(anniversary.fixed, languageConfig.locale)}</td>
                   </tr>
                 ))}
@@ -948,7 +1058,7 @@ export default function Home() {
             >
               {CALENDARS.map((calendar) => (
                 <option value={calendar} key={calendar}>
-                  {calendarLabel(calendar, translations)}
+                  {calendarLabel(calendar, translations, language)}
                 </option>
               ))}
             </select>

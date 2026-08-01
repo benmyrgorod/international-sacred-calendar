@@ -10,8 +10,11 @@ module for:
 - Gregorian civil calendar
 - Julian civil calendar
 - Muslim (tabular Islamic) Calendar
+- Chinese Traditional Calendar, including leap months
+- Indian National Calendar (standardized Saka solar calendar)
+- Buddhist Calendar (Thai solar calendar)
 
-The converter accepts any of the five calendars as its source and any other as
+The converter accepts any of the eight calendars as its source and any other as
 its destination. It also shows the uninterrupted weekday and the current
 position in the International Sacred Calendar's long rotation.
 
@@ -45,9 +48,8 @@ the traditional sixth day of Creation.
 The module converts 25 Elul AM 1 with the arithmetic Hebrew calendar and uses
 its actual fixed weekday. That calculated date is a **Monday**. The Sacred
 Calendar therefore starts on Monday in this implementation; it does not force
-the first date onto Sunday. This is what keeps International Sacred, Hebrew,
-Gregorian, Julian, and Islamic conversions on the same uninterrupted seven-day
-week.
+the first date onto Sunday. This keeps every supported conversion on the same
+uninterrupted seven-day week.
 
 The religious tradition describes Creation Week as beginning on Sunday, while
 the proleptic arithmetic Hebrew calendar's postponement rules yield Monday for
@@ -145,8 +147,9 @@ fixed date.
 
 Holiday markers follow the selected calendar: Jewish holidays for Hebrew,
 Western Christian holidays for Gregorian, Russian Orthodox holidays calculated
-on the Julian calendar, and major Muslim holidays for the tabular Islamic
-calendar. The grid marks the principal day of multi-day observances. Islamic
+on the Julian calendar, major Muslim holidays for the tabular Islamic calendar,
+traditional Chinese festivals, Saka New Year, and Songkran (Thai New Year).
+The grid marks the principal day of multi-day observances. Islamic
 observational dates and local practices can differ from the arithmetic dates
 shown here.
 
@@ -179,6 +182,13 @@ alignments and 293-year rotation anniversaries.
   year leap rule. Dates use CE/BCE notation in the interface.
 - **Muslim:** tabular Islamic calendar. Dates before 1 AH are shown as BH
   (Before Hijra). Observational or local religious dates may differ by one day.
+- **Chinese Traditional:** lunisolar dates use the runtime’s standardized
+  Chinese calendar data and explicitly distinguish leap months.
+- **Indian National (Saka):** the standardized Indian National solar calendar, with
+  Chaitra beginning on 21 or 22 March. This is not one of the many regional
+  Hindu lunar calendars, whose month rules vary by tradition and location.
+- **Buddhist:** the Thai solar Buddhist Era calendar, using Gregorian month and
+  leap-year structure with the Buddhist Era year numbering.
 - **Weekday:** all calendars pass through one integer fixed-day count, where
   Gregorian 1 January 1 CE is fixed day 1, a Monday.
 
@@ -216,6 +226,9 @@ Public conversion helpers include:
 - `fixedFromGregorian` / `gregorianFromFixed`
 - `fixedFromJulian` / `julianFromFixed`
 - `fixedFromIslamic` / `islamicFromFixed`
+- `fixedFromChinese` / `chineseFromFixed`
+- `fixedFromSaka` / `sakaFromFixed`
+- `fixedFromBuddhist` / `buddhistFromFixed`
 - `convertDate`
 - `sacredRotation`
 - `sacredRotationAnniversary`

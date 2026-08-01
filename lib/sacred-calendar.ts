@@ -11,12 +11,23 @@ export type CalendarKind =
   | "hebrew"
   | "gregorian"
   | "julian"
-  | "islamic";
+  | "islamic"
+  | "chinese"
+  | "saka"
+  | "buddhist";
 
 export interface CalendarDate {
   year: number;
   month: number;
   day: number;
+  leapMonth?: boolean;
+}
+
+export interface ChineseMonthInfo {
+  month: number;
+  leapMonth: boolean;
+  days: number;
+  startFixed: number;
 }
 
 export interface RotationPosition {
@@ -106,6 +117,22 @@ export const ISLAMIC_MONTH_NAMES = [
   "Shawwal",
   "Dhu al-Qadah",
   "Dhu al-Hijjah",
+] as const;
+
+export const SAKA_MONTH_NAMES = [
+  "",
+  "Chaitra",
+  "Vaisakha",
+  "Jyeshtha",
+  "Ashadha",
+  "Shravana",
+  "Bhadra",
+  "Ashvina",
+  "Kartika",
+  "Agrahayana",
+  "Pausha",
+  "Magha",
+  "Phalguna",
 ] as const;
 
 export const WEEKDAY_NAMES = [
@@ -354,6 +381,179 @@ export function islamicFromFixed(fixed: number): CalendarDate {
   return { year, month, day };
 }
 
+const CHINESE_DATE_FORMATTER = new Intl.DateTimeFormat("en-u-ca-chinese", {
+  year: "numeric",
+  month: "numeric",
+  day: "numeric",
+  timeZone: "UTC",
+});
+const chineseYearCache = new Map<number, ChineseMonthInfo[]>();
+
+function utcDateFromFixed(fixed: number): Date {
+  const gregorian = gregorianFromFixed(fixed);
+  const date = new Date(0);
+  date.setUTCFullYear(gregorian.year, gregorian.month - 1, gregorian.day);
+  date.setUTCHours(0, 0, 0, 0);
+  return date;
+}
+
+function chinesePartsFromFixed(fixed: number): CalendarDate {
+  const parts = CHINESE_DATE_FORMATTER.formatToParts(utcDateFromFixed(fixed));
+  const year = Number(
+    parts.find((part) => (part.type as string) === "relatedYear")?.value ??
+      parts.find((part) => part.type === "year")?.value,
+  );
+  const monthPart = parts.find((part) => part.type === "month")?.value ?? "";
+  const day = Number(parts.find((part) => part.type === "day")?.value);
+  const month = Number.parseInt(monthPart, 10);
+
+  if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) {
+    throw new RangeError("Chinese calendar conversion is unavailable for this date.");
+  }
+
+  return {
+    year,
+    month,
+    day,
+    leapMonth: monthPart.toLowerCase().includes("bis"),
+  };
+}
+
+function chineseNewYearFixed(year: number): number {
+  const searchStart = fixedFromGregorian({ year, month: 1, day: 1 });
+  const searchEnd = fixedFromGregorian({ year, month: 3, day: 31 });
+
+  for (let fixed = searchStart; fixed <= searchEnd; fixed++) {
+    const date = chinesePartsFromFixed(fixed);
+    if (
+      date.year === year &&
+      date.month === 1 &&
+      date.day === 1 &&
+      !date.leapMonth
+    ) {
+      return fixed;
+    }
+  }
+
+  throw new RangeError(`Unable to resolve Chinese year ${year}.`);
+}
+
+export function chineseMonthsInYear(year: number): ChineseMonthInfo[] {
+  assertInteger(year, "Chinese year");
+  if (year < 1) throw new RangeError("Chinese year must be 1 or later.");
+
+  const cached = chineseYearCache.get(year);
+  if (cached) return cached.map((month) => ({ ...month }));
+
+  const start = chineseNewYearFixed(year);
+  const end = chineseNewYearFixed(year + 1);
+  const monthStarts: Array<Omit<ChineseMonthInfo, "days">> = [];
+
+  for (let fixed = start; fixed < end; fixed++) {
+    const date = chinesePartsFromFixed(fixed);
+    if (date.day === 1) {
+      monthStarts.push({
+        month: date.month,
+        leapMonth: Boolean(date.leapMonth),
+        startFixed: fixed,
+      });
+    }
+  }
+
+  const months = monthStarts.map((month, index) => ({
+    ...month,
+    days: (monthStarts[index + 1]?.startFixed ?? end) - month.startFixed,
+  }));
+  chineseYearCache.set(year, months);
+  return months.map((month) => ({ ...month }));
+}
+
+export function fixedFromChinese(date: CalendarDate): number {
+  validateDate("chinese", date);
+  const month = chineseMonthsInYear(date.year).find(
+    (candidate) =>
+      candidate.month === date.month &&
+      candidate.leapMonth === Boolean(date.leapMonth),
+  );
+  if (!month) throw new RangeError("That Chinese month does not exist in this year.");
+  return month.startFixed + date.day - 1;
+}
+
+export function chineseFromFixed(fixed: number): CalendarDate {
+  assertInteger(fixed, "Fixed day");
+  return chinesePartsFromFixed(fixed);
+}
+
+export function fixedFromSaka(date: CalendarDate): number {
+  validateDate("saka", date);
+  const gregorianYear = date.year + 78;
+  const chaitraDays = isGregorianLeapYear(gregorianYear) ? 31 : 30;
+  const yearStart = fixedFromGregorian({
+    year: gregorianYear,
+    month: 3,
+    day: chaitraDays === 31 ? 21 : 22,
+  });
+  const priorDays =
+    date.month === 1
+      ? 0
+      : chaitraDays +
+        Math.min(date.month - 2, 5) * 31 +
+        Math.max(date.month - 7, 0) * 30;
+  return yearStart + priorDays + date.day - 1;
+}
+
+export function sakaFromFixed(fixed: number): CalendarDate {
+  assertInteger(fixed, "Fixed day");
+  const gregorian = gregorianFromFixed(fixed);
+  let gregorianYear = gregorian.year;
+  let chaitraDays = isGregorianLeapYear(gregorianYear) ? 31 : 30;
+  let yearStart = fixedFromGregorian({
+    year: gregorianYear,
+    month: 3,
+    day: chaitraDays === 31 ? 21 : 22,
+  });
+
+  if (fixed < yearStart) {
+    gregorianYear -= 1;
+    chaitraDays = isGregorianLeapYear(gregorianYear) ? 31 : 30;
+    yearStart = fixedFromGregorian({
+      year: gregorianYear,
+      month: 3,
+      day: chaitraDays === 31 ? 21 : 22,
+    });
+  }
+
+  const year = gregorianYear - 78;
+  let offset = fixed - yearStart;
+  if (offset < chaitraDays) return { year, month: 1, day: offset + 1 };
+
+  offset -= chaitraDays;
+  if (offset < 5 * 31) {
+    return {
+      year,
+      month: Math.floor(offset / 31) + 2,
+      day: mod(offset, 31) + 1,
+    };
+  }
+
+  offset -= 5 * 31;
+  return {
+    year,
+    month: Math.floor(offset / 30) + 7,
+    day: mod(offset, 30) + 1,
+  };
+}
+
+export function fixedFromBuddhist(date: CalendarDate): number {
+  validateDate("buddhist", date);
+  return fixedFromGregorian({ ...date, year: date.year - 543 });
+}
+
+export function buddhistFromFixed(fixed: number): CalendarDate {
+  const gregorian = gregorianFromFixed(fixed);
+  return { ...gregorian, year: gregorian.year + 543 };
+}
+
 /**
  * Hebrew 25 Elul AM 1: the traditional first day of Creation.
  * In the calculated Hebrew calendar this fixed day is a Monday, so Sacred
@@ -396,6 +596,12 @@ export function fixedFromDate(kind: CalendarKind, date: CalendarDate): number {
       return fixedFromJulian(date);
     case "islamic":
       return fixedFromIslamic(date);
+    case "chinese":
+      return fixedFromChinese(date);
+    case "saka":
+      return fixedFromSaka(date);
+    case "buddhist":
+      return fixedFromBuddhist(date);
   }
 }
 
@@ -411,6 +617,12 @@ export function dateFromFixed(kind: CalendarKind, fixed: number): CalendarDate {
       return julianFromFixed(fixed);
     case "islamic":
       return islamicFromFixed(fixed);
+    case "chinese":
+      return chineseFromFixed(fixed);
+    case "saka":
+      return sakaFromFixed(fixed);
+    case "buddhist":
+      return buddhistFromFixed(fixed);
   }
 }
 
@@ -570,7 +782,12 @@ export function meanNewMoonsBetween(
   return events;
 }
 
-export function maxDayForDate(kind: CalendarKind, year: number, month: number): number {
+export function maxDayForDate(
+  kind: CalendarKind,
+  year: number,
+  month: number,
+  leapMonth = false,
+): number {
   switch (kind) {
     case "sacred":
       return 28;
@@ -582,6 +799,20 @@ export function maxDayForDate(kind: CalendarKind, year: number, month: number): 
       return julianMonthDays(year, month);
     case "islamic":
       return islamicMonthDays(year, month);
+    case "chinese": {
+      const info = chineseMonthsInYear(year).find(
+        (candidate) =>
+          candidate.month === month &&
+          candidate.leapMonth === leapMonth,
+      );
+      if (!info) throw new RangeError("That Chinese month does not exist in this year.");
+      return info.days;
+    }
+    case "saka":
+      if (month === 1) return isGregorianLeapYear(year + 78) ? 31 : 30;
+      return month >= 2 && month <= 6 ? 31 : 30;
+    case "buddhist":
+      return gregorianMonthDays(year - 543, month);
   }
 }
 
@@ -591,7 +822,14 @@ export function validateDate(kind: CalendarKind, date: CalendarDate): void {
   assertInteger(month, "Month");
   assertInteger(day, "Day");
 
-  if ((kind === "sacred" || kind === "hebrew") && year < 1) {
+  if (
+    (kind === "sacred" ||
+      kind === "hebrew" ||
+      kind === "chinese" ||
+      kind === "saka" ||
+      kind === "buddhist") &&
+    year < 1
+  ) {
     throw new RangeError(`${kind} year must be 1 or later.`);
   }
   if ((kind === "gregorian" || kind === "julian") && year === 0) {
@@ -604,7 +842,7 @@ export function validateDate(kind: CalendarKind, date: CalendarDate): void {
     throw new RangeError(`Month must be between 1 and ${maxMonth}.`);
   }
 
-  const maxDay = maxDayForDate(kind, year, month);
+  const maxDay = maxDayForDate(kind, year, month, Boolean(date.leapMonth));
   if (day < 1 || day > maxDay) {
     throw new RangeError(`Day must be between 1 and ${maxDay}.`);
   }

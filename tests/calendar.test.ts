@@ -21,6 +21,7 @@ import {
   sacredRotation,
   sacredRotationAnniversary,
   weekdayFromFixed,
+  type CalendarDate,
   type CalendarKind,
 } from "../lib/sacred-calendar.ts";
 
@@ -99,16 +100,67 @@ test("anchors Sacred day one to 25 Elul AM 1 without forcing Sunday", () => {
 });
 
 test("round-trips representative dates in every calendar", () => {
-  const cases: Array<[CalendarKind, { year: number; month: number; day: number }]> = [
+  const cases: Array<[CalendarKind, CalendarDate]> = [
     ["gregorian", { year: 2026, month: 7, day: 29 }],
     ["julian", { year: 1900, month: 2, day: 29 }],
     ["hebrew", { year: 5786, month: 5, day: 15 }],
     ["islamic", { year: 1448, month: 2, day: 14 }],
     ["sacred", { year: 5787, month: 13, day: 28 }],
+    ["chinese", { year: 2025, month: 6, day: 7, leapMonth: true }],
+    ["saka", { year: 1948, month: 5, day: 9 }],
+    ["buddhist", { year: 2569, month: 7, day: 31 }],
   ];
 
   for (const [kind, date] of cases) {
     assert.deepEqual(dateFromFixed(kind, fixedFromDate(kind, date)), date);
+  }
+});
+
+test("matches Chinese, Saka, and Thai Buddhist calendar anchors", () => {
+  assert.deepEqual(
+    convertDate({ year: 2026, month: 2, day: 17 }, "gregorian", "chinese"),
+    { year: 2026, month: 1, day: 1, leapMonth: false },
+  );
+  assert.deepEqual(
+    convertDate(
+      { year: 2025, month: 6, day: 1, leapMonth: true },
+      "chinese",
+      "gregorian",
+    ),
+    { year: 2025, month: 7, day: 25 },
+  );
+  assert.deepEqual(
+    convertDate({ year: 2026, month: 3, day: 22 }, "gregorian", "saka"),
+    { year: 1948, month: 1, day: 1 },
+  );
+  assert.deepEqual(
+    convertDate({ year: 2026, month: 7, day: 31 }, "gregorian", "buddhist"),
+    { year: 2569, month: 7, day: 31 },
+  );
+});
+
+test("converts any supported calendar to any other", () => {
+  const calendars: CalendarKind[] = [
+    "sacred",
+    "hebrew",
+    "gregorian",
+    "julian",
+    "islamic",
+    "chinese",
+    "saka",
+    "buddhist",
+  ];
+  const fixed = fixedFromDate("gregorian", {
+    year: 2026,
+    month: 7,
+    day: 31,
+  });
+
+  for (const from of calendars) {
+    const source = dateFromFixed(from, fixed);
+    for (const to of calendars) {
+      assert.equal(fixedFromDate(to, convertDate(source, from, to)), fixed);
+    }
   }
 });
 
@@ -235,6 +287,30 @@ test("lists major holidays for each selected calendar", () => {
   assert.equal(
     majorHolidaysBetween("islamic", eidAlFitr, eidAlFitr)[0].name,
     "Eid al-Fitr",
+  );
+  const chineseNewYear = fixedFromDate("chinese", {
+    year: 2026,
+    month: 1,
+    day: 1,
+    leapMonth: false,
+  });
+  assert.equal(
+    majorHolidaysBetween("chinese", chineseNewYear, chineseNewYear)[0].name,
+    "Chinese New Year",
+  );
+  const sakaNewYear = fixedFromDate("saka", { year: 1948, month: 1, day: 1 });
+  assert.equal(
+    majorHolidaysBetween("saka", sakaNewYear, sakaNewYear)[0].name,
+    "Saka New Year",
+  );
+  const songkran = fixedFromDate("buddhist", {
+    year: 2569,
+    month: 4,
+    day: 13,
+  });
+  assert.equal(
+    majorHolidaysBetween("buddhist", songkran, songkran)[0].name,
+    "Songkran (Thai New Year)",
   );
   assert.deepEqual(
     majorHolidaysBetween("sacred", roshHashanah, roshHashanah),
