@@ -128,6 +128,7 @@ Reference:
 The 28-day grid displays one International Sacred month at a time. It marks:
 
 - the currently selected date;
+- the corresponding Gregorian date in every day cell;
 - approximate moon/month-start alignments;
 - 293-year rotation anniversaries.
 

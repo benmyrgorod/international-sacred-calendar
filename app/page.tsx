@@ -184,6 +184,19 @@ function localizedWeekday(fixed: number, locale: string): string {
   }).format(date);
 }
 
+function formatGridGregorianDate(fixed: number, locale: string): string {
+  const date = gregorianFromFixed(fixed);
+  const month = new Intl.DateTimeFormat(locale, {
+    month: "short",
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(2024, date.month - 1, 1)));
+  const year = date.year > 0 ? `${date.year}` : `${1 - date.year} BCE`;
+
+  return locale === "en-US"
+    ? `${month} ${date.day}, ${year}`
+    : `${date.day} ${month} ${year}`;
+}
+
 function equivalentFor(kind: CalendarKind, fixed: number): CalendarDate {
   return dateFromFixed(kind, fixed);
 }
@@ -955,7 +968,12 @@ export default function Home() {
                   aria-current={isToday ? "date" : undefined}
                   key={day}
                 >
-                  <span className="day-number">{day}</span>
+                  <div className="calendar-day-heading">
+                    <span className="day-number">{day}</span>
+                    <span className="gregorian-date">
+                      {formatGridGregorianDate(cellFixed, languageConfig.locale)}
+                    </span>
+                  </div>
                   <div className="day-events">
                     {selected ? (
                       <span className="event-pill selected-pill">

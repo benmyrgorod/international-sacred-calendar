@@ -64,6 +64,7 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Discovery anniversary/);
   assert.match(html, /Moon alignment/);
   assert.match(html, /293-year anniversary/);
+  assert.match(html, /<span class="gregorian-date">Jul 27, 2026<\/span>/);
   assert.doesNotMatch(html, /Georgian/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Building your site/i);
 });
