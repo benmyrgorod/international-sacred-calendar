@@ -867,11 +867,12 @@ export default function Home() {
         <a className="brand" href="#top" aria-label="International Sacred Calendar home">
           <Image
             className="brand-logo"
-            src="/isc-logo-web.png"
+            src="/isc-logo-web.png?v=20260801-2"
             alt=""
             width={60}
             height={60}
             priority
+            unoptimized
           />
           <span>
             <strong>International Sacred Calendar</strong>
@@ -2138,10 +2139,11 @@ export default function Home() {
         <div className="brand footer-brand">
           <Image
             className="brand-logo"
-            src="/isc-logo-web.png"
+            src="/isc-logo-web.png?v=20260801-2"
             alt=""
             width={48}
             height={48}
+            unoptimized
           />
           <span>
             <strong>International Sacred Calendar</strong>
