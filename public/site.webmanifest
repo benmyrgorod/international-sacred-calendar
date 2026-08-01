@@ -1,7 +1,7 @@
 {
   "name": "International Sacred Calendar",
   "short_name": "ISC",
-  "description": "Convert and explore dates with the International Sacred Calendar.",
+  "description": "Convert Sacred, Hebrew, Gregorian, Julian, and Muslim calendar dates.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f4f0e7",

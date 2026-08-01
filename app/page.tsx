@@ -38,7 +38,15 @@ import {
   type TranslationPack,
 } from "@/lib/translations";
 
-const CALENDARS: CalendarKind[] = ["sacred", "hebrew", "gregorian", "islamic"];
+const CALENDARS: CalendarKind[] = [
+  "sacred",
+  "hebrew",
+  "gregorian",
+  "julian",
+  "islamic",
+];
+
+type WeekStart = "sunday" | "monday";
 
 const DEFAULT_FIXED = fixedFromGregorian({ year: 2026, month: 7, day: 29 });
 
@@ -55,6 +63,7 @@ function calendarLabel(kind: CalendarKind, translations: TranslationPack): strin
   if (kind === "sacred") return "International Sacred Calendar";
   if (kind === "hebrew") return translations.hebrew;
   if (kind === "gregorian") return translations.gregorian;
+  if (kind === "julian") return translations.julian;
   return translations.muslim;
 }
 
@@ -70,7 +79,7 @@ function monthLabel(
     if (month === 12 && isHebrewLeapYear(year)) return "Adar I";
     return HEBREW_MONTH_NAMES[month];
   }
-  if (kind === "gregorian") {
+  if (kind === "gregorian" || kind === "julian") {
     return new Intl.DateTimeFormat(locale, {
       month: "long",
       timeZone: "UTC",
@@ -91,6 +100,12 @@ function formatDate(
 ): string {
   if (kind === "sacred") {
     return `${translations.year} ${date.year} · ${translations.month} ${date.month} · ${translations.day} ${date.day}`;
+  }
+  if (kind === "julian") {
+    const monthName = monthLabel(kind, date.year, date.month, translations, locale);
+    return locale === "en-US"
+      ? `${monthName} ${date.day}, ${formatYear(date.year)}`
+      : `${date.day} ${monthName} ${formatYear(date.year)}`;
   }
   if (kind === "gregorian") {
     if (locale === "en-US") {
@@ -121,7 +136,11 @@ function dateCode(kind: CalendarKind, date: CalendarDate): string {
       ? "ISC"
       : kind === "hebrew"
         ? "AM"
-        : kind === "islamic"
+        : kind === "julian"
+          ? date.year > 0
+            ? "Julian CE"
+            : "Julian BCE"
+          : kind === "islamic"
           ? date.year > 0
             ? "AH"
             : "BH"
@@ -129,7 +148,8 @@ function dateCode(kind: CalendarKind, date: CalendarDate): string {
             ? "CE"
             : "BCE";
   const displayYear =
-    (kind === "gregorian" || kind === "islamic") && date.year <= 0
+    (kind === "gregorian" || kind === "julian" || kind === "islamic") &&
+    date.year <= 0
       ? 1 - date.year
       : date.year;
   return `${prefix} ${displayYear} · ${String(date.month).padStart(2, "0")} · ${String(date.day).padStart(2, "0")}`;
@@ -177,7 +197,8 @@ function CalendarFields({
 }) {
   const monthCount =
     kind === "sacred" ? 13 : kind === "hebrew" ? hebrewYearMonths(date.year) : 12;
-  const usesEra = kind === "gregorian" || kind === "islamic";
+  const usesEra =
+    kind === "gregorian" || kind === "julian" || kind === "islamic";
   const isBeforeEra = usesEra && date.year <= 0;
   const displayedYear = isBeforeEra ? 1 - date.year : date.year;
 
@@ -238,8 +259,8 @@ function CalendarFields({
               update({ year: event.target.value === "before" ? 1 - entered : entered });
             }}
           >
-            <option value="after">{kind === "gregorian" ? "CE" : "AH"}</option>
-            <option value="before">{kind === "gregorian" ? "BCE" : "BH"}</option>
+            <option value="after">{kind === "islamic" ? "AH" : "CE"}</option>
+            <option value="before">{kind === "islamic" ? "BH" : "BCE"}</option>
           </select>
         </label>
       ) : null}
@@ -250,6 +271,7 @@ function CalendarFields({
 export default function Home() {
   const [language, setLanguage] = useState<LanguageCode>("en");
   const [gridOffset, setGridOffset] = useState(0);
+  const [weekStart, setWeekStart] = useState<WeekStart>("sunday");
   const [todayFixed, setTodayFixed] = useState(DEFAULT_FIXED);
   const [from, setFrom] = useState<CalendarKind>("gregorian");
   const [to, setTo] = useState<CalendarKind>("sacred");
@@ -347,6 +369,7 @@ export default function Home() {
       sacred,
       hebrew: dateFromFixed("hebrew", fixed),
       gregorian: dateFromFixed("gregorian", fixed),
+      julian: dateFromFixed("julian", fixed),
       islamic: dateFromFixed("islamic", fixed),
     };
   });
@@ -384,8 +407,13 @@ export default function Home() {
       ? (gridSacred.year - 1) / SACRED_ROTATION_YEARS
       : null;
   const moonAlignments = moonAlignmentsAround(calculation.fixed, 5, 5);
+  const weekStartFixed = weekStart === "sunday" ? 0 : 1;
+  const leadingGridDays =
+    ((gridStartFixed - weekStartFixed) % 7 + 7) % 7;
+  const trailingGridDays =
+    (7 - ((leadingGridDays + SACRED_DAYS_PER_MONTH) % 7)) % 7;
   const gridWeekdays = Array.from({ length: 7 }, (_, index) =>
-    localizedWeekday(gridStartFixed + index, languageConfig.locale),
+    localizedWeekday(weekStartFixed + index, languageConfig.locale),
   );
 
   return (
@@ -664,6 +692,7 @@ export default function Home() {
                   <th>{translations.sacred}</th>
                   <th>{translations.hebrew}</th>
                   <th>{translations.gregorian}</th>
+                  <th>{translations.julian}</th>
                   <th>{translations.muslim}</th>
                   <th>{translations.weekday}</th>
                 </tr>
@@ -691,6 +720,7 @@ export default function Home() {
                     <td>{formatDate("sacred", anniversary.sacred, translations, languageConfig.locale)}</td>
                     <td>{formatDate("hebrew", anniversary.hebrew, translations, languageConfig.locale)}</td>
                     <td>{formatDate("gregorian", anniversary.gregorian, translations, languageConfig.locale)}</td>
+                    <td>{formatDate("julian", anniversary.julian, translations, languageConfig.locale)}</td>
                     <td>{formatDate("islamic", anniversary.islamic, translations, languageConfig.locale)}</td>
                     <td>{localizedWeekday(anniversary.fixed, languageConfig.locale)}</td>
                   </tr>
@@ -751,6 +781,17 @@ export default function Home() {
               {moonTranslations.findToday}
             </button>
           </div>
+          <label className="week-start-picker">
+            <span>{moonTranslations.weekStartsOn}</span>
+            <select
+              aria-label={moonTranslations.weekStartsOn}
+              value={weekStart}
+              onChange={(event) => setWeekStart(event.target.value as WeekStart)}
+            >
+              <option value="sunday">{moonTranslations.sunday}</option>
+              <option value="monday">{moonTranslations.monday}</option>
+            </select>
+          </label>
         </div>
 
         <div className="calendar-grid" role="grid">
@@ -758,6 +799,14 @@ export default function Home() {
             <div className="calendar-weekday" role="columnheader" key={weekday}>
               {weekday}
             </div>
+          ))}
+          {Array.from({ length: leadingGridDays }, (_, index) => (
+            <div
+              className="calendar-day calendar-day-empty"
+              role="gridcell"
+              aria-hidden="true"
+              key={`leading-${index}`}
+            />
           ))}
           {Array.from({ length: SACRED_DAYS_PER_MONTH }, (_, index) => index + 1).map(
             (day) => {
@@ -810,6 +859,14 @@ export default function Home() {
               );
             },
           )}
+          {Array.from({ length: trailingGridDays }, (_, index) => (
+            <div
+              className="calendar-day calendar-day-empty"
+              role="gridcell"
+              aria-hidden="true"
+              key={`trailing-${index}`}
+            />
+          ))}
         </div>
 
         <div className="lunar-alignment-section">
@@ -828,6 +885,7 @@ export default function Home() {
             {moonAlignments.map((alignment) => {
               const isPast = alignment.fixed <= calculation.fixed;
               const gregorian = dateFromFixed("gregorian", alignment.fixed);
+              const julian = dateFromFixed("julian", alignment.fixed);
               const hebrew = dateFromFixed("hebrew", alignment.fixed);
               const islamic = dateFromFixed("islamic", alignment.fixed);
 
@@ -840,9 +898,11 @@ export default function Home() {
                     </strong>
                   </div>
                   <div>
-                    <span>{translations.gregorian}</span>
+                    <span>{translations.gregorian} / {translations.julian}</span>
                     <strong>
                       {formatDate("gregorian", gregorian, translations, languageConfig.locale)}
+                      {" · "}
+                      {formatDate("julian", julian, translations, languageConfig.locale)}
                     </strong>
                   </div>
                   <div>

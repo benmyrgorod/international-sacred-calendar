@@ -8,9 +8,10 @@ module for:
 - International Sacred Calendar
 - Hebrew Calendar
 - Gregorian civil calendar
+- Julian civil calendar
 - Muslim (tabular Islamic) Calendar
 
-The converter accepts any of the four calendars as its source and any other as
+The converter accepts any of the five calendars as its source and any other as
 its destination. It also shows the uninterrupted weekday and the current
 position in the International Sacred Calendar's long rotation.
 
@@ -44,8 +45,9 @@ the traditional sixth day of Creation.
 The module converts 25 Elul AM 1 with the arithmetic Hebrew calendar and uses
 its actual fixed weekday. That calculated date is a **Monday**. The Sacred
 Calendar therefore starts on Monday in this implementation; it does not force
-the first date onto Sunday. This is what keeps International Sacred, Hebrew, Gregorian, and
-Islamic conversions on the same uninterrupted seven-day week.
+the first date onto Sunday. This is what keeps International Sacred, Hebrew,
+Gregorian, Julian, and Islamic conversions on the same uninterrupted seven-day
+week.
 
 The religious tradition describes Creation Week as beginning on Sunday, while
 the proleptic arithmetic Hebrew calendar's postponement rules yield Monday for
@@ -90,11 +92,11 @@ through 20:
 - 2nd anniversary: Sacred Year 587, Month 1, Day 1
 - 20th anniversary: Sacred Year 5861, Month 1, Day 1
 
-The web page lists the equivalent Hebrew, Gregorian, and tabular Islamic dates
-for all 20 milestones. Clicking a milestone opens its month in the calendar
-grid. The 20th-anniversary countdown is recalculated from the date currently
-selected in the converter and reports complete International Sacred years plus
-the remaining days.
+The web page lists the equivalent Hebrew, Gregorian, Julian, and tabular
+Islamic dates for all 20 milestones. Clicking a milestone opens its month in
+the calendar grid. The 20th-anniversary countdown is recalculated from the date
+currently selected in the converter and reports complete International Sacred
+years plus the remaining days.
 
 ## Approximate 1.48-year moon alignment
 
@@ -129,6 +131,10 @@ The 28-day grid displays one International Sacred month at a time. It marks:
 - approximate moon/month-start alignments;
 - 293-year rotation anniversaries.
 
+The week-start selector supports Sunday or Monday. Sunday is selected by
+default; because International Sacred Month 1 Day 1 calculates to Monday, the
+Sunday-first view includes an empty Sunday cell before Day 1.
+
 The prefix for International Sacred dates is **ISC**, for example
 `ISC 5805 · 04 · 12`.
 
@@ -137,6 +143,8 @@ The prefix for International Sacred dates is **ISC**, for example
 - **Hebrew:** arithmetic Hebrew calendar with its 19-year leap cycle and
   postponement rules.
 - **Gregorian:** the standard proleptic Gregorian civil calendar.
+- **Julian:** the proleptic Julian civil calendar, including its every-fourth-
+  year leap rule. Dates use CE/BCE notation in the interface.
 - **Muslim:** tabular Islamic calendar. Dates before 1 AH are shown as BH
   (Before Hijra). Observational or local religious dates may differ by one day.
 - **Weekday:** all calendars pass through one integer fixed-day count, where
@@ -174,6 +182,7 @@ Public conversion helpers include:
 - `fixedFromSacred` / `sacredFromFixed`
 - `fixedFromHebrew` / `hebrewFromFixed`
 - `fixedFromGregorian` / `gregorianFromFixed`
+- `fixedFromJulian` / `julianFromFixed`
 - `fixedFromIslamic` / `islamicFromFixed`
 - `convertDate`
 - `sacredRotation`
@@ -198,6 +207,6 @@ Open the local URL printed in the terminal.
 npm test
 ```
 
-The tests cover known Hebrew, Gregorian, and Islamic anchor dates, round trips,
-the Creation-week epoch, weekday reconciliation, the 293-year rotation, and
-the server-rendered web page.
+The tests cover known Hebrew, Gregorian, Julian, and Islamic anchor dates,
+round trips, the Creation-week epoch, weekday reconciliation, the 293-year
+rotation, and the server-rendered web page.

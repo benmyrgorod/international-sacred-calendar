@@ -6,7 +6,12 @@
  * the traditional first day of Creation.
  */
 
-export type CalendarKind = "sacred" | "hebrew" | "gregorian" | "islamic";
+export type CalendarKind =
+  | "sacred"
+  | "hebrew"
+  | "gregorian"
+  | "julian"
+  | "islamic";
 
 export interface CalendarDate {
   year: number;
@@ -166,6 +171,56 @@ export function gregorianFromFixed(fixed: number): CalendarDate {
         : 2;
   const month = floorDiv(12 * (priorDays + correction) + 373, 367);
   const day = fixed - fixedFromGregorian({ year, month, day: 1 }) + 1;
+
+  return { year, month, day };
+}
+
+export function isJulianLeapYear(year: number): boolean {
+  return mod(year, 4) === 0;
+}
+
+export function julianMonthDays(year: number, month: number): number {
+  if (month === 2) return isJulianLeapYear(year) ? 29 : 28;
+  if ([4, 6, 9, 11].includes(month)) return 30;
+  return 31;
+}
+
+/**
+ * Converts a proleptic Julian date to the shared fixed-day count.
+ * Astronomical year zero is used internally and represents 1 BCE.
+ */
+export function fixedFromJulian(date: CalendarDate): number {
+  validateDate("julian", date);
+  const { year, month, day } = date;
+  const priorYear = year - 1;
+  const correction = month <= 2 ? 0 : isJulianLeapYear(year) ? -1 : -2;
+
+  return (
+    365 * priorYear +
+    floorDiv(priorYear, 4) +
+    floorDiv(367 * month - 362, 12) +
+    correction +
+    day -
+    2
+  );
+}
+
+export function julianFromFixed(fixed: number): CalendarDate {
+  assertInteger(fixed, "Fixed day");
+  let year = floorDiv(fixed + 1, 366) + 1;
+
+  while (fixed >= fixedFromJulian({ year: year + 1, month: 1, day: 1 })) year++;
+  while (fixed < fixedFromJulian({ year, month: 1, day: 1 })) year--;
+
+  const priorDays = fixed - fixedFromJulian({ year, month: 1, day: 1 });
+  const correction =
+    fixed < fixedFromJulian({ year, month: 3, day: 1 })
+      ? 0
+      : isJulianLeapYear(year)
+        ? 1
+        : 2;
+  const month = floorDiv(12 * (priorDays + correction) + 373, 367);
+  const day = fixed - fixedFromJulian({ year, month, day: 1 }) + 1;
 
   return { year, month, day };
 }
@@ -332,6 +387,8 @@ export function fixedFromDate(kind: CalendarKind, date: CalendarDate): number {
       return fixedFromHebrew(date);
     case "gregorian":
       return fixedFromGregorian(date);
+    case "julian":
+      return fixedFromJulian(date);
     case "islamic":
       return fixedFromIslamic(date);
   }
@@ -345,6 +402,8 @@ export function dateFromFixed(kind: CalendarKind, fixed: number): CalendarDate {
       return hebrewFromFixed(fixed);
     case "gregorian":
       return gregorianFromFixed(fixed);
+    case "julian":
+      return julianFromFixed(fixed);
     case "islamic":
       return islamicFromFixed(fixed);
   }
@@ -481,6 +540,8 @@ export function maxDayForDate(kind: CalendarKind, year: number, month: number): 
       return hebrewMonthDays(year, month);
     case "gregorian":
       return gregorianMonthDays(year, month);
+    case "julian":
+      return julianMonthDays(year, month);
     case "islamic":
       return islamicMonthDays(year, month);
   }
@@ -495,7 +556,7 @@ export function validateDate(kind: CalendarKind, date: CalendarDate): void {
   if ((kind === "sacred" || kind === "hebrew") && year < 1) {
     throw new RangeError(`${kind} year must be 1 or later.`);
   }
-  if (kind === "gregorian" && year === 0) {
+  if ((kind === "gregorian" || kind === "julian") && year === 0) {
     // Astronomical year zero is supported internally and represents 1 BCE.
   }
 

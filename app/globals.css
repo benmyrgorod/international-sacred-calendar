@@ -977,6 +977,28 @@ h1 em {
   background: rgba(182, 144, 78, 0.1);
 }
 
+.week-start-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.week-start-picker select {
+  min-height: 34px;
+  padding: 6px 28px 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fffdf8;
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: 0.04em;
+}
+
 .jump-symbol {
   color: var(--forest);
   font-size: 13px;
@@ -1015,6 +1037,10 @@ h1 em {
   border-bottom: 1px solid var(--line);
   background: #fffdf8;
   position: relative;
+}
+
+.calendar-day-empty {
+  background: rgba(21, 56, 45, 0.035);
 }
 
 .calendar-day.selected {
@@ -1514,6 +1540,11 @@ footer > a {
 
   .calendar-jumps > div {
     width: 100%;
+  }
+
+  .week-start-picker {
+    width: 100%;
+    justify-content: center;
   }
 
   .calendar-jumps button {

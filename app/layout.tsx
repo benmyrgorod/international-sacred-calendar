@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "International Sacred Calendar",
   description:
-    "Convert dates with the International Sacred Calendar, explore rotation anniversaries, and compare Hebrew, Gregorian, and tabular Islamic dates.",
+    "Convert dates with the International Sacred Calendar and compare Hebrew, Gregorian, Julian, and tabular Islamic dates.",
   manifest: "/site.webmanifest",
   icons: {
     icon: [

@@ -33,6 +33,17 @@ test("matches the tabular Islamic epoch anchor", () => {
   );
 });
 
+test("matches the Gregorian reform Julian date", () => {
+  assert.deepEqual(
+    convertDate({ year: 1582, month: 10, day: 15 }, "gregorian", "julian"),
+    { year: 1582, month: 10, day: 5 },
+  );
+  assert.deepEqual(
+    convertDate({ year: 1582, month: 10, day: 5 }, "julian", "gregorian"),
+    { year: 1582, month: 10, day: 15 },
+  );
+});
+
 test("supports proleptic tabular Islamic dates before the Hijra", () => {
   const beforeHijra = { year: -200, month: 3, day: 5 };
   assert.deepEqual(
@@ -57,6 +68,7 @@ test("anchors Sacred day one to 25 Elul AM 1 without forcing Sunday", () => {
 test("round-trips representative dates in every calendar", () => {
   const cases: Array<[CalendarKind, { year: number; month: number; day: number }]> = [
     ["gregorian", { year: 2026, month: 7, day: 29 }],
+    ["julian", { year: 1900, month: 2, day: 29 }],
     ["hebrew", { year: 5786, month: 5, day: 15 }],
     ["islamic", { year: 1448, month: 2, day: 14 }],
     ["sacred", { year: 5787, month: 13, day: 28 }],
