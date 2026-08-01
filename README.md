@@ -291,6 +291,7 @@ Public conversion helpers include:
 - `moonAlignmentsAround`
 - `meanNewMoonsBetween`
 - `majorHolidaysBetween`
+- `majorHolidaySymbol` (calendar-specific holiday marker used by the legend and grid)
 - `internationalHolidaysBetween`
 - `planetForPlanetaryHour`
 - `calculatePlanetaryHour`

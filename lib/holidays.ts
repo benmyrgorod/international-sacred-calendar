@@ -12,6 +12,21 @@ export interface MajorHoliday {
   fixed: number;
 }
 
+export const MAJOR_HOLIDAY_SYMBOLS: Record<CalendarKind, string> = {
+  sacred: "✦",
+  hebrew: "✡",
+  gregorian: "✝",
+  julian: "☦",
+  islamic: "☾",
+  chinese: "🏮",
+  saka: "ॐ",
+  buddhist: "☸",
+};
+
+export function majorHolidaySymbol(kind: CalendarKind): string {
+  return MAJOR_HOLIDAY_SYMBOLS[kind];
+}
+
 const INTERNATIONAL_HOLIDAYS = [
   { month: 1, day: 1, name: "New Year’s Day" },
   { month: 3, day: 8, name: "International Women’s Day" },

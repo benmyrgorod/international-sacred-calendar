@@ -63,6 +63,7 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /class="site-menu"/);
   assert.match(html, /class="site-menu-panel"/);
   assert.match(html, /class="menu-label">Menu/);
+  assert.match(html, /href="#converter">Date Conversion/);
   assert.match(html, /href="#cycle">Calendar Cycle/);
   assert.match(html, /href="#lunar-alignments">Moon Alignment Cycle/);
   for (const anchor of [
@@ -112,7 +113,10 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Discovery anniversary/);
   assert.match(html, /class="new-moon-marker"/);
   assert.match(html, /New moon/);
-  assert.match(html, /class="holiday-marker"/);
+  assert.match(
+    html,
+    /class="holiday-marker holiday-marker-gregorian"[^>]*>\s*✝\s*<\/i>/,
+  );
   assert.match(html, /Major holiday/);
   assert.match(html, /class="international-marker"/);
   assert.match(html, /International holiday/);

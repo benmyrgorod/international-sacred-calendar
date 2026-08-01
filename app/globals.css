@@ -201,13 +201,24 @@ a {
 
 .language-picker select {
   max-width: 150px;
-  padding: 9px 30px 9px 12px;
+  padding: 9px 44px 9px 14px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: transparent;
+  appearance: none;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.25 6 6.25l5-5' stroke='%23152f27' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+  background-size: 12px 8px;
   color: var(--ink);
   font-size: 11px;
   outline: none;
+}
+
+[dir="rtl"] .language-picker select {
+  padding-right: 14px;
+  padding-left: 44px;
+  background-position: left 18px center;
 }
 
 .language-picker select:focus {
@@ -1615,6 +1626,19 @@ h1 em {
 .holiday-marker {
   color: #fffdf8;
   background: #9a6b2f;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.holiday-marker-chinese {
+  font-family: inherit;
+  font-size: 11px !important;
+}
+
+.holiday-marker-saka {
+  font-family: inherit;
+  font-size: 12px !important;
 }
 
 .international-marker {
@@ -1771,6 +1795,11 @@ h1 em {
 .holiday-pill {
   color: #fffdf8;
   background: #9a6b2f;
+}
+
+.holiday-pill-chinese,
+.holiday-pill-saka {
+  font-family: inherit;
 }
 
 .international-pill {

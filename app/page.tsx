@@ -36,6 +36,7 @@ import {
 } from "@/lib/sacred-calendar";
 import {
   internationalHolidaysBetween,
+  majorHolidaySymbol,
   majorHolidaysBetween,
 } from "@/lib/holidays";
 import {
@@ -551,7 +552,7 @@ export default function Home() {
     }
   }, [from, sourceDate, to]);
 
-  function changeFrom(next: CalendarKind) {
+  function changeFrom(next: CalendarKind, resetGrid = true) {
     let fixed = DEFAULT_FIXED;
     try {
       fixed = fixedFromDate(from, sourceDate);
@@ -560,7 +561,7 @@ export default function Home() {
     }
     setFrom(next);
     setSourceDate(equivalentFor(next, fixed));
-    setGridOffset(0);
+    if (resetGrid) setGridOffset(0);
   }
 
   function swapCalendars() {
@@ -732,7 +733,7 @@ export default function Home() {
           <div className="site-menu-panel" aria-label="Site sections">
             <div className="menu-group">
               <strong>{historyCopy.menuTools}</strong>
-              <a href="#converter">{translations.navConvert}</a>
+              <a href="#converter">{historyCopy.menuDateConversion}</a>
               <a href="#calendar">{moonTranslations.calendarKicker}</a>
               <a href="#planetary-hours">{planetaryCopy.navLabel}</a>
             </div>
@@ -1364,7 +1365,9 @@ export default function Home() {
             <select
               aria-label={moonTranslations.gridCalendar}
               value={from}
-              onChange={(event) => changeFrom(event.target.value as CalendarKind)}
+              onChange={(event) =>
+                changeFrom(event.target.value as CalendarKind, false)
+              }
             >
               {CALENDARS.map((calendar) => (
                 <option value={calendar} key={calendar}>
@@ -1382,7 +1385,12 @@ export default function Home() {
           </span>
           {from !== "sacred" ? (
             <span>
-              <i className="holiday-marker" aria-hidden="true">✣</i>
+              <i
+                className={`holiday-marker holiday-marker-${from}`}
+                aria-hidden="true"
+              >
+                {majorHolidaySymbol(from)}
+              </i>
               {moonTranslations.majorHoliday}
             </span>
           ) : null}
@@ -1504,8 +1512,11 @@ export default function Home() {
                       </span>
                     ) : null}
                     {holidays.map((holiday) => (
-                      <span className="event-pill holiday-pill" key={holiday.id}>
-                        ✣ {holiday.name}
+                      <span
+                        className={`event-pill holiday-pill holiday-pill-${from}`}
+                        key={holiday.id}
+                      >
+                        {majorHolidaySymbol(from)} {holiday.name}
                       </span>
                     ))}
                     {internationalHolidays.map((holiday) => (

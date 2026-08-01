@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   internationalHolidaysBetween,
+  majorHolidaySymbol,
   majorHolidaysBetween,
 } from "../lib/holidays.ts";
 import {
@@ -412,6 +413,16 @@ test("lists major holidays for each selected calendar", () => {
     majorHolidaysBetween("sacred", roshHashanah, roshHashanah),
     [],
   );
+});
+
+test("uses a distinct major-holiday symbol for every calendar", () => {
+  assert.equal(majorHolidaySymbol("hebrew"), "✡");
+  assert.equal(majorHolidaySymbol("gregorian"), "✝");
+  assert.equal(majorHolidaySymbol("julian"), "☦");
+  assert.equal(majorHolidaySymbol("islamic"), "☾");
+  assert.equal(majorHolidaySymbol("chinese"), "🏮");
+  assert.equal(majorHolidaySymbol("saka"), "ॐ");
+  assert.equal(majorHolidaySymbol("buddhist"), "☸");
 });
 
 test("lists international holidays independently of the selected calendar", () => {

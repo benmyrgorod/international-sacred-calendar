@@ -25,6 +25,7 @@ export interface HistoryTranslationPack {
   rangeMarker: string;
   menuLabel: string;
   menuTools: string;
+  menuDateConversion: string;
   menuCycles: string;
   menuCalendarCycle: string;
   menuMoonAlignmentCycle: string;
@@ -60,6 +61,7 @@ const en: HistoryTranslationPack = {
   rangeMarker: "Range marker",
   menuLabel: "Menu",
   menuTools: "Calendar tools",
+  menuDateConversion: "Date Conversion",
   menuCycles: "Cycles",
   menuCalendarCycle: "Calendar Cycle",
   menuMoonAlignmentCycle: "Moon Alignment Cycle",
@@ -97,6 +99,7 @@ export const HISTORY_TRANSLATIONS: Record<
     rangeMarker: "סמן טווח",
     menuLabel: "תפריט",
     menuTools: "כלי לוח",
+    menuDateConversion: "המרת תאריכים",
     menuCycles: "מחזורים",
     menuCalendarCycle: "מחזור לוח השנה",
     menuMoonAlignmentCycle: "מחזור יישור הירח",
@@ -128,6 +131,7 @@ export const HISTORY_TRANSLATIONS: Record<
     rangeMarker: "مؤشر نطاق",
     menuLabel: "القائمة",
     menuTools: "أدوات التقويم",
+    menuDateConversion: "تحويل التواريخ",
     menuCycles: "الدورات",
     menuCalendarCycle: "دورة التقويم",
     menuMoonAlignmentCycle: "دورة محاذاة القمر",
@@ -159,6 +163,7 @@ export const HISTORY_TRANSLATIONS: Record<
     rangeMarker: "Marcatore intervallo",
     menuLabel: "Menu",
     menuTools: "Strumenti",
+    menuDateConversion: "Conversione date",
     menuCycles: "Cicli",
     menuCalendarCycle: "Ciclo del calendario",
     menuMoonAlignmentCycle: "Ciclo di allineamento lunare",
@@ -190,6 +195,7 @@ export const HISTORY_TRANSLATIONS: Record<
     rangeMarker: "Δείκτης εύρους",
     menuLabel: "Μενού",
     menuTools: "Εργαλεία",
+    menuDateConversion: "Μετατροπή ημερομηνιών",
     menuCycles: "Κύκλοι",
     menuCalendarCycle: "Κύκλος ημερολογίου",
     menuMoonAlignmentCycle: "Κύκλος σεληνιακής ευθυγράμμισης",
@@ -221,6 +227,7 @@ export const HISTORY_TRANSLATIONS: Record<
     rangeMarker: "Метка диапазона",
     menuLabel: "Меню",
     menuTools: "Инструменты",
+    menuDateConversion: "Перевод Дат",
     menuCycles: "Циклы",
     menuCalendarCycle: "Календарный цикл",
     menuMoonAlignmentCycle: "Цикл лунных совпадений",
@@ -252,6 +259,7 @@ export const HISTORY_TRANSLATIONS: Record<
     rangeMarker: "范围标记",
     menuLabel: "菜单",
     menuTools: "日历工具",
+    menuDateConversion: "日期转换",
     menuCycles: "周期",
     menuCalendarCycle: "历法周期",
     menuMoonAlignmentCycle: "月相对齐周期",
@@ -283,6 +291,7 @@ export const HISTORY_TRANSLATIONS: Record<
     rangeMarker: "सीमा चिह्न",
     menuLabel: "मेनू",
     menuTools: "कैलेंडर उपकरण",
+    menuDateConversion: "तिथि रूपांतरण",
     menuCycles: "चक्र",
     menuCalendarCycle: "कैलेंडर चक्र",
     menuMoonAlignmentCycle: "चंद्र संरेखण चक्र",
@@ -314,6 +323,7 @@ export const HISTORY_TRANSLATIONS: Record<
     rangeMarker: "Marcador de rango",
     menuLabel: "Menú",
     menuTools: "Herramientas",
+    menuDateConversion: "Conversión de fechas",
     menuCycles: "Ciclos",
     menuCalendarCycle: "Ciclo del calendario",
     menuMoonAlignmentCycle: "Ciclo de alineación lunar",
@@ -345,6 +355,7 @@ export const HISTORY_TRANSLATIONS: Record<
     rangeMarker: "Repère de plage",
     menuLabel: "Menu",
     menuTools: "Outils calendrier",
+    menuDateConversion: "Conversion de dates",
     menuCycles: "Cycles",
     menuCalendarCycle: "Cycle du calendrier",
     menuMoonAlignmentCycle: "Cycle d’alignement lunaire",
@@ -376,6 +387,7 @@ export const HISTORY_TRANSLATIONS: Record<
     rangeMarker: "範囲マーカー",
     menuLabel: "メニュー",
     menuTools: "暦ツール",
+    menuDateConversion: "日付変換",
     menuCycles: "周期",
     menuCalendarCycle: "暦周期",
     menuMoonAlignmentCycle: "月の整列周期",
@@ -407,6 +419,7 @@ export const HISTORY_TRANSLATIONS: Record<
     rangeMarker: "범위 표시",
     menuLabel: "메뉴",
     menuTools: "달력 도구",
+    menuDateConversion: "날짜 변환",
     menuCycles: "주기",
     menuCalendarCycle: "달력 주기",
     menuMoonAlignmentCycle: "달 정렬 주기",
