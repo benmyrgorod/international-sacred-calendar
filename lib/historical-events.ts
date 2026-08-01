@@ -172,8 +172,9 @@ export const HISTORICAL_EVENTS: HistoricalEvent[] = [
     id: "covenant-circumcision",
     title: "Covenant of circumcision with Abraham",
     category: "hebrew",
-    date: hebrew(2047),
+    date: hebrew(2048, 1, 13, "day"),
     source: "chabad",
+    note: "Traditional date: 13 Nisan AM 2048, two days before Isaac's birth.",
   },
   {
     id: "isaac-born",
@@ -297,7 +298,7 @@ export const HISTORICAL_EVENTS: HistoricalEvent[] = [
     category: "hebrew",
     date: hebrew(3338, 5, 9, "day"),
     source: "chabad",
-    note: "Traditional Hebrew chronology; academic chronologies commonly place the event in 587/586 BCE.",
+    note: "Traditional Hebrew chronology; the destruction begins the Babylonian exile. Academic chronologies commonly place the destruction in 587/586 BCE.",
   },
   {
     id: "purim",

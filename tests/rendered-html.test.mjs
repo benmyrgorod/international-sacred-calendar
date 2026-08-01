@@ -29,6 +29,8 @@ test("long localized chronology headings can wrap", async () => {
     css,
     /\.history-heading h2\s*\{[^}]*white-space:\s*normal;[^}]*text-wrap:\s*balance;/s,
   );
+  assert.match(css, /\.history-event\.near-rotation-alignment/);
+  assert.match(css, /\.history-event-pill\.near-alignment-pill/);
 });
 
 test("server-renders the International Sacred Calendar converter", async () => {
@@ -54,6 +56,10 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Rotation anniversaries/);
   assert.match(html, /To the 20th anniversary/);
   assert.match(html, /Rotation anniversaries 1–20/);
+  assert.match(html, /History near the 293-year marks/);
+  assert.match(html, /rotation-history-panorama\.webp/);
+  assert.equal((html.match(/class="rotation-history-card/g) ?? []).length, 11);
+  assert.match(html, /class="history-event history-civilization near-rotation-alignment"/);
   assert.match(html, /Five past and five future lunar alignments/);
   assert.match(html, /Eighty dates from Creation to today/);
   assert.match(html, /80 major events/);

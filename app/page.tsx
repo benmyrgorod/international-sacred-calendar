@@ -49,6 +49,7 @@ import {
 import { HISTORY_TRANSLATIONS } from "@/lib/history-translations";
 import { historicalEventName } from "@/lib/event-name-translations";
 import { holidayName } from "@/lib/holiday-name-translations";
+import { ALIGNMENT_HISTORY_TRANSLATIONS } from "@/lib/alignment-history-translations";
 import {
   formatLocalTime,
   isValidTimePreference,
@@ -65,6 +66,14 @@ import {
   planetForPlanetaryHour,
 } from "@/lib/planetary-hours";
 import { PLANETARY_TRANSLATIONS } from "@/lib/planetary-translations";
+import {
+  EGYPT_SOJOURN_MIDPOINT,
+  FEATURED_ALIGNMENT_EVENT_IDS,
+  MAINSTREAM_BABYLONIAN_EXILE,
+  nearestRotationAlignment,
+  type FeaturedAlignmentEventId,
+  type RotationAlignmentProximity,
+} from "@/lib/rotation-event-alignments";
 import {
   EXTENDED_CALENDAR_NAMES,
   IMPORTANT_DATE_TRANSLATIONS,
@@ -349,6 +358,24 @@ function historicalCalendarSpan(
   )}`;
 }
 
+function formatAlignmentOffset(
+  proximity: RotationAlignmentProximity,
+  locale: string,
+): string {
+  const roundedDays = Math.round(proximity.offsetDays);
+  const sign = roundedDays > 0 ? "+" : roundedDays < 0 ? "−" : "±";
+  const absoluteDays = Math.abs(roundedDays);
+
+  if (absoluteDays < SACRED_DAYS_PER_YEAR) {
+    return `${sign}${absoluteDays.toLocaleString(locale)} d`;
+  }
+
+  return `${sign}${Math.abs(proximity.offsetSacredYears).toLocaleString(locale, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })} ISC y`;
+}
+
 function safeDate(kind: CalendarKind, candidate: CalendarDate): CalendarDate {
   if (kind === "chinese") {
     const year = Math.max(1, candidate.year);
@@ -521,6 +548,7 @@ export default function Home() {
   const importantDateCopy = IMPORTANT_DATE_TRANSLATIONS[language];
   const planetaryCopy = PLANETARY_TRANSLATIONS[language];
   const historyCopy = HISTORY_TRANSLATIONS[language];
+  const alignmentHistoryCopy = ALIGNMENT_HISTORY_TRANSLATIONS[language];
 
   useEffect(() => {
     const stored = window.localStorage.getItem("isc-language") as LanguageCode | null;
@@ -709,12 +737,64 @@ export default function Home() {
     gridStartFixed,
     gridStartFixed + SACRED_DAYS_PER_MONTH - 1,
   );
-  const historicalEntries = SORTED_HISTORICAL_EVENTS.map((event, index) => ({
-    event,
-    localizedTitle: historicalEventName(event.id, language, event.title),
-    number: index + 1,
-    ...historicalEventRange(event),
-  }));
+  const historicalEntries = SORTED_HISTORICAL_EVENTS.map((event, index) => {
+    const range = historicalEventRange(event);
+    return {
+      event,
+      localizedTitle: historicalEventName(event.id, language, event.title),
+      number: index + 1,
+      ...range,
+      alignment: nearestRotationAlignment(range.startFixed, range.endFixed),
+    };
+  });
+  const historicalEntryById = new Map(
+    historicalEntries.map((entry) => [entry.event.id, entry]),
+  );
+  const eventAlignmentStory = (id: FeaturedAlignmentEventId) => {
+    const entry = historicalEntryById.get(id);
+    if (!entry) throw new RangeError(`Missing alignment event: ${id}`);
+    return {
+      key: id,
+      title: entry.localizedTitle,
+      detail: historicalCalendarSpan(
+        "sacred",
+        entry.startFixed,
+        entry.endFixed,
+        translations,
+        languageConfig.locale,
+      ),
+      proximity: entry.alignment,
+      href: `#history-${id}`,
+      within: false,
+    };
+  };
+  const alignmentStories = [
+    eventAlignmentStory(FEATURED_ALIGNMENT_EVENT_IDS[0]),
+    eventAlignmentStory(FEATURED_ALIGNMENT_EVENT_IDS[1]),
+    eventAlignmentStory(FEATURED_ALIGNMENT_EVENT_IDS[2]),
+    {
+      key: "egypt-midpoint",
+      title: alignmentHistoryCopy.midpointTitle,
+      detail: alignmentHistoryCopy.midpointDetail,
+      proximity: EGYPT_SOJOURN_MIDPOINT.proximity,
+      href: "#history-israel-descends-egypt",
+      within: false,
+    },
+    eventAlignmentStory(FEATURED_ALIGNMENT_EVENT_IDS[3]),
+    {
+      key: "babylonian-exile",
+      title: alignmentHistoryCopy.exileTitle,
+      detail: alignmentHistoryCopy.exileDetail,
+      proximity: nearestRotationAlignment(
+        MAINSTREAM_BABYLONIAN_EXILE.alignmentFixed,
+      ),
+      href: "#history-first-temple-destroyed",
+      within: true,
+    },
+    ...FEATURED_ALIGNMENT_EVENT_IDS.slice(4).map((id) =>
+      eventAlignmentStory(id),
+    ),
+  ];
   const normalizedHistoryQuery = historyQuery.trim().toLocaleLowerCase(
     languageConfig.locale,
   );
@@ -1050,6 +1130,48 @@ export default function Home() {
             </div>
           </div>
 
+          <div className="rotation-history-panel">
+            <div className="rotation-history-heading">
+              <div>
+                <span className="section-number">✦ {alignmentHistoryCopy.nearBadge}</span>
+                <h3>{alignmentHistoryCopy.title}</h3>
+                <p>{alignmentHistoryCopy.body}</p>
+              </div>
+              <small>{alignmentHistoryCopy.methodNote}</small>
+            </div>
+
+            <figure className="rotation-history-figure">
+              <Image
+                src="/rotation-history-panorama.webp"
+                alt={alignmentHistoryCopy.imageAlt}
+                width={1672}
+                height={941}
+                sizes="(max-width: 620px) 100vw, 88vw"
+              />
+            </figure>
+
+            <div className="rotation-history-grid">
+              {alignmentStories.map((story) => (
+                <a
+                  className={`rotation-history-card ${story.within ? "alignment-within" : ""}`}
+                  href={story.href}
+                  key={story.key}
+                >
+                  <span>
+                    {moonTranslations.rotationAnniversary} #{story.proximity.alignmentNumber}
+                  </span>
+                  <strong>{story.title}</strong>
+                  <em>
+                    {story.within
+                      ? "↔ 586–539 BCE"
+                      : formatAlignmentOffset(story.proximity, languageConfig.locale)}
+                  </em>
+                  <small>{story.detail}</small>
+                </a>
+              ))}
+            </div>
+          </div>
+
           <div className="anniversary-table-wrap">
             <table>
               <thead>
@@ -1232,7 +1354,7 @@ export default function Home() {
 
         <div className="history-list">
           {filteredHistoricalEntries.map(
-            ({ event, localizedTitle, number, startFixed, endFixed }) => {
+            ({ event, localizedTitle, number, startFixed, endFixed, alignment }) => {
               const source = HISTORY_SOURCES[event.source];
               const sacredSpan = historicalCalendarSpan(
                 "sacred",
@@ -1244,7 +1366,10 @@ export default function Home() {
 
               return (
                 <details
-                  className={`history-event history-${event.category}`}
+                  className={`history-event history-${event.category} ${
+                    alignment.isNear ? "near-rotation-alignment" : ""
+                  }`}
+                  id={`history-${event.id}`}
                   key={event.id}
                 >
                   <summary>
@@ -1261,6 +1386,14 @@ export default function Home() {
                         ) : null}
                         {event.symbolism ? (
                           <i className="symbolic-tag">✦ {historyCopy.symbolicDate}</i>
+                        ) : null}
+                        {alignment.isNear ? (
+                          <i className="alignment-proximity-tag">
+                            ✦ #{alignment.alignmentNumber} · {formatAlignmentOffset(
+                              alignment,
+                              languageConfig.locale,
+                            )}
+                          </i>
                         ) : null}
                       </span>
                       <strong>{localizedTitle}</strong>
@@ -1304,6 +1437,14 @@ export default function Home() {
                       </p>
                     ) : null}
                     {event.note ? <p className="history-note">{event.note}</p> : null}
+                    {alignment.isNear ? (
+                      <p className="history-alignment-note">
+                        <span aria-hidden="true">✦</span>
+                        {alignmentHistoryCopy.nearBadge} #{alignment.alignmentNumber}
+                        {" · "}
+                        {formatAlignmentOffset(alignment, languageConfig.locale)}
+                      </p>
+                    ) : null}
                     <div className="history-event-actions">
                       <a href={source.url} target="_blank" rel="noreferrer">
                         {historyCopy.source}: {source.label} ↗
@@ -1597,9 +1738,15 @@ export default function Home() {
                           : `Ovadia Binyamin · ${(event.baseBirthday ?? 0) + event.anniversaryNumber} ${importantDateCopy.birthdayLabel}`}
                       </span>
                     ))}
-                    {historyEvents.map(({ event, localizedTitle, number }) => (
+                    {historyEvents.map(({ event, localizedTitle, number, alignment }) => (
                       <span
-                        className="event-pill history-event-pill"
+                        className={[
+                          "event-pill",
+                          "history-event-pill",
+                          alignment.isNear ? "near-alignment-pill" : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
                         title={
                           event.date.precision === "day"
                             ? localizedTitle
@@ -1607,7 +1754,10 @@ export default function Home() {
                         }
                         key={event.id}
                       >
-                        ⌛ #{number} · {localizedTitle}
+                        {alignment.isNear
+                          ? `✦ #${alignment.alignmentNumber} · `
+                          : "⌛ "}
+                        #{number} · {localizedTitle}
                         {event.date.precision !== "day" ? " ≈" : ""}
                       </span>
                     ))}

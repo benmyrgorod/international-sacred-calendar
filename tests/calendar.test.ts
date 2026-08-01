@@ -28,6 +28,12 @@ import {
   planetForPlanetaryHour,
 } from "../lib/planetary-hours.ts";
 import {
+  EGYPT_SOJOURN_MIDPOINT,
+  FEATURED_ALIGNMENT_EVENT_IDS,
+  MAINSTREAM_BABYLONIAN_EXILE,
+  nearestRotationAlignment,
+} from "../lib/rotation-event-alignments.ts";
+import {
   HEBREW_YEARS_PER_ROTATION,
   SACRED_LUNAR_BEAT_DAYS,
   SACRED_DAYS_PER_YEAR,
@@ -163,6 +169,50 @@ test("maintains exactly 80 unique historical dates in chronological order", () =
         historicalEventRange(SORTED_HISTORICAL_EVENTS[index]).startFixed,
     );
   }
+});
+
+test("dates Abraham's circumcision covenant precisely in AM 2048", () => {
+  const covenant = HISTORICAL_EVENTS.find(
+    (event) => event.id === "covenant-circumcision",
+  );
+  assert.ok(covenant);
+  assert.deepEqual(covenant.date, {
+    calendar: "hebrew",
+    year: 2048,
+    month: 1,
+    day: 13,
+    precision: "day",
+  });
+});
+
+test("maps the infographic events to their nearest 293-year alignments", () => {
+  const expectedAlignments = new Map([
+    ["great-pyramid", 4],
+    ["covenant-circumcision", 7],
+    ["isaac-born", 7],
+    ["first-temple-work", 10],
+    ["second-temple-destroyed", 13],
+    ["hijra", 15],
+    ["magna-carta", 17],
+    ["columbus-americas", 18],
+    ["french-revolution", 19],
+  ]);
+
+  for (const eventId of FEATURED_ALIGNMENT_EVENT_IDS) {
+    const event = HISTORICAL_EVENTS.find((candidate) => candidate.id === eventId);
+    assert.ok(event);
+    const range = historicalEventRange(event);
+    const proximity = nearestRotationAlignment(range.startFixed, range.endFixed);
+    assert.equal(proximity.alignmentNumber, expectedAlignments.get(eventId));
+    assert.equal(proximity.isNear, true);
+  }
+
+  assert.equal(EGYPT_SOJOURN_MIDPOINT.proximity.alignmentNumber, 8);
+  assert.ok(
+    Math.abs(EGYPT_SOJOURN_MIDPOINT.proximity.offsetSacredYears - 5.3) < 0.1,
+  );
+  assert.equal(MAINSTREAM_BABYLONIAN_EXILE.alignmentNumber, 11);
+  assert.equal(MAINSTREAM_BABYLONIAN_EXILE.containsAlignment, true);
 });
 
 test("localizes all 80 historical event names in every supported language", () => {

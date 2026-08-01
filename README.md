@@ -102,6 +102,24 @@ the calendar grid. The 20th-anniversary countdown is recalculated from the date
 currently selected in the converter and reports complete International Sacred
 years plus the remaining days.
 
+### Historical events near rotation boundaries
+
+The rotation section also compares the 293-year boundaries with dated events
+from the 80-event chronology. A signed offset is calculated from the event's
+fixed-day midpoint: negative values are before the boundary and positive
+values are after it. Events within 33 International Sacred years of their
+nearest boundary receive a highlighted marker in the chronology and calendar
+grid. This threshold includes the approximately 32-year comparisons in the
+supplied historical infographic.
+
+Two interval annotations are kept separate from the 80 dated events. The
+Egypt card is a calculated midpoint between Jacob's family entering Egypt and
+the Exodus in traditional Hebrew chronology. The Babylonian-exile card uses
+the mainstream 586–539 BCE interval to show that Alignment 11 falls within
+that period, while the main chronology continues to use traditional Hebrew
+dating. Calendar proximity is presented as a pattern for exploration, not as
+evidence that the rotation caused an event.
+
 ## Approximate 1.48-year moon alignment
 
 International Sacred months begin every 28 days. NASA gives the mean synodic
@@ -229,6 +247,9 @@ the Beijing opening ceremony at 8:08 p.m. on 8/8/08.
 
 Chronology data and fixed-day ranges are provided by
 [`lib/historical-events.ts`](./lib/historical-events.ts).
+Rotation proximity calculations and the featured infographic comparisons are
+provided by
+[`lib/rotation-event-alignments.ts`](./lib/rotation-event-alignments.ts).
 
 ## Calendar conventions
 

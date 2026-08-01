@@ -44,6 +44,10 @@ correct calendar name; never change it to “Georgian.”
   the actual event date.
 - Every chronology event must remain reachable from the chronology section and
   represented on the ISC calendar grid.
+- Rotation proximity is calculated from an event's fixed-day midpoint. Events
+  within 33 ISC years of their nearest 293-year boundary are highlighted.
+  Contextual intervals such as the Egypt midpoint and mainstream Babylonian
+  exile span remain annotations rather than extra entries in the fixed list of 80.
 
 ## UI and localization
 

@@ -900,6 +900,123 @@ h1 em {
   color: var(--gold-light);
 }
 
+.rotation-history-panel {
+  margin-top: 72px;
+  padding-top: 56px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.rotation-history-heading {
+  margin-bottom: 26px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.55fr);
+  gap: 44px;
+  align-items: end;
+}
+
+.rotation-history-heading h3 {
+  margin: 10px 0 8px;
+  max-width: 900px;
+  color: #f7f0e2;
+  font-size: clamp(38px, 4.5vw, 58px);
+  font-weight: 500;
+  line-height: 0.98;
+}
+
+.rotation-history-heading p,
+.rotation-history-heading > small {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.rotation-history-heading > small {
+  padding-inline-start: 20px;
+  border-inline-start: 2px solid var(--gold-light);
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.rotation-history-figure {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(217, 199, 158, 0.34);
+  border-radius: 18px;
+  background: #e9dcc2;
+}
+
+.rotation-history-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.rotation-history-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.rotation-history-card {
+  min-height: 170px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(217, 199, 158, 0.22);
+  color: inherit;
+  background: rgba(255, 255, 255, 0.045);
+  text-decoration: none;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.rotation-history-card:hover {
+  border-color: var(--gold-light);
+  background: rgba(217, 199, 158, 0.1);
+  transform: translateY(-2px);
+}
+
+.rotation-history-card > span {
+  color: var(--gold-light);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rotation-history-card strong {
+  margin: 10px 0;
+  color: #f7f0e2;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.02;
+}
+
+.rotation-history-card em {
+  width: max-content;
+  margin-top: auto;
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: var(--forest);
+  background: var(--gold-light);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.rotation-history-card small {
+  margin-top: 9px;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.rotation-history-card.alignment-within {
+  background: rgba(182, 144, 78, 0.12);
+}
+
 .anniversary-table-wrap {
   margin-top: 34px;
   max-height: 720px;
@@ -1219,10 +1336,19 @@ h1 em {
 }
 
 .history-event {
+  scroll-margin-top: 110px;
   color: var(--ink);
   background: #fffdf8;
   border-bottom: 1px solid var(--line);
   border-inline-start: 4px solid var(--history-accent, var(--gold));
+}
+
+.history-event.near-rotation-alignment {
+  border-inline-start-color: var(--gold-light);
+  background:
+    linear-gradient(90deg, rgba(217, 199, 158, 0.2), transparent 20%),
+    #fffdf8;
+  box-shadow: inset 0 0 0 1px rgba(182, 144, 78, 0.16);
 }
 
 .history-event summary {
@@ -1292,6 +1418,13 @@ h1 em {
   border-color: var(--gold-light);
   color: var(--gold);
   background: rgba(182, 144, 78, 0.09);
+}
+
+.history-event-title i.alignment-proximity-tag {
+  border-color: var(--gold);
+  color: var(--forest);
+  background: rgba(217, 199, 158, 0.4);
+  font-weight: 700;
 }
 
 .history-event-title strong {
@@ -1381,7 +1514,8 @@ h1 em {
 }
 
 .history-symbolism,
-.history-note {
+.history-note,
+.history-alignment-note {
   margin: 12px 0 0;
   padding: 11px 13px;
   color: var(--ink-soft);
@@ -1397,6 +1531,19 @@ h1 em {
 }
 
 .history-symbolism span {
+  color: var(--gold);
+}
+
+.history-alignment-note {
+  display: flex;
+  gap: 9px;
+  border-inline-start: 3px solid var(--forest);
+  color: var(--forest);
+  background: rgba(217, 199, 158, 0.3);
+  font-weight: 600;
+}
+
+.history-alignment-note span {
   color: var(--gold);
 }
 
@@ -1828,6 +1975,13 @@ h1 em {
 .history-event-pill {
   color: #fffdf8;
   background: #607e8d;
+}
+
+.history-event-pill.near-alignment-pill {
+  color: var(--forest);
+  border: 1px solid var(--gold);
+  background: var(--gold-light);
+  font-weight: 700;
 }
 
 .lunar-alignment-section {
@@ -2538,6 +2692,19 @@ footer > a {
     align-items: start;
   }
 
+  .rotation-history-heading {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .rotation-history-heading > small {
+    padding-inline-start: 14px;
+  }
+
+  .rotation-history-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .lunar-alignment-section {
     grid-template-columns: 1fr;
   }
@@ -2832,6 +2999,27 @@ footer > a {
   .countdown-card {
     width: 100%;
     min-width: 0;
+  }
+
+  .rotation-history-panel {
+    margin-top: 56px;
+    padding-top: 44px;
+  }
+
+  .rotation-history-figure {
+    overflow-x: auto;
+  }
+
+  .rotation-history-figure img {
+    min-width: 760px;
+  }
+
+  .rotation-history-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rotation-history-card {
+    min-height: 0;
   }
 
   .calendar-toolbar {
