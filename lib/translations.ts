@@ -769,17 +769,17 @@ export const LANGUAGES: Array<{
   locale: string;
   direction: "ltr" | "rtl";
 }> = [
-  { code: "en", label: "English", locale: "en-US", direction: "ltr" },
-  { code: "he", label: "עברית", locale: "he-IL", direction: "rtl" },
   { code: "ar", label: "العربية", locale: "ar", direction: "rtl" },
-  { code: "it", label: "Italiano", locale: "it-IT", direction: "ltr" },
-  { code: "el", label: "Ελληνικά", locale: "el-GR", direction: "ltr" },
-  { code: "ru", label: "Русский", locale: "ru-RU", direction: "ltr" },
   { code: "zh", label: "中文（简体）", locale: "zh-CN", direction: "ltr" },
-  { code: "hi", label: "हिन्दी", locale: "hi-IN", direction: "ltr" },
-  { code: "es", label: "Español", locale: "es-ES", direction: "ltr" },
+  { code: "en", label: "English", locale: "en-US", direction: "ltr" },
   { code: "fr", label: "Français", locale: "fr-FR", direction: "ltr" },
+  { code: "el", label: "Ελληνικά", locale: "el-GR", direction: "ltr" },
+  { code: "he", label: "עברית", locale: "he-IL", direction: "rtl" },
+  { code: "hi", label: "हिन्दी", locale: "hi-IN", direction: "ltr" },
+  { code: "it", label: "Italiano", locale: "it-IT", direction: "ltr" },
   { code: "ja", label: "日本語", locale: "ja-JP", direction: "ltr" },
+  { code: "ru", label: "Русский", locale: "ru-RU", direction: "ltr" },
+  { code: "es", label: "Español", locale: "es-ES", direction: "ltr" },
 ];
 
 export interface MoonTranslationPack {
@@ -798,6 +798,7 @@ export interface MoonTranslationPack {
   weekStartsOn: string;
   sunday: string;
   monday: string;
+  gridCalendar: string;
   alignmentsTitle: string;
   alignmentsBody: string;
   past: string;
@@ -823,6 +824,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     weekStartsOn: "Week starts on",
     sunday: "Sunday",
     monday: "Monday",
+    gridCalendar: "Grid dates",
     alignmentsTitle: "Five past and five future lunar alignments",
     alignmentsBody: "A 28-day month boundary and the mean new moon return near one another about every 540 days, or 1.48 years.",
     past: "Past",
@@ -846,6 +848,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     weekStartsOn: "השבוע מתחיל ביום",
     sunday: "יום ראשון",
     monday: "יום שני",
+    gridCalendar: "תאריכי הרשת",
     alignmentsTitle: "חמישה יישורים קודמים וחמישה עתידיים",
     alignmentsBody: "גבול חודש בן 28 ימים והירח החדש הממוצע מתקרבים שוב בערך כל 540 ימים, או 1.48 שנים.",
     past: "עבר",
@@ -869,6 +872,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     weekStartsOn: "بداية الأسبوع",
     sunday: "الأحد",
     monday: "الاثنين",
+    gridCalendar: "تواريخ الشبكة",
     alignmentsTitle: "خمس محاذاة سابقة وخمس مستقبلية",
     alignmentsBody: "تتقارب بداية الشهر ذي 28 يوماً والمحاق المتوسط كل نحو 540 يوماً، أي 1.48 سنة.",
     past: "الماضي",
@@ -892,6 +896,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     weekStartsOn: "Inizio settimana",
     sunday: "Domenica",
     monday: "Lunedì",
+    gridCalendar: "Date nella griglia",
     alignmentsTitle: "Cinque allineamenti passati e cinque futuri",
     alignmentsBody: "Il confine del mese di 28 giorni e la luna nuova media tornano vicini circa ogni 540 giorni, o 1,48 anni.",
     past: "Passato",
@@ -915,6 +920,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     weekStartsOn: "Η εβδομάδα αρχίζει",
     sunday: "Κυριακή",
     monday: "Δευτέρα",
+    gridCalendar: "Ημερομηνίες πλέγματος",
     alignmentsTitle: "Πέντε παλιές και πέντε μελλοντικές ευθυγραμμίσεις",
     alignmentsBody: "Η αρχή του μήνα των 28 ημερών και η μέση νέα σελήνη πλησιάζουν ξανά κάθε 540 ημέρες, ή 1,48 έτη.",
     past: "Παρελθόν",
@@ -938,6 +944,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     weekStartsOn: "Неделя начинается",
     sunday: "Воскресенье",
     monday: "Понедельник",
+    gridCalendar: "Даты в сетке",
     alignmentsTitle: "Пять прошлых и пять будущих совпадений",
     alignmentsBody: "Начало 28-дневного месяца и среднее новолуние снова сближаются примерно через 540 дней, или 1,48 года.",
     past: "Прошлое",
@@ -961,6 +968,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     weekStartsOn: "每周开始于",
     sunday: "星期日",
     monday: "星期一",
+    gridCalendar: "网格日期",
     alignmentsTitle: "过去五次与未来五次月相对齐",
     alignmentsBody: "28天月份边界与平均新月约每540天（1.48年）再次接近。",
     past: "过去",
@@ -984,6 +992,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     weekStartsOn: "सप्ताह शुरू होता है",
     sunday: "रविवार",
     monday: "सोमवार",
+    gridCalendar: "ग्रिड की तारीखें",
     alignmentsTitle: "पाँच पिछले और पाँच भविष्य के संरेखण",
     alignmentsBody: "28-दिन महीने की सीमा और औसत अमावस्या लगभग हर 540 दिन, यानी 1.48 वर्ष में फिर पास आते हैं।",
     past: "पिछला",
@@ -1007,6 +1016,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     weekStartsOn: "La semana empieza",
     sunday: "Domingo",
     monday: "Lunes",
+    gridCalendar: "Fechas de la cuadrícula",
     alignmentsTitle: "Cinco alineaciones pasadas y cinco futuras",
     alignmentsBody: "El límite del mes de 28 días y la luna nueva media vuelven a acercarse cada 540 días, o 1,48 años.",
     past: "Pasado",
@@ -1030,6 +1040,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     weekStartsOn: "Début de semaine",
     sunday: "Dimanche",
     monday: "Lundi",
+    gridCalendar: "Dates de la grille",
     alignmentsTitle: "Cinq alignements passés et cinq futurs",
     alignmentsBody: "Le début du mois de 28 jours et la nouvelle lune moyenne se rapprochent environ tous les 540 jours, soit 1,48 an.",
     past: "Passé",
@@ -1053,6 +1064,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     weekStartsOn: "週の開始曜日",
     sunday: "日曜日",
     monday: "月曜日",
+    gridCalendar: "グリッドの日付",
     alignmentsTitle: "過去5回と未来5回の月相整列",
     alignmentsBody: "28日月の境界と平均新月は約540日、すなわち1.48年ごとに再び近づきます。",
     past: "過去",

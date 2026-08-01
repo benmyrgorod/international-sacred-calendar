@@ -128,13 +128,17 @@ Reference:
 The 28-day grid displays one International Sacred month at a time. It marks:
 
 - the currently selected date;
-- the corresponding Gregorian date in every day cell;
+- a secondary date from the selected converter source calendar in every day
+  cell (Gregorian by default);
 - approximate moon/month-start alignments;
 - 293-year rotation anniversaries.
 
 The week-start selector supports Monday or Sunday. Monday is selected by
 default, matching the calculated weekday of International Sacred Month 1 Day
 1. The optional Sunday-first view includes an empty Sunday cell before Day 1.
+The grid-calendar selector stays synchronized with the converter’s **From**
+calendar, so changing either control updates both while preserving the selected
+fixed date.
 
 The prefix for International Sacred dates is **ISC**, for example
 `ISC 5805 · 04 · 12`.

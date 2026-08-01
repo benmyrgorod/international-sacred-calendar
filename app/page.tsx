@@ -46,7 +46,6 @@ const CALENDARS: CalendarKind[] = [
   "julian",
   "islamic",
 ];
-
 type WeekStart = "sunday" | "monday";
 
 interface ImportantDateDefinition {
@@ -56,6 +55,8 @@ interface ImportantDateDefinition {
 }
 
 const DEFAULT_FIXED = fixedFromGregorian({ year: 2026, month: 7, day: 29 });
+const DEFAULT_LANGUAGE_CONFIG =
+  LANGUAGES.find((candidate) => candidate.code === "en") ?? LANGUAGES[0];
 const IMPORTANT_DATES: ImportantDateDefinition[] = [
   {
     id: "discovery",
@@ -184,8 +185,25 @@ function localizedWeekday(fixed: number, locale: string): string {
   }).format(date);
 }
 
-function formatGridGregorianDate(fixed: number, locale: string): string {
-  const date = gregorianFromFixed(fixed);
+function formatGridCalendarDate(
+  kind: CalendarKind,
+  fixed: number,
+  locale: string,
+): string {
+  const date = dateFromFixed(kind, fixed);
+
+  if (kind === "sacred") {
+    return `ISC ${date.year} · ${date.month} · ${date.day}`;
+  }
+  if (kind === "hebrew") {
+    return `${date.day} ${HEBREW_MONTH_NAMES[date.month]} ${date.year} AM`;
+  }
+  if (kind === "islamic") {
+    const year = date.year > 0 ? date.year : 1 - date.year;
+    const era = date.year > 0 ? "AH" : "BH";
+    return `${date.day} ${ISLAMIC_MONTH_NAMES[date.month]} ${year} ${era}`;
+  }
+
   const month = new Intl.DateTimeFormat(locale, {
     month: "short",
     timeZone: "UTC",
@@ -310,7 +328,8 @@ export default function Home() {
     equivalentFor("gregorian", DEFAULT_FIXED),
   );
   const languageConfig =
-    LANGUAGES.find((candidate) => candidate.code === language) ?? LANGUAGES[0];
+    LANGUAGES.find((candidate) => candidate.code === language) ??
+    DEFAULT_LANGUAGE_CONFIG;
   const translations = TRANSLATIONS[language];
   const moonTranslations = MOON_TRANSLATIONS[language];
   const importantDateCopy = IMPORTANT_DATE_TRANSLATIONS[language];
@@ -320,7 +339,9 @@ export default function Home() {
     const next = LANGUAGES.some((candidate) => candidate.code === stored)
       ? (stored as LanguageCode)
       : "en";
-    const config = LANGUAGES.find((candidate) => candidate.code === next) ?? LANGUAGES[0];
+    const config =
+      LANGUAGES.find((candidate) => candidate.code === next) ??
+      DEFAULT_LANGUAGE_CONFIG;
     document.documentElement.lang = config.locale;
     document.documentElement.dir = config.direction;
     const frame = window.requestAnimationFrame(() => {
@@ -382,7 +403,9 @@ export default function Home() {
   function changeLanguage(next: LanguageCode) {
     setLanguage(next);
     window.localStorage.setItem("isc-language", next);
-    const config = LANGUAGES.find((candidate) => candidate.code === next) ?? LANGUAGES[0];
+    const config =
+      LANGUAGES.find((candidate) => candidate.code === next) ??
+      DEFAULT_LANGUAGE_CONFIG;
     document.documentElement.lang = config.locale;
     document.documentElement.dir = config.direction;
   }
@@ -898,6 +921,20 @@ export default function Home() {
               <option value="monday">{moonTranslations.monday}</option>
             </select>
           </label>
+          <label className="grid-calendar-picker">
+            <span>{moonTranslations.gridCalendar}</span>
+            <select
+              aria-label={moonTranslations.gridCalendar}
+              value={from}
+              onChange={(event) => changeFrom(event.target.value as CalendarKind)}
+            >
+              {CALENDARS.map((calendar) => (
+                <option value={calendar} key={calendar}>
+                  {calendarLabel(calendar, translations)}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
 
         <div className="calendar-legend" aria-label="Calendar event legend">
@@ -970,8 +1007,12 @@ export default function Home() {
                 >
                   <div className="calendar-day-heading">
                     <span className="day-number">{day}</span>
-                    <span className="gregorian-date">
-                      {formatGridGregorianDate(cellFixed, languageConfig.locale)}
+                    <span className="grid-calendar-date">
+                      {formatGridCalendarDate(
+                        from,
+                        cellFixed,
+                        languageConfig.locale,
+                      )}
                     </span>
                   </div>
                   <div className="day-events">
@@ -1043,7 +1084,10 @@ export default function Home() {
               const islamic = dateFromFixed("islamic", alignment.fixed);
 
               return (
-                <article key={`${alignment.sacred.year}-${alignment.sacred.month}`}>
+                <article
+                  className={isPast ? "past-alignment" : "future-alignment"}
+                  key={`${alignment.sacred.year}-${alignment.sacred.month}`}
+                >
                   <div className="alignment-index">
                     <span>{isPast ? moonTranslations.past : moonTranslations.future}</span>
                     <strong>

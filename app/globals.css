@@ -1123,7 +1123,8 @@ h1 em {
   background: rgba(182, 144, 78, 0.1);
 }
 
-.week-start-picker {
+.week-start-picker,
+.grid-calendar-picker {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1134,7 +1135,8 @@ h1 em {
   text-transform: uppercase;
 }
 
-.week-start-picker select {
+.week-start-picker select,
+.grid-calendar-picker select {
   min-height: 34px;
   padding: 6px 28px 6px 10px;
   border: 1px solid var(--line);
@@ -1277,10 +1279,10 @@ h1 em {
   gap: 8px;
 }
 
-.gregorian-date {
+.grid-calendar-date {
   color: var(--ink-soft);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 7px;
+  font-size: 9px;
   letter-spacing: 0.02em;
   line-height: 1.3;
   text-align: end;
@@ -1298,7 +1300,7 @@ h1 em {
   max-width: 100%;
   padding: 5px 7px;
   border-radius: 4px;
-  font-size: 8px;
+  font-size: 9px;
   line-height: 1.35;
 }
 
@@ -1388,12 +1390,17 @@ h1 em {
 }
 
 .alignment-list article {
-  padding: 18px 0;
+  padding: 18px 14px;
   display: grid;
   grid-template-columns: 1.15fr 1.15fr 1.8fr 0.7fr;
   gap: 20px;
   align-items: center;
   border-bottom: 1px solid var(--line);
+}
+
+.alignment-list article.future-alignment {
+  border-inline-start: 3px solid var(--gold);
+  background: rgba(21, 56, 45, 0.08);
 }
 
 .alignment-list strong {
@@ -1772,7 +1779,8 @@ footer > a {
     width: 100%;
   }
 
-  .week-start-picker {
+  .week-start-picker,
+  .grid-calendar-picker {
     width: 100%;
     justify-content: center;
   }
@@ -1792,6 +1800,10 @@ footer > a {
   .calendar-day {
     min-height: 88px;
     padding: 7px;
+  }
+
+  .grid-calendar-date {
+    font-size: 7px;
   }
 
   .event-pill {
