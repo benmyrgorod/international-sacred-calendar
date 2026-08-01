@@ -65,7 +65,10 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Rotation anniversaries 1–22/);
   assert.match(html, /Cosmic week/);
   assert.match(html, /data-cosmic-week="1">Monday, Week 1</);
-  assert.match(html, /data-cosmic-week="2">Tuesday, Week 2</);
+  assert.match(html, /data-cosmic-week="2">Tuesday, Week 1</);
+  assert.match(html, /data-cosmic-week="7">Sunday, Week 1</);
+  assert.match(html, /data-cosmic-week="8">Monday, Week 2</);
+  assert.match(html, /data-cosmic-week="22">Monday, Week 4</);
   assert.equal((html.match(/data-cosmic-week=/g) ?? []).length, 22);
   for (const number of [7, 14, 21]) {
     assert.match(
@@ -114,6 +117,7 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /74 d · 1 h · 32 min/);
   assert.match(html, /1 d · 5 h · 37 min · 32 s/);
   assert.match(html, /aria-label="Cosmic Week"/);
+  assert.match(html, /aria-label="Cosmic Day"/);
   assert.match(html, /aria-label="Cosmic Second"/);
   assert.match(html, /Apply Cosmic Date/);
   assert.match(html, /Five past and five future lunar alignments/);

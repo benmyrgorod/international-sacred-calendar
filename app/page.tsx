@@ -57,6 +57,7 @@ import {
   COSMIC_MINUTE_DURATION,
   COSMIC_SECOND_DURATION,
   cosmicDateFromFixed,
+  cosmicWeekNumber,
   cosmicWeekdayIndex,
   fixedFromCosmicDate,
   type CivilDuration,
@@ -119,6 +120,7 @@ interface ImportantDateDefinition {
 interface CosmicDateDraft {
   fixed: number;
   week: string;
+  weekdayIndex: string;
   hour: string;
   minute: string;
   second: string;
@@ -171,6 +173,7 @@ function cosmicDateDraftFromFixed(fixed: number): CosmicDateDraft {
   return {
     fixed,
     week: String(cosmic.week),
+    weekdayIndex: String(cosmic.weekdayIndex),
     hour: String(cosmic.hour),
     minute: String(cosmic.minute),
     second: cosmic.second.toFixed(3),
@@ -683,15 +686,10 @@ export default function Home() {
     }
   }, [from, sourceDate, to]);
 
-  const selectedCosmicDate = cosmicDateFromFixed(calculation.fixed);
   const activeCosmicDateDraft =
     cosmicDateDraft.fixed === calculation.fixed
       ? cosmicDateDraft
       : cosmicDateDraftFromFixed(calculation.fixed);
-  const enteredCosmicWeek = Number(activeCosmicDateDraft.week);
-  const enteredCosmicWeekdayIndex = Number.isInteger(enteredCosmicWeek)
-    ? cosmicWeekdayIndex(enteredCosmicWeek)
-    : selectedCosmicDate.weekdayIndex;
 
   function changeFrom(next: CalendarKind, resetGrid = true) {
     let fixed = DEFAULT_FIXED;
@@ -723,6 +721,7 @@ export default function Home() {
     try {
       const fixed = fixedFromCosmicDate({
         week: Number(activeCosmicDateDraft.week),
+        weekdayIndex: Number(activeCosmicDateDraft.weekdayIndex),
         hour: Number(activeCosmicDateDraft.hour),
         minute: Number(activeCosmicDateDraft.minute),
         second: Number(activeCosmicDateDraft.second),
@@ -1387,12 +1386,25 @@ export default function Home() {
                 </label>
                 <label>
                   <span>{cosmicTimeCopy.cosmicDay}</span>
-                  <output>
-                    {localizedWeekday(
-                      enteredCosmicWeekdayIndex + 1,
-                      languageConfig.locale,
-                    )}
-                  </output>
+                  <select
+                    aria-label={cosmicTimeCopy.cosmicDay}
+                    value={activeCosmicDateDraft.weekdayIndex}
+                    onChange={(event) =>
+                      setCosmicDateDraft({
+                        ...activeCosmicDateDraft,
+                        weekdayIndex: event.target.value,
+                      })
+                    }
+                  >
+                    {Array.from({ length: 7 }, (_, weekdayIndex) => (
+                      <option key={weekdayIndex} value={weekdayIndex}>
+                        {localizedWeekday(
+                          weekdayIndex + 1,
+                          languageConfig.locale,
+                        )}
+                      </option>
+                    ))}
+                  </select>
                 </label>
                 <label>
                   <span>{cosmicTimeCopy.cosmicHour}</span>
@@ -1508,7 +1520,7 @@ export default function Home() {
                       </button>
                     </th>
                     <td className="cosmic-week" data-cosmic-week={anniversary.number}>
-                      {`${localizedWeekday(anniversary.number, languageConfig.locale)}, ${translations.week} ${anniversary.number.toLocaleString(languageConfig.locale)}`}
+                      {`${localizedWeekday(cosmicWeekdayIndex(anniversary.number) + 1, languageConfig.locale)}, ${translations.week} ${cosmicWeekNumber(anniversary.number).toLocaleString(languageConfig.locale)}`}
                     </td>
                     <td>{formatDate("sacred", anniversary.sacred, translations, languageConfig.locale)}</td>
                     <td>{formatDate("hebrew", anniversary.hebrew, translations, languageConfig.locale)}</td>

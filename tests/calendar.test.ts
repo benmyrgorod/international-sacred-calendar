@@ -28,7 +28,10 @@ import {
   COSMIC_HOUR_DURATION,
   COSMIC_MINUTE_DURATION,
   COSMIC_SECOND_DURATION,
+  cosmicAlignmentNumber,
   cosmicDateFromFixed,
+  cosmicWeekNumber,
+  cosmicWeekdayIndex,
   fixedFromCosmicDate,
 } from "../lib/cosmic-time.ts";
 import {
@@ -541,11 +544,40 @@ test("round-trips selected dates through editable Cosmic Dates", () => {
     second: 0,
   });
 
+  assert.deepEqual(
+    Array.from({ length: 8 }, (_, index) => index + 1).map((alignment) => ({
+      alignment,
+      week: cosmicWeekNumber(alignment),
+      weekdayIndex: cosmicWeekdayIndex(alignment),
+    })),
+    [
+      { alignment: 1, week: 1, weekdayIndex: 0 },
+      { alignment: 2, week: 1, weekdayIndex: 1 },
+      { alignment: 3, week: 1, weekdayIndex: 2 },
+      { alignment: 4, week: 1, weekdayIndex: 3 },
+      { alignment: 5, week: 1, weekdayIndex: 4 },
+      { alignment: 6, week: 1, weekdayIndex: 5 },
+      { alignment: 7, week: 1, weekdayIndex: 6 },
+      { alignment: 8, week: 2, weekdayIndex: 0 },
+    ],
+  );
+  assert.equal(cosmicAlignmentNumber(1, 0), 1);
+  assert.equal(cosmicAlignmentNumber(1, 6), 7);
+  assert.equal(cosmicAlignmentNumber(2, 0), 8);
+  assert.equal(cosmicAlignmentNumber(4, 0), 22);
+
   const selectedFixed = fixedFromDate("gregorian", {
     year: 2026,
     month: 7,
     day: 29,
   });
+  assert.deepEqual(
+    {
+      week: cosmicDateFromFixed(selectedFixed).week,
+      weekdayIndex: cosmicDateFromFixed(selectedFixed).weekdayIndex,
+    },
+    { week: 3, weekdayIndex: 4 },
+  );
   for (const fixed of [SACRED_EPOCH_FIXED, selectedFixed, firstAlignmentFixed]) {
     assert.equal(fixedFromCosmicDate(cosmicDateFromFixed(fixed)), fixed);
   }

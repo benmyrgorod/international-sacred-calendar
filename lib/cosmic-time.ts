@@ -28,11 +28,35 @@ function positiveModulo(value: number, modulus: number): number {
   return ((value % modulus) + modulus) % modulus;
 }
 
-export function cosmicWeekdayIndex(week: number): number {
+export function cosmicWeekdayIndex(alignmentNumber: number): number {
+  if (!Number.isInteger(alignmentNumber)) {
+    throw new RangeError("Cosmic alignment number must be an integer.");
+  }
+  return positiveModulo(alignmentNumber - 1, 7);
+}
+
+export function cosmicWeekNumber(alignmentNumber: number): number {
+  if (!Number.isInteger(alignmentNumber)) {
+    throw new RangeError("Cosmic alignment number must be an integer.");
+  }
+  return Math.floor((alignmentNumber - 1) / 7) + 1;
+}
+
+export function cosmicAlignmentNumber(
+  week: number,
+  weekdayIndex: number,
+): number {
   if (!Number.isInteger(week)) {
     throw new RangeError("Cosmic Week must be an integer.");
   }
-  return positiveModulo(week - 1, 7);
+  if (
+    !Number.isInteger(weekdayIndex) ||
+    weekdayIndex < 0 ||
+    weekdayIndex > 6
+  ) {
+    throw new RangeError("Cosmic Day must be from Monday through Sunday.");
+  }
+  return (week - 1) * 7 + weekdayIndex + 1;
 }
 
 export function cosmicDateFromFixed(fixed: number): CosmicDate {
@@ -42,16 +66,16 @@ export function cosmicDateFromFixed(fixed: number): CosmicDate {
 
   const elapsedCosmicDays =
     (fixed - SACRED_EPOCH_FIXED) / COSMIC_DAY_CIVIL_DAYS;
-  const week = Math.floor(elapsedCosmicDays);
-  const fraction = elapsedCosmicDays - week;
+  const alignmentNumber = Math.floor(elapsedCosmicDays);
+  const fraction = elapsedCosmicDays - alignmentNumber;
   const totalCosmicSeconds = fraction * 24 * 60 * 60;
   const hour = Math.floor(totalCosmicSeconds / 3600);
   const minute = Math.floor((totalCosmicSeconds - hour * 3600) / 60);
   const second = totalCosmicSeconds - hour * 3600 - minute * 60;
 
   return {
-    week,
-    weekdayIndex: cosmicWeekdayIndex(week),
+    week: cosmicWeekNumber(alignmentNumber),
+    weekdayIndex: cosmicWeekdayIndex(alignmentNumber),
     hour,
     minute,
     second,
@@ -59,11 +83,18 @@ export function cosmicDateFromFixed(fixed: number): CosmicDate {
 }
 
 export function fixedFromCosmicDate(
-  cosmic: Pick<CosmicDate, "week" | "hour" | "minute" | "second">,
+  cosmic: Pick<
+    CosmicDate,
+    "week" | "weekdayIndex" | "hour" | "minute" | "second"
+  >,
 ): number {
   if (!Number.isInteger(cosmic.week)) {
     throw new RangeError("Cosmic Week must be an integer.");
   }
+  const alignmentNumber = cosmicAlignmentNumber(
+    cosmic.week,
+    cosmic.weekdayIndex,
+  );
   if (!Number.isInteger(cosmic.hour) || cosmic.hour < 0 || cosmic.hour > 23) {
     throw new RangeError("Cosmic Hour must be from 0 to 23.");
   }
@@ -79,7 +110,7 @@ export function fixedFromCosmicDate(
     CIVIL_SECONDS_PER_DAY;
   return Math.round(
     SACRED_EPOCH_FIXED +
-      (cosmic.week + fraction) * COSMIC_DAY_CIVIL_DAYS,
+      (alignmentNumber + fraction) * COSMIC_DAY_CIVIL_DAYS,
   );
 }
 

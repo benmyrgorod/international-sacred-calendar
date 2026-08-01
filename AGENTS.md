@@ -26,10 +26,10 @@ correct calendar name; never change it to “Georgian.”
   146.5-year half-cycle marks. Both use the documented 33-ISC-year proximity
   window; full-cycle matches are gold and half-cycle matches are sapphire.
 - Cosmic time treats one 293-ISC-year interval as one Cosmic Day and divides it
-  into 24 hours, 60 minutes per hour, and 60 seconds per minute. Cosmic Week is
-  the numbered interval used by the anniversary table; its symbolic weekday
-  starts with Monday for Week 1. Cosmic Date edits round to the nearest fixed
-  civil day.
+  into 24 hours, 60 minutes per hour, and 60 seconds per minute. Each 293-year
+  alignment is one symbolic Cosmic Day: alignments 1 through 7 are Monday
+  through Sunday of Cosmic Week 1, alignments 8 through 14 are Cosmic Week 2,
+  and so on. Cosmic Date edits round to the nearest fixed civil day.
 - Lunar alignments plus new- and full-moon dates use mean-lunation
   approximations. Keep approximation labels visible and do not describe them
   as observations.

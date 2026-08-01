@@ -2,6 +2,65 @@
 
 URL: https://sacredcal.one
 
+## A personal coincidence
+
+I discovered the International Sacred Calendar on **July 27, 2026**—one day
+before my 40th birthday according to this calendar. I found the timing
+personally meaningful and felt encouraged to continue researching its
+mathematical, historical, and spiritual patterns.
+
+## The 293-year alignment cycle
+
+A Sacred year contains exactly 364 days. A cycle of 293 Sacred years is
+remarkably close to 292 mean Hebrew years:
+
+```text
+293 Sacred years × 364 days       = 106,652 days
+292 mean Hebrew years × 365.246822 = 106,652.072 days
+```
+
+The two spans differ by only about **one hour and forty-four minutes**. Several
+important religious and historical events occurred on or close to these
+293-year alignment boundaries:
+
+| Alignment | Event | Position relative to the alignment |
+| ---: | --- | --- |
+| #4 | Completion of the Great Pyramid of Giza | approximately 32 Sacred years after |
+| #7 | Covenant of circumcision with Abraham | approximately 1.6 Sacred years after |
+| #7 | Birth of Isaac | approximately 2.6 Sacred years after |
+| #8 | Midpoint of Israel’s traditional period in Egypt | approximately 5.3 Sacred years after |
+| #10 | Beginning of construction of the First Temple | approximately 6.6 Sacred years after |
+| #11 | Babylonian exile | the alignment falls within the commonly accepted 586–539 BCE exile period |
+| #13 | Destruction of the Second Temple | approximately 32 Sacred years after |
+| #15 | The Hijra and beginning of the Islamic calendar | approximately 312 days after |
+| #17 | Sealing of Magna Carta | approximately 9.8 Sacred years after |
+| #18 | Columbus’s arrival in the Americas | approximately 4.9 Sacred years before |
+| #19 | United States Declaration of Independence | approximately 13.2 Sacred years before |
+| #19 | Storming of the Bastille and the French Revolution | approximately 62 days before |
+
+I do not suggest that the cycle caused these events. Rather, the alignments
+seem to highlight important moments in religious and world history, making the
+pattern an interesting subject for further study.
+
+## Lunar alignments and Monday
+
+The calendar also identifies recurring occasions when the beginning of a
+28-day Sacred month closely approaches the mean new moon. Because every Sacred
+month begins on Monday, all of these lunar-alignment dates occur on Monday—the
+weekday traditionally associated with the Moon.
+
+The calendar itself also begins on Monday, corresponding to 25 Elul AM 1 when
+the rules of the modern fixed Hebrew calendar are mathematically extended
+backward toward Creation week. This mathematical result is kept distinct from
+the religious tradition that describes Creation week as beginning on Sunday.
+
+I warmly invite you to explore the calendar, its date converter, historical
+chronology, solar cycle, and lunar alignments. I would be very grateful for
+your thoughts—especially regarding the traditional chronology and any
+interpretations that should be corrected or refined.
+
+## Website and library
+
 An interactive multilingual web converter and standalone TypeScript calendar
 module for:
 
@@ -65,7 +124,7 @@ References for the traditional Creation-week date:
 - [Chabad: Creation](https://www.chabad.org/calendar/view/day_cdo/aid/156820/jewish/Creation.htm)
 - [TheTorah.com: When did we begin counting from Creation?](https://www.thetorah.com/article/the-calendar-when-did-we-begin-counting-from-creation)
 
-## What the approximately 293-year rotation means
+## Rotation calculation and implementation
 
 An International Sacred year contains 364 days. A mean Hebrew year is approximately
 365.246822 days. The Sacred year boundary therefore moves earlier by about
@@ -104,11 +163,13 @@ the calendar grid. The 20th-anniversary countdown is recalculated from the date
 currently selected in the converter and reports complete International Sacred
 years plus the remaining days.
 
-The table also includes a symbolic Cosmic week sequence: anniversary #1 is
-Monday, Week 1; #2 is Tuesday, Week 2; and the weekday cycles onward through
-seven days. This is separate from the calculated civil weekday column. Because
-each International Sacred year contains exactly 52 weeks, every actual
-293-year anniversary boundary remains a Monday.
+The table also includes a symbolic Cosmic week sequence. Alignments #1 through
+#7 are Monday through Sunday of **Cosmic Week 1**; #8 starts **Cosmic Week 2**
+on Monday. Thus #1 is Monday, Week 1; #2 is Tuesday, Week 1; #7 is Sunday,
+Week 1; and #8 is Monday, Week 2. This symbolic sequence is separate from the
+calculated civil weekday column. Because each International Sacred year
+contains exactly 52 weeks, every actual 293-year anniversary boundary remains
+a Monday in the civil-week calculation.
 
 ### Historical events near rotation boundaries
 
@@ -145,14 +206,15 @@ civil days. Dividing it like a 24-hour clock gives:
 - 1 Cosmic Second = 293 / 86,400 ISC years = 1 day, 5 hours, 37 minutes, and
   32 seconds.
 
-The selected Cosmic Date is measured from the ISC epoch. Its Cosmic Week is
-the completed 293-year interval number, matching the anniversary table; Week 1
-is Monday and subsequent week labels cycle through Sunday. Hour, minute, and
-second locate the selected date proportionally within that 293-year span.
-Editing those values and applying them updates the main source date to the
-nearest civil day. Three decimal places on Cosmic Seconds preserve civil-day
-round trips. This is a proportional calendar model, not an astronomical time
-standard.
+The selected Cosmic Date is measured from the ISC epoch. Each completed
+293-year interval is one Cosmic Day. Seven consecutive Cosmic Days form one
+Cosmic Week: Days #1–#7 make Week 1, Days #8–#14 make Week 2, and so on. The
+date editor therefore accepts both the Cosmic Week and the Monday-through-
+Sunday Cosmic Day, while hour, minute, and second locate the selected date
+proportionally within that 293-year day. Applying those values updates the
+main source date to the nearest civil day. Three decimal places on Cosmic
+Seconds preserve civil-day round trips. This is a proportional calendar model,
+not an astronomical time standard.
 
 ## Approximate 1.48-year moon alignment
 
