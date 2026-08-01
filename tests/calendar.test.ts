@@ -11,6 +11,14 @@ import {
   historicalEventRange,
 } from "../lib/historical-events.ts";
 import {
+  HISTORICAL_EVENT_NAME_TRANSLATIONS,
+  historicalEventName,
+} from "../lib/event-name-translations.ts";
+import {
+  HOLIDAY_NAME_TRANSLATIONS,
+  holidayName,
+} from "../lib/holiday-name-translations.ts";
+import {
   formatLocalTime,
   isValidTimePreference,
   normalizeTimePreference,
@@ -155,6 +163,59 @@ test("maintains exactly 80 unique historical dates in chronological order", () =
         historicalEventRange(SORTED_HISTORICAL_EVENTS[index]).startFixed,
     );
   }
+});
+
+test("localizes all 80 historical event names in every supported language", () => {
+  const translatedLanguages = [
+    "he",
+    "ar",
+    "it",
+    "el",
+    "ru",
+    "zh",
+    "hi",
+    "es",
+    "fr",
+    "ja",
+    "ko",
+  ] as const;
+
+  for (const language of translatedLanguages) {
+    assert.equal(HISTORICAL_EVENT_NAME_TRANSLATIONS[language]?.length, 80);
+    assert.notEqual(
+      historicalEventName(
+        HISTORICAL_EVENTS[79].id,
+        language,
+        HISTORICAL_EVENTS[79].title,
+      ),
+      HISTORICAL_EVENTS[79].title,
+    );
+  }
+
+  assert.equal(
+    historicalEventName("covenant-circumcision", "he", ""),
+    "ברית המילה עם אברהם",
+  );
+  assert.equal(
+    historicalEventName("purim", "ar", ""),
+    "الخلاص الذي يحييه عيد بوريم",
+  );
+  assert.equal(
+    historicalEventName("talmud-completed", "ru", ""),
+    "Редактирование Вавилонского Талмуда",
+  );
+  assert.equal(historicalEventName("mishnah-compiled", "ja", ""), "ミシュナ編纂");
+});
+
+test("localizes every holiday name in every supported language", () => {
+  for (const translations of Object.values(HOLIDAY_NAME_TRANSLATIONS)) {
+    assert.equal(Object.keys(translations ?? {}).length, 46);
+  }
+  assert.equal(holidayName("Passover", "it"), "Pesach");
+  assert.equal(holidayName("Passover", "es"), "Pésaj");
+  assert.equal(holidayName("Rosh Hashanah", "ar"), "رأس السنة العبرية");
+  assert.equal(holidayName("Chinese New Year", "zh"), "中国新年");
+  assert.equal(holidayName("New Year’s Day", "en"), "New Year’s Day");
 });
 
 test("uses Hebrew chronology and honest ranges for ancient sacred events", () => {

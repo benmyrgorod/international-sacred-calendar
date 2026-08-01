@@ -22,6 +22,8 @@ The page includes English, Hebrew, Arabic, Italian, Greek, Russian, Simplified
 Chinese, Hindi, Spanish, French, Japanese, and Korean. Only Simplified Chinese
 is offered. Hebrew and Arabic switch the complete interface to right-to-left
 layout. The selected language is stored as a device-local preference.
+Chronology event titles, major-holiday names, and international-holiday names
+are localized in every interface language.
 
 ## International Sacred Calendar definition
 
@@ -204,6 +206,8 @@ be searched or filtered by Hebrew chronology, civilizations, freedom and
 ideas, science, the modern world, or dates with special symbolism. Expanding an
 event shows its date or date range in every supported calendar; its action
 jumps directly to the matching ISC calendar-grid marker.
+All 80 event titles use stable event IDs for localization so sorting the
+chronology cannot associate a translated title with the wrong date.
 
 Biblical milestones follow traditional Hebrew chronology. Exact dates remain
 exact, while events known only by a month or year convert to a full fixed-day

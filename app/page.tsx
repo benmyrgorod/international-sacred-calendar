@@ -47,6 +47,8 @@ import {
   type HistoryCategory,
 } from "@/lib/historical-events";
 import { HISTORY_TRANSLATIONS } from "@/lib/history-translations";
+import { historicalEventName } from "@/lib/event-name-translations";
+import { holidayName } from "@/lib/holiday-name-translations";
 import {
   formatLocalTime,
   isValidTimePreference,
@@ -709,20 +711,23 @@ export default function Home() {
   );
   const historicalEntries = SORTED_HISTORICAL_EVENTS.map((event, index) => ({
     event,
+    localizedTitle: historicalEventName(event.id, language, event.title),
     number: index + 1,
     ...historicalEventRange(event),
   }));
   const normalizedHistoryQuery = historyQuery.trim().toLocaleLowerCase(
     languageConfig.locale,
   );
-  const filteredHistoricalEntries = historicalEntries.filter(({ event }) => {
-    if (historyFilter !== "all" && event.category !== historyFilter) return false;
-    if (symbolicOnly && !event.symbolism) return false;
-    if (!normalizedHistoryQuery) return true;
-    return `${event.title} ${event.note ?? ""} ${event.symbolism ?? ""}`
-      .toLocaleLowerCase(languageConfig.locale)
-      .includes(normalizedHistoryQuery);
-  });
+  const filteredHistoricalEntries = historicalEntries.filter(
+    ({ event, localizedTitle }) => {
+      if (historyFilter !== "all" && event.category !== historyFilter) return false;
+      if (symbolicOnly && !event.symbolism) return false;
+      if (!normalizedHistoryQuery) return true;
+      return `${localizedTitle} ${event.title} ${event.note ?? ""} ${event.symbolism ?? ""}`
+        .toLocaleLowerCase(languageConfig.locale)
+        .includes(normalizedHistoryQuery);
+    },
+  );
   const gridHistoricalEvents = historicalEntries.filter(
     ({ startFixed }) =>
       startFixed >= gridStartFixed &&
@@ -1227,7 +1232,7 @@ export default function Home() {
 
         <div className="history-list">
           {filteredHistoricalEntries.map(
-            ({ event, number, startFixed, endFixed }) => {
+            ({ event, localizedTitle, number, startFixed, endFixed }) => {
               const source = HISTORY_SOURCES[event.source];
               const sacredSpan = historicalCalendarSpan(
                 "sacred",
@@ -1258,7 +1263,7 @@ export default function Home() {
                           <i className="symbolic-tag">✦ {historyCopy.symbolicDate}</i>
                         ) : null}
                       </span>
-                      <strong>{event.title}</strong>
+                      <strong>{localizedTitle}</strong>
                       <small>
                         {historicalSourceDateLabel(
                           event,
@@ -1558,7 +1563,8 @@ export default function Home() {
                         className={`event-pill holiday-pill holiday-pill-${from}`}
                         key={holiday.id}
                       >
-                        {majorHolidaySymbol(from)} {holiday.name}
+                        {majorHolidaySymbol(from)}{" "}
+                        {holidayName(holiday.name, language)}
                       </span>
                     ))}
                     {internationalHolidays.map((holiday) => (
@@ -1566,7 +1572,7 @@ export default function Home() {
                         className="event-pill international-pill"
                         key={holiday.id}
                       >
-                        ◎ {holiday.name}
+                        ◎ {holidayName(holiday.name, language)}
                       </span>
                     ))}
                     {hasMoonAlignment ? (
@@ -1591,17 +1597,17 @@ export default function Home() {
                           : `Ovadia Binyamin · ${(event.baseBirthday ?? 0) + event.anniversaryNumber} ${importantDateCopy.birthdayLabel}`}
                       </span>
                     ))}
-                    {historyEvents.map(({ event, number }) => (
+                    {historyEvents.map(({ event, localizedTitle, number }) => (
                       <span
                         className="event-pill history-event-pill"
                         title={
                           event.date.precision === "day"
-                            ? event.title
-                            : `${event.title} · ${historyCopy.rangeMarker}`
+                            ? localizedTitle
+                            : `${localizedTitle} · ${historyCopy.rangeMarker}`
                         }
                         key={event.id}
                       >
-                        ⌛ #{number} · {event.title}
+                        ⌛ #{number} · {localizedTitle}
                         {event.date.precision !== "day" ? " ≈" : ""}
                       </span>
                     ))}
