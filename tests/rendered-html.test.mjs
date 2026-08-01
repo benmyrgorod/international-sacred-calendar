@@ -63,9 +63,9 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /class="site-menu"/);
   assert.match(html, /class="site-menu-panel"/);
   assert.match(html, /class="menu-label">Menu/);
-  assert.match(html, /href="#converter">Date Conversion/);
-  assert.match(html, /href="#cycle">Calendar Cycle/);
-  assert.match(html, /href="#lunar-alignments">Moon Alignment Cycle/);
+  assert.match(html, /href="#converter">Date conversion/);
+  assert.match(html, /href="#cycle">Calendar cycle/);
+  assert.match(html, /href="#lunar-alignments">Moon alignment cycle/);
   for (const anchor of [
     "converter",
     "calendar",
