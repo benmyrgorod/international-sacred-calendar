@@ -132,6 +132,10 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.equal((html.match(/class="history-event history-/g) ?? []).length, 80);
   assert.equal((html.match(/class="history-calendar-conversions"/g) ?? []).length, 80);
   assert.match(html, /class="event-pill history-event-pill"/);
+  assert.match(html, /80 event anniversaries/);
+  assert.match(html, /history-anniversary-pill/);
+  assert.match(html, /Anniversary #/);
+  assert.match(html, /href="#history-/);
   assert.match(html, /Discovery of the International Sacred Calendar/);
   assert.match(html, /href="#major-events"/);
   assert.match(html, /href="#lunar-alignments"/);

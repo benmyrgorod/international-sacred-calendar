@@ -43,6 +43,7 @@ import {
 import {
   HISTORY_SOURCES,
   SORTED_HISTORICAL_EVENTS,
+  historicalEventSacredAnniversary,
   historicalEventRange,
   type HistoricalEvent,
   type HistoryCategory,
@@ -919,11 +920,15 @@ export default function Home() {
         .includes(normalizedHistoryQuery);
     },
   );
-  const gridHistoricalEvents = historicalEntries.filter(
-    ({ startFixed }) =>
-      startFixed >= gridStartFixed &&
-      startFixed < gridStartFixed + SACRED_DAYS_PER_MONTH,
-  );
+  const gridHistoricalEvents = historicalEntries.flatMap((entry) => {
+    const occurrence = historicalEventSacredAnniversary(
+      entry.event,
+      gridSacred.year,
+    );
+    return occurrence?.sacred.month === gridSacred.month
+      ? [{ ...entry, occurrence }]
+      : [];
+  });
   const gridMoonAlignment = moonAlignmentAtSacredMonth(gridSacred);
   const gridRotationAnniversary =
     gridSacred.month === 1 &&
@@ -1956,7 +1961,7 @@ export default function Home() {
           </span>
           <span>
             <i className="history-marker" aria-hidden="true">⌛</i>
-            {historyCopy.navLabel}
+            {historyCopy.calendarAnniversaries}
           </span>
         </div>
 
@@ -2006,7 +2011,7 @@ export default function Home() {
                   anniversaryNumber: gridSacred.year - event.sacred.year,
                 }));
               const historyEvents = gridHistoricalEvents.filter(
-                (event) => event.startFixed === cellFixed,
+                (event) => event.occurrence.fixed === cellFixed,
               );
 
               return (
@@ -2103,28 +2108,51 @@ export default function Home() {
                           : `Ovadia Binyamin · ${(event.baseBirthday ?? 0) + event.anniversaryNumber} ${importantDateCopy.birthdayLabel}`}
                       </span>
                     ))}
-                    {historyEvents.map(({ event, localizedTitle, number, alignment }) => (
-                      <span
+                    {historyEvents.map(({
+                      event,
+                      localizedTitle,
+                      number,
+                      alignment,
+                      occurrence,
+                    }) => (
+                      <a
+                        href={`#history-${event.id}`}
                         className={[
                           "event-pill",
                           "history-event-pill",
-                          alignment.isNear ? "near-alignment-pill" : "",
+                          occurrence.anniversaryNumber > 0
+                            ? "history-anniversary-pill"
+                            : "",
+                          occurrence.anniversaryNumber === 0 && alignment.isNear
+                            ? "near-alignment-pill"
+                            : "",
                         ]
                           .filter(Boolean)
                           .join(" ")}
                         title={
                           event.date.precision === "day"
-                            ? localizedTitle
-                            : `${localizedTitle} · ${historyCopy.rangeMarker}`
+                            ? `${localizedTitle} · ${
+                                occurrence.anniversaryNumber === 0
+                                  ? historyCopy.originalOccurrence
+                                  : `${historyCopy.anniversary} #${occurrence.anniversaryNumber.toLocaleString(languageConfig.locale)}`
+                              }`
+                            : `${localizedTitle} · ${historyCopy.rangeMarker} · ${
+                                occurrence.anniversaryNumber === 0
+                                  ? historyCopy.originalOccurrence
+                                  : `${historyCopy.anniversary} #${occurrence.anniversaryNumber.toLocaleString(languageConfig.locale)}`
+                              }`
                         }
                         key={event.id}
                       >
-                        {alignment.isNear
+                        {occurrence.anniversaryNumber === 0 && alignment.isNear
                           ? `✦ #${alignment.alignmentNumber} · `
                           : "⌛ "}
                         #{number} · {localizedTitle}
+                        {occurrence.anniversaryNumber === 0
+                          ? ` · ${historyCopy.originalOccurrence}`
+                          : ` · ${historyCopy.anniversary} #${occurrence.anniversaryNumber.toLocaleString(languageConfig.locale)}`}
                         {event.date.precision !== "day" ? " ≈" : ""}
-                      </span>
+                      </a>
                     ))}
                   </div>
                 </div>

@@ -52,7 +52,11 @@ correct calendar name; never change it to “Georgian.”
 - Symbolic-date explanations are interpretive annotations and must not replace
   the actual event date.
 - Every chronology event must remain reachable from the chronology section and
-  represented on the ISC calendar grid.
+  represented on the ISC calendar grid. Its first fixed day supplies an ISC
+  month/day that repeats every 364 days in all later ISC years; the grid labels
+  the original occurrence separately and later occurrences with a running
+  anniversary number. This recurrence remains visible for every alternative
+  grid calendar.
 - Rotation proximity is calculated from an event's fixed-day midpoint. Events
   within 33 ISC years of their nearest 293-year boundary are highlighted.
   Contextual intervals such as the Egypt midpoint and mainstream Babylonian

@@ -8,6 +8,7 @@ import {
 import {
   HISTORICAL_EVENTS,
   SORTED_HISTORICAL_EVENTS,
+  historicalEventSacredAnniversary,
   historicalEventRange,
 } from "../lib/historical-events.ts";
 import {
@@ -181,6 +182,47 @@ test("maintains exactly 80 unique historical dates in chronological order", () =
       historicalEventRange(SORTED_HISTORICAL_EVENTS[index - 1]).startFixed <=
         historicalEventRange(SORTED_HISTORICAL_EVENTS[index]).startFixed,
     );
+  }
+});
+
+test("repeats all 80 historical events every 364 days in Sacred time", () => {
+  for (const event of HISTORICAL_EVENTS) {
+    const originalFixed = historicalEventRange(event).startFixed;
+    const originalSacred = dateFromFixed("sacred", originalFixed);
+    const original = historicalEventSacredAnniversary(
+      event,
+      originalSacred.year,
+    );
+    const firstAnniversary = historicalEventSacredAnniversary(
+      event,
+      originalSacred.year + 1,
+    );
+
+    assert.ok(original, event.id);
+    assert.ok(firstAnniversary, event.id);
+    assert.equal(original.anniversaryNumber, 0, event.id);
+    assert.equal(original.fixed, originalFixed, event.id);
+    assert.equal(firstAnniversary.anniversaryNumber, 1, event.id);
+    assert.equal(
+      firstAnniversary.fixed - original.fixed,
+      SACRED_DAYS_PER_YEAR,
+      event.id,
+    );
+    assert.deepEqual(
+      {
+        month: firstAnniversary.sacred.month,
+        day: firstAnniversary.sacred.day,
+      },
+      { month: originalSacred.month, day: originalSacred.day },
+      event.id,
+    );
+    if (originalSacred.year > 1) {
+      assert.equal(
+        historicalEventSacredAnniversary(event, originalSacred.year - 1),
+        null,
+        event.id,
+      );
+    }
   }
 });
 

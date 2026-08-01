@@ -253,6 +253,8 @@ The 28-day grid displays one International Sacred month at a time. It marks:
 - approximate moon/month-start alignments;
 - major holidays from the selected grid calendar;
 - international holidays and observances on their Gregorian anniversaries;
+- annual anniversaries of all 80 chronology events on their International
+  Sacred month/day;
 - 293-year rotation anniversaries.
 
 The week-start selector supports Monday or Sunday. Monday is selected by
@@ -261,6 +263,17 @@ default, matching the calculated weekday of International Sacred Month 1 Day
 The grid-calendar selector stays synchronized with the converter’s **From**
 calendar, so changing either control updates both while preserving the selected
 fixed date.
+
+The 80 chronology events are carried forward on their ISC month and day in
+every later Sacred year. The grid labels the original event separately;
+Anniversary #1 is exactly 364 days later, Anniversary #2 is another 364 days
+later, and so on. These event markers remain visible when the grid’s secondary
+dates are switched to Hebrew, Gregorian, Julian, Muslim, Chinese, Saka,
+Buddhist, or ISC.
+Only the secondary date label changes—the anniversary remains anchored to the
+same fixed day in the 364-day Sacred cycle. For year- or month-range events,
+the recurrence uses the first day of the documented range and keeps the
+approximation marker visible.
 
 Holiday markers follow the selected calendar: Jewish holidays for Hebrew,
 Western Christian holidays for Gregorian, Russian Orthodox holidays calculated
@@ -321,6 +334,9 @@ be searched or filtered by Hebrew chronology, civilizations, freedom and
 ideas, science, the modern world, or dates with special symbolism. Expanding an
 event shows its date or date range in every supported calendar; its action
 jumps directly to the matching ISC calendar-grid marker.
+Each event’s ISC month/day also repeats annually on the grid with a running
+anniversary count, regardless of which supported calendar is selected for the
+grid’s secondary date labels.
 All 80 event titles use stable event IDs for localization so sorting the
 chronology cannot associate a translated title with the wrong date.
 
@@ -419,6 +435,7 @@ Public conversion helpers include:
 - `planetForPlanetaryHour`
 - `calculatePlanetaryHour`
 - `historicalEventRange`
+- `historicalEventSacredAnniversary`
 - `weekdayFromFixed`
 - date validation and month-length helpers
 

@@ -1,6 +1,8 @@
 import {
   fixedFromDate,
+  fixedFromSacred,
   maxDayForDate,
+  sacredFromFixed,
   type CalendarDate,
 } from "./sacred-calendar.ts";
 
@@ -33,6 +35,12 @@ export interface HistoricalEvent {
 export interface HistoricalEventRange {
   startFixed: number;
   endFixed: number;
+}
+
+export interface HistoricalEventSacredAnniversary {
+  anniversaryNumber: number;
+  fixed: number;
+  sacred: CalendarDate;
 }
 
 export const HISTORY_SOURCES = {
@@ -754,6 +762,35 @@ export function historicalEventRange(
       month: 12,
       day: 31,
     }),
+  };
+}
+
+/**
+ * Carries an event's first known fixed day forward on the same ISC month/day.
+ * The original occurrence is anniversary 0; each later ISC year is exactly
+ * 364 fixed days after the preceding occurrence.
+ */
+export function historicalEventSacredAnniversary(
+  event: HistoricalEvent,
+  sacredYear: number,
+): HistoricalEventSacredAnniversary | null {
+  if (!Number.isInteger(sacredYear) || sacredYear < 1) {
+    throw new RangeError("Sacred anniversary year must be a positive integer.");
+  }
+
+  const originalFixed = historicalEventRange(event).startFixed;
+  const originalSacred = sacredFromFixed(originalFixed);
+  if (sacredYear < originalSacred.year) return null;
+
+  const sacred: CalendarDate = {
+    year: sacredYear,
+    month: originalSacred.month,
+    day: originalSacred.day,
+  };
+  return {
+    anniversaryNumber: sacredYear - originalSacred.year,
+    fixed: fixedFromSacred(sacred),
+    sacred,
   };
 }
 
