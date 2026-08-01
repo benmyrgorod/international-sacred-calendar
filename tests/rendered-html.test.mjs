@@ -58,7 +58,15 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Rotating cycle/);
   assert.match(html, /Rotation anniversaries/);
   assert.match(html, /To the 20th anniversary/);
-  assert.match(html, /Rotation anniversaries 1–20/);
+  assert.match(html, /Rotation anniversaries 1–22/);
+  for (const number of [7, 14, 21, 22]) {
+    assert.match(
+      html,
+      new RegExp(
+        `class="featured-anniversary-row"[^>]*><th><button[^>]*>#<!-- -->${number}</button>`,
+      ),
+    );
+  }
   assert.match(html, /History near the 293-year marks/);
   assert.doesNotMatch(html, /rotation-history-panorama\.webp/);
   for (const image of [
@@ -138,7 +146,7 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /日本語/);
   assert.match(html, /简体中文/);
   assert.match(html, /한국어/);
-  assert.equal((html.match(/class="milestone-button"/g) ?? []).length, 20);
+  assert.equal((html.match(/class="milestone-button"/g) ?? []).length, 22);
   assert.equal(
     (html.match(/class="anniversary-tick[^"]*"/g) ?? []).length,
     20,

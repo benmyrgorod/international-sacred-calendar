@@ -701,7 +701,7 @@ export default function Home() {
     (calculation.sacred.month - 1) * SACRED_DAYS_PER_MONTH +
     calculation.sacred.day;
   const remainingYears = SACRED_ROTATION_YEARS - calculation.rotation.yearInCycle;
-  const anniversaries = Array.from({ length: 20 }, (_, index) => index + 1).map((number) => {
+  const anniversaries = Array.from({ length: 22 }, (_, index) => index + 1).map((number) => {
     const sacred = sacredRotationAnniversary(number);
     const fixed = fixedFromSacred(sacred);
     return {
@@ -1126,7 +1126,7 @@ export default function Home() {
                 className="anniversary-rail-fill"
                 style={{ width: `${anniversaryTimelineProgress * 100}%` }}
               />
-              {anniversaries.map((anniversary) => (
+              {anniversaries.slice(0, 20).map((anniversary) => (
                 <span
                   className={`anniversary-tick ${
                     anniversary.fixed <= calculation.fixed ? "completed" : ""
@@ -1220,12 +1220,17 @@ export default function Home() {
               <tbody>
                 {anniversaries.map((anniversary) => (
                   <tr
-                    className={
+                    className={[
+                      [7, 14, 21, 22].includes(anniversary.number)
+                        ? "featured-anniversary-row"
+                        : "",
                       anniversary.number === 20 &&
                       anniversary.fixed > calculation.fixed
                         ? "future-twentieth-row"
-                        : undefined
-                    }
+                        : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ") || undefined}
                     key={anniversary.number}
                   >
                     <th>

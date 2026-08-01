@@ -440,9 +440,19 @@ test("lists rotation anniversaries at completed 293-year boundaries", () => {
     month: 1,
     day: 1,
   });
+  assert.deepEqual(sacredRotationAnniversary(21), {
+    year: 6154,
+    month: 1,
+    day: 1,
+  });
+  assert.deepEqual(sacredRotationAnniversary(22), {
+    year: 6447,
+    month: 1,
+    day: 1,
+  });
   assert.equal(
-    fixedFromSacred(sacredRotationAnniversary(20)) - SACRED_EPOCH_FIXED,
-    20 * SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR,
+    fixedFromSacred(sacredRotationAnniversary(22)) - SACRED_EPOCH_FIXED,
+    22 * SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR,
   );
 });
 

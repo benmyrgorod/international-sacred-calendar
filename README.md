@@ -90,14 +90,16 @@ individual Hebrew years vary between 353 and 385 days.
 
 A rotation anniversary is the first day after a whole number of 293-year
 International Sacred rotations. The site lists every anniversary from 1
-through 20:
+through 22:
 
 - 1st anniversary: Sacred Year 294, Month 1, Day 1
 - 2nd anniversary: Sacred Year 587, Month 1, Day 1
 - 20th anniversary: Sacred Year 5861, Month 1, Day 1
+- 21st anniversary: Sacred Year 6154, Month 1, Day 1
+- 22nd anniversary: Sacred Year 6447, Month 1, Day 1
 
 The web page lists the equivalent Hebrew, Gregorian, Julian, and tabular
-Islamic dates for all 20 milestones. Clicking a milestone opens its month in
+Islamic dates for all 22 milestones. Clicking a milestone opens its month in
 the calendar grid. The 20th-anniversary countdown is recalculated from the date
 currently selected in the converter and reports complete International Sacred
 years plus the remaining days.

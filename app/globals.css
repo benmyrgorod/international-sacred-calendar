@@ -1088,6 +1088,15 @@ h1 em {
   line-height: 1.45;
 }
 
+.anniversary-table-wrap .featured-anniversary-row th,
+.anniversary-table-wrap .featured-anniversary-row td {
+  background: rgba(93, 137, 111, 0.34);
+}
+
+.anniversary-table-wrap .featured-anniversary-row th {
+  box-shadow: inset 4px 0 0 var(--gold-light);
+}
+
 .anniversary-table-wrap .future-twentieth-row th,
 .anniversary-table-wrap .future-twentieth-row td {
   background: rgba(185, 130, 50, 0.2);
