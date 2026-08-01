@@ -104,6 +104,12 @@ the calendar grid. The 20th-anniversary countdown is recalculated from the date
 currently selected in the converter and reports complete International Sacred
 years plus the remaining days.
 
+The table also includes a symbolic Cosmic week sequence: anniversary #1 is
+Monday, Week 1; #2 is Tuesday, Week 2; and the weekday cycles onward through
+seven days. This is separate from the calculated civil weekday column. Because
+each International Sacred year contains exactly 52 weeks, every actual
+293-year anniversary boundary remains a Monday.
+
 ### Historical events near rotation boundaries
 
 The rotation section also compares the 293-year boundaries with dated events
@@ -113,6 +119,12 @@ values are after it. Events within 33 International Sacred years of their
 nearest boundary receive a highlighted marker in the chronology and calendar
 grid. Twelve illustrated event cards connect the featured comparisons directly
 to their matching chronology entries.
+
+The chronology also calculates the midpoint between each pair of 293-year
+boundaries. Events within the same 33-ISC-year proximity window of these
+146.5-year half-cycle marks receive a separate sapphire highlight and a
+numbered half-cycle marker such as 14.5. This visual comparison is distinct
+from the gold full-cycle alignment highlight.
 
 Two interval annotations are kept separate from the 80 dated events. The
 Egypt card is a calculated midpoint between Jacob's family entering Egypt and

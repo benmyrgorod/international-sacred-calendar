@@ -31,6 +31,7 @@ import {
   EGYPT_SOJOURN_MIDPOINT,
   FEATURED_ALIGNMENT_EVENT_IDS,
   MAINSTREAM_BABYLONIAN_EXILE,
+  nearestRotationHalfAlignment,
   nearestRotationAlignment,
 } from "../lib/rotation-event-alignments.ts";
 import {
@@ -226,6 +227,44 @@ test("maps the featured historical events to their nearest 293-year alignments",
   );
   assert.equal(MAINSTREAM_BABYLONIAN_EXILE.alignmentNumber, 11);
   assert.equal(MAINSTREAM_BABYLONIAN_EXILE.containsAlignment, true);
+});
+
+test("maps historical events to 293-year half-cycle marks", () => {
+  const westernRome = HISTORICAL_EVENTS.find(
+    (event) => event.id === "western-rome-falls",
+  );
+  const creation = HISTORICAL_EVENTS.find(
+    (event) => event.id === "creation-begins",
+  );
+  assert.ok(westernRome);
+  assert.ok(creation);
+
+  const westernRomeRange = historicalEventRange(westernRome);
+  const westernRomeHalfAlignment = nearestRotationHalfAlignment(
+    westernRomeRange.startFixed,
+    westernRomeRange.endFixed,
+  );
+  assert.equal(westernRomeHalfAlignment.alignmentNumber, 14.5);
+  assert.ok(Math.abs(westernRomeHalfAlignment.offsetSacredYears - 1) < 0.1);
+  assert.equal(westernRomeHalfAlignment.isNear, true);
+
+  const creationRange = historicalEventRange(creation);
+  assert.equal(
+    nearestRotationHalfAlignment(
+      creationRange.startFixed,
+      creationRange.endFixed,
+    ).isNear,
+    false,
+  );
+
+  const halfCycleMatches = HISTORICAL_EVENTS.filter((event) => {
+    const range = historicalEventRange(event);
+    return nearestRotationHalfAlignment(
+      range.startFixed,
+      range.endFixed,
+    ).isNear;
+  });
+  assert.equal(halfCycleMatches.length, 26);
 });
 
 test("localizes all 80 historical event names in every supported language", () => {

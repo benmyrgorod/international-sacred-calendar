@@ -1,5 +1,7 @@
 import {
+  SACRED_EPOCH_FIXED,
   SACRED_DAYS_PER_YEAR,
+  SACRED_ROTATION_YEARS,
   fixedFromDate,
   fixedFromSacred,
   sacredRotationAnniversary,
@@ -67,6 +69,56 @@ export function nearestRotationAlignment(
   }
 
   if (!closest) throw new RangeError("At least one alignment is required.");
+  return closest;
+}
+
+/**
+ * Finds the nearest midpoint between two successive 293-year boundaries.
+ * Half-cycle marks are numbered 0.5, 1.5, 2.5, and so on from the ISC epoch.
+ */
+export function nearestRotationHalfAlignment(
+  startFixed: number,
+  endFixed = startFixed,
+  maximumAlignment = 22,
+): RotationAlignmentProximity {
+  if (!Number.isInteger(startFixed) || !Number.isInteger(endFixed)) {
+    throw new RangeError("Historical fixed days must be integers.");
+  }
+  if (endFixed < startFixed) {
+    throw new RangeError("Historical range must end on or after it starts.");
+  }
+  if (!Number.isInteger(maximumAlignment) || maximumAlignment < 1) {
+    throw new RangeError("Maximum alignment must be a positive integer.");
+  }
+
+  const midpoint = (startFixed + endFixed) / 2;
+  const rotationDays = SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR;
+  let closest: RotationAlignmentProximity | null = null;
+
+  for (
+    let alignmentNumber = 0.5;
+    alignmentNumber < maximumAlignment;
+    alignmentNumber += 1
+  ) {
+    const alignmentFixed =
+      SACRED_EPOCH_FIXED + alignmentNumber * rotationDays;
+    const offsetDays = midpoint - alignmentFixed;
+    const candidate: RotationAlignmentProximity = {
+      alignmentNumber,
+      alignmentFixed,
+      offsetDays,
+      offsetSacredYears: offsetDays / SACRED_DAYS_PER_YEAR,
+      isNear:
+        Math.abs(offsetDays) <=
+        NEAR_ROTATION_ALIGNMENT_YEARS * SACRED_DAYS_PER_YEAR,
+    };
+
+    if (!closest || Math.abs(candidate.offsetDays) < Math.abs(closest.offsetDays)) {
+      closest = candidate;
+    }
+  }
+
+  if (!closest) throw new RangeError("At least one half alignment is required.");
   return closest;
 }
 

@@ -71,6 +71,7 @@ import {
   EGYPT_SOJOURN_MIDPOINT,
   FEATURED_ALIGNMENT_EVENT_IDS,
   MAINSTREAM_BABYLONIAN_EXILE,
+  nearestRotationHalfAlignment,
   nearestRotationAlignment,
   type FeaturedAlignmentEventId,
   type RotationAlignmentProximity,
@@ -768,6 +769,10 @@ export default function Home() {
       number: index + 1,
       ...range,
       alignment: nearestRotationAlignment(range.startFixed, range.endFixed),
+      halfAlignment: nearestRotationHalfAlignment(
+        range.startFixed,
+        range.endFixed,
+      ),
     };
   });
   const historicalEntryById = new Map(
@@ -1206,6 +1211,7 @@ export default function Home() {
               <thead>
                 <tr>
                   <th>{translations.milestone}</th>
+                  <th>{translations.cosmicWeek}</th>
                   <th>{translations.sacred}</th>
                   <th>{translations.hebrew}</th>
                   <th>{translations.gregorian}</th>
@@ -1221,8 +1227,11 @@ export default function Home() {
                 {anniversaries.map((anniversary) => (
                   <tr
                     className={[
-                      [7, 14, 21, 22].includes(anniversary.number)
+                      [7, 14, 21].includes(anniversary.number)
                         ? "featured-anniversary-row"
+                        : "",
+                      anniversary.number === 22
+                        ? "sapphire-anniversary-row"
                         : "",
                       anniversary.number === 20 &&
                       anniversary.fixed > calculation.fixed
@@ -1250,6 +1259,9 @@ export default function Home() {
                         #{anniversary.number.toLocaleString(languageConfig.locale)}
                       </button>
                     </th>
+                    <td className="cosmic-week" data-cosmic-week={anniversary.number}>
+                      {`${localizedWeekday(anniversary.number, languageConfig.locale)}, ${translations.week} ${anniversary.number.toLocaleString(languageConfig.locale)}`}
+                    </td>
                     <td>{formatDate("sacred", anniversary.sacred, translations, languageConfig.locale)}</td>
                     <td>{formatDate("hebrew", anniversary.hebrew, translations, languageConfig.locale)}</td>
                     <td>{formatDate("gregorian", anniversary.gregorian, translations, languageConfig.locale)}</td>
@@ -1388,7 +1400,15 @@ export default function Home() {
 
         <div className="history-list">
           {filteredHistoricalEntries.map(
-            ({ event, localizedTitle, number, startFixed, endFixed, alignment }) => {
+            ({
+              event,
+              localizedTitle,
+              number,
+              startFixed,
+              endFixed,
+              alignment,
+              halfAlignment,
+            }) => {
               const source = HISTORY_SOURCES[event.source];
               const sacredSpan = historicalCalendarSpan(
                 "sacred",
@@ -1400,9 +1420,16 @@ export default function Home() {
 
               return (
                 <details
-                  className={`history-event history-${event.category} ${
-                    alignment.isNear ? "near-rotation-alignment" : ""
-                  }`}
+                  className={[
+                    "history-event",
+                    `history-${event.category}`,
+                    alignment.isNear ? "near-rotation-alignment" : "",
+                    halfAlignment.isNear
+                      ? "near-half-rotation-alignment"
+                      : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                   id={`history-${event.id}`}
                   key={event.id}
                 >
@@ -1425,6 +1452,20 @@ export default function Home() {
                           <i className="alignment-proximity-tag">
                             ✦ #{alignment.alignmentNumber} · {formatAlignmentOffset(
                               alignment,
+                              languageConfig.locale,
+                            )}
+                          </i>
+                        ) : null}
+                        {halfAlignment.isNear ? (
+                          <i className="half-alignment-proximity-tag">
+                            ◆ {alignmentHistoryCopy.halfNearBadge} #{halfAlignment.alignmentNumber.toLocaleString(
+                              languageConfig.locale,
+                              {
+                                minimumFractionDigits: 1,
+                                maximumFractionDigits: 1,
+                              },
+                            )} · {formatAlignmentOffset(
+                              halfAlignment,
                               languageConfig.locale,
                             )}
                           </i>
@@ -1477,6 +1518,23 @@ export default function Home() {
                         {alignmentHistoryCopy.nearBadge} #{alignment.alignmentNumber}
                         {" · "}
                         {formatAlignmentOffset(alignment, languageConfig.locale)}
+                      </p>
+                    ) : null}
+                    {halfAlignment.isNear ? (
+                      <p className="history-half-alignment-note">
+                        <span aria-hidden="true">◆</span>
+                        {alignmentHistoryCopy.halfNearBadge} #{halfAlignment.alignmentNumber.toLocaleString(
+                          languageConfig.locale,
+                          {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1,
+                          },
+                        )}
+                        {" · "}
+                        {formatAlignmentOffset(
+                          halfAlignment,
+                          languageConfig.locale,
+                        )}
                       </p>
                     ) : null}
                     <div className="history-event-actions">

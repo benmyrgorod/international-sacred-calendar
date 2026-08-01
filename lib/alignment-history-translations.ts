@@ -5,6 +5,7 @@ export interface AlignmentHistoryTranslationPack {
   body: string;
   methodNote: string;
   nearBadge: string;
+  halfNearBadge: string;
   midpointTitle: string;
   midpointDetail: string;
   exileTitle: string;
@@ -20,6 +21,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "These events and historical intervals fall on or near a 293-Sacred-year boundary. Signed offsets are calculated from the website’s own dates: minus is before, plus is after.",
     methodNote: "Calendar proximity is a pattern for exploration, not evidence that the cycle caused an event.",
     nearBadge: "Near a 293-year alignment",
+    halfNearBadge: "Near a 293-year half-cycle",
     midpointTitle: "Midpoint of Israel’s time in Egypt",
     midpointDetail: "Calculated midpoint between Jacob’s family entering Egypt and the Exodus in traditional Hebrew chronology.",
     exileTitle: "Babylonian exile",
@@ -30,6 +32,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "אירועים ותקופות אלה חלים בנקודת גבול של 293 שנות קודש או בסמוך לה. ההפרש המחושב: מינוס לפני הגבול, פלוס אחריו.",
     methodNote: "קרבה בלוח היא דפוס לעיון, לא הוכחה שהמחזור גרם לאירוע.",
     nearBadge: "סמוך ליישור של 293 שנים",
+    halfNearBadge: "סמוך לחצי מחזור של 293 שנים",
     midpointTitle: "אמצע שהות ישראל במצרים",
     midpointDetail: "נקודת אמצע מחושבת בין ירידת משפחת יעקב למצרים לבין יציאת מצרים לפי הכרונולוגיה העברית המסורתית.",
     exileTitle: "גלות בבל",
@@ -40,6 +43,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "تقع هذه الأحداث والفترات عند حدّ من 293 سنة مقدسة أو بالقرب منه. الفارق المحسوب بالسالب قبل الحد وبالموجب بعده.",
     methodNote: "التقارب التقويمي نمط للاستكشاف وليس دليلاً على أن الدورة سببت الحدث.",
     nearBadge: "قريب من محاذاة 293 سنة",
+    halfNearBadge: "قريب من نصف دورة 293 سنة",
     midpointTitle: "منتصف إقامة بني إسرائيل في مصر",
     midpointDetail: "منتصف محسوب بين نزول أسرة يعقوب إلى مصر والخروج منها وفق التسلسل العبري التقليدي.",
     exileTitle: "السبي البابلي",
@@ -50,6 +54,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "Questi eventi e intervalli cadono su una soglia di 293 anni Sacri o nelle sue vicinanze. Il segno meno indica prima, il più dopo.",
     methodNote: "La prossimità nel calendario è uno spunto da esplorare, non prova che il ciclo abbia causato un evento.",
     nearBadge: "Vicino a un allineamento di 293 anni",
+    halfNearBadge: "Vicino a metà del ciclo di 293 anni",
     midpointTitle: "Punto medio della permanenza d’Israele in Egitto",
     midpointDetail: "Punto medio calcolato fra la discesa in Egitto della famiglia di Giacobbe e l’Esodo, secondo la cronologia ebraica tradizionale.",
     exileTitle: "Esilio babilonese",
@@ -60,6 +65,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "Αυτά τα γεγονότα και διαστήματα πέφτουν πάνω ή κοντά σε όριο 293 Ιερών ετών. Το μείον σημαίνει πριν και το συν μετά.",
     methodNote: "Η ημερολογιακή εγγύτητα είναι μοτίβο προς διερεύνηση, όχι απόδειξη ότι ο κύκλος προκάλεσε ένα γεγονός.",
     nearBadge: "Κοντά σε ευθυγράμμιση 293 ετών",
+    halfNearBadge: "Κοντά στο μισό ενός κύκλου 293 ετών",
     midpointTitle: "Μέσο της παραμονής του Ισραήλ στην Αίγυπτο",
     midpointDetail: "Υπολογισμένο μέσο μεταξύ της καθόδου της οικογένειας του Ιακώβ στην Αίγυπτο και της Εξόδου, με την παραδοσιακή εβραϊκή χρονολογία.",
     exileTitle: "Βαβυλώνια αιχμαλωσία",
@@ -70,6 +76,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "Эти события и периоды приходятся на рубеж 293 Священных лет или близко к нему. Минус означает до рубежа, плюс — после.",
     methodNote: "Календарная близость — повод для исследования, а не доказательство причинной связи.",
     nearBadge: "Рядом с 293-летним совпадением",
+    halfNearBadge: "Рядом с половиной 293-летнего цикла",
     midpointTitle: "Середина пребывания Израиля в Египте",
     midpointDetail: "Расчётная середина между переселением семьи Иакова в Египет и Исходом по традиционной еврейской хронологии.",
     exileTitle: "Вавилонское пленение",
@@ -80,6 +87,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "这些事件和历史时段发生在293个圣年边界上或附近。负号表示边界之前，正号表示之后。",
     methodNote: "历法上的接近只供探索，并不证明周期导致了事件。",
     nearBadge: "接近293年对齐点",
+    halfNearBadge: "接近293年周期的半周期点",
     midpointTitle: "以色列人在埃及时期的中点",
     midpointDetail: "依据传统希伯来年代，在雅各一家进入埃及与出埃及之间计算出的中点。",
     exileTitle: "巴比伦之囚",
@@ -90,6 +98,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "ये घटनाएँ और ऐतिहासिक काल 293 पवित्र वर्षों की सीमा पर या उसके पास आते हैं। ऋण सीमा से पहले और धन उसके बाद दर्शाता है।",
     methodNote: "कैलेंडर की निकटता खोज का एक पैटर्न है, यह प्रमाण नहीं कि चक्र ने घटना कराई।",
     nearBadge: "293-वर्षीय संरेखण के पास",
+    halfNearBadge: "293-वर्षीय अर्ध-चक्र के पास",
     midpointTitle: "मिस्र में इस्राएल के समय का मध्यबिंदु",
     midpointDetail: "पारंपरिक हिब्रू कालक्रम में याकूब के परिवार के मिस्र आने और निर्गमन के बीच गणितीय मध्यबिंदु।",
     exileTitle: "बाबुल निर्वासन",
@@ -100,6 +109,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "Estos acontecimientos y periodos caen en un límite de 293 años Sagrados o cerca de él. El signo menos indica antes; el más, después.",
     methodNote: "La proximidad calendárica es un patrón para explorar, no prueba de que el ciclo causara un acontecimiento.",
     nearBadge: "Cerca de una alineación de 293 años",
+    halfNearBadge: "Cerca de medio ciclo de 293 años",
     midpointTitle: "Punto medio de la estancia de Israel en Egipto",
     midpointDetail: "Punto medio calculado entre la llegada a Egipto de la familia de Jacob y el Éxodo según la cronología hebrea tradicional.",
     exileTitle: "Exilio babilónico",
@@ -110,6 +120,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "Ces événements et périodes tombent sur une limite de 293 années Sacrées ou à proximité. Le signe moins indique avant, le plus après.",
     methodNote: "La proximité calendaire est une piste d’exploration, non la preuve que le cycle a causé un événement.",
     nearBadge: "Près d’un alignement de 293 ans",
+    halfNearBadge: "Près d’un demi-cycle de 293 ans",
     midpointTitle: "Milieu du séjour d’Israël en Égypte",
     midpointDetail: "Milieu calculé entre l’arrivée en Égypte de la famille de Jacob et l’Exode selon la chronologie hébraïque traditionnelle.",
     exileTitle: "Exil babylonien",
@@ -120,6 +131,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "これらの出来事や期間は293聖年の境界上、またはその近くにあります。マイナスは境界前、プラスは境界後です。",
     methodNote: "暦上の近さは探究するためのパターンであり、周期が出来事を引き起こした証拠ではありません。",
     nearBadge: "293年整列点の近く",
+    halfNearBadge: "293年周期の半周期点の近く",
     midpointTitle: "イスラエルのエジプト滞在期間の中点",
     midpointDetail: "伝統的ヘブライ年代に基づき、ヤコブ一家のエジプト到着と出エジプトの間を計算した中点です。",
     exileTitle: "バビロン捕囚",
@@ -130,6 +142,7 @@ export const ALIGNMENT_HISTORY_TRANSLATIONS: Record<
     body: "이 사건과 역사적 기간은 293 성년 경계 위나 그 가까이에 있습니다. 음수는 경계 전, 양수는 경계 후입니다.",
     methodNote: "달력상 근접성은 탐구할 패턴이지 주기가 사건을 일으켰다는 증거가 아닙니다.",
     nearBadge: "293년 정렬점 근처",
+    halfNearBadge: "293년 주기의 절반 지점 근처",
     midpointTitle: "이스라엘의 이집트 체류 중간점",
     midpointDetail: "전통 히브리 연대기에 따라 야곱 가족의 이집트 이주와 출애굽 사이를 계산한 중간점입니다.",
     exileTitle: "바빌론 유수",

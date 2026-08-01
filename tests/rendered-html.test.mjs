@@ -33,6 +33,10 @@ test("major headings stay on one line at desktop widths and wrap on small screen
     css,
     /\.history-event\.near-rotation-alignment\s*>\s*summary\s*\{[^}]*background:\s*rgba\(182, 144, 78, 0\.2\);/s,
   );
+  assert.match(
+    css,
+    /\.history-event\.near-half-rotation-alignment\s*>\s*summary\s*\{[^}]*background:\s*rgba\(15, 82, 186, 0\.16\);/s,
+  );
   assert.match(css, /\.history-event-pill\.near-alignment-pill/);
 });
 
@@ -59,7 +63,11 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Rotation anniversaries/);
   assert.match(html, /To the 20th anniversary/);
   assert.match(html, /Rotation anniversaries 1–22/);
-  for (const number of [7, 14, 21, 22]) {
+  assert.match(html, /Cosmic week/);
+  assert.match(html, /data-cosmic-week="1">Monday, Week 1</);
+  assert.match(html, /data-cosmic-week="2">Tuesday, Week 2</);
+  assert.equal((html.match(/data-cosmic-week=/g) ?? []).length, 22);
+  for (const number of [7, 14, 21]) {
     assert.match(
       html,
       new RegExp(
@@ -67,6 +75,10 @@ test("server-renders the International Sacred Calendar converter", async () => {
       ),
     );
   }
+  assert.match(
+    html,
+    /class="sapphire-anniversary-row"[^>]*><th><button[^>]*>#<!-- -->22<\/button>/,
+  );
   assert.match(html, /History near the 293-year marks/);
   assert.doesNotMatch(html, /rotation-history-panorama\.webp/);
   for (const image of [
@@ -92,6 +104,8 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /href="#rotation-history"/);
   assert.match(html, /United States Declaration of Independence adopted/);
   assert.match(html, /class="history-event history-civilization near-rotation-alignment"/);
+  assert.match(html, /class="history-event history-civilization near-half-rotation-alignment"/);
+  assert.match(html, /Near a 293-year half-cycle/);
   assert.match(html, /Five past and five future lunar alignments/);
   assert.match(html, /Eighty dates from Creation to today/);
   assert.match(html, /80 major events/);

@@ -22,6 +22,9 @@ correct calendar name; never change it to “Georgian.”
   Sunday.
 - The long rotation uses 293 ISC years versus 292 mean Hebrew years. It is a
   near-alignment of year boundaries, not a weekday reset.
+- Chronology rows compare events with both full 293-year boundaries and their
+  146.5-year half-cycle marks. Both use the documented 33-ISC-year proximity
+  window; full-cycle matches are gold and half-cycle matches are sapphire.
 - Lunar alignments plus new- and full-moon dates use mean-lunation
   approximations. Keep approximation labels visible and do not describe them
   as observations.
