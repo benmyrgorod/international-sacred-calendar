@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render() {
@@ -21,6 +22,14 @@ async function render() {
     },
   );
 }
+
+test("long localized chronology headings can wrap", async () => {
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(
+    css,
+    /\.history-heading h2\s*\{[^}]*white-space:\s*normal;[^}]*text-wrap:\s*balance;/s,
+  );
+});
 
 test("server-renders the International Sacred Calendar converter", async () => {
   const response = await render();

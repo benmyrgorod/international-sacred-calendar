@@ -1123,6 +1123,9 @@ h1 em {
 
 .history-heading h2 {
   color: #f7f0e2;
+  max-width: 100%;
+  white-space: normal;
+  text-wrap: balance;
 }
 
 .history-heading > span {
