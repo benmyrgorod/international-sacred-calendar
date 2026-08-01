@@ -172,9 +172,9 @@ export const HISTORICAL_EVENTS: HistoricalEvent[] = [
     id: "covenant-circumcision",
     title: "Covenant of circumcision with Abraham",
     category: "hebrew",
-    date: hebrew(2048, 1, 13, "day"),
+    date: hebrew(2047, 1, 13, "day"),
     source: "chabad",
-    note: "Traditional date: 13 Nisan AM 2048, two days before Isaac's birth.",
+    note: "Traditional date: 13 Nisan AM 2047, one year and two days before Isaac's birth.",
   },
   {
     id: "isaac-born",
@@ -282,8 +282,9 @@ export const HISTORICAL_EVENTS: HistoricalEvent[] = [
     id: "first-temple-dedicated",
     title: "First Temple dedicated",
     category: "hebrew",
-    date: hebrew(2936),
+    date: hebrew(2936, 7, 8, "day"),
     source: "chabad",
+    note: "The 14-day dedication festivities began on 8 Tishrei, about eleven months after completion in Cheshvan of the preceding Hebrew year.",
   },
   {
     id: "kingdom-divided",

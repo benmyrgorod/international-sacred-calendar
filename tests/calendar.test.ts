@@ -172,18 +172,29 @@ test("maintains exactly 80 unique historical dates in chronological order", () =
   }
 });
 
-test("dates Abraham's circumcision covenant precisely in AM 2048", () => {
+test("places Abraham's circumcision covenant one year before Isaac's birth", () => {
   const covenant = HISTORICAL_EVENTS.find(
     (event) => event.id === "covenant-circumcision",
   );
+  const isaacBirth = HISTORICAL_EVENTS.find(
+    (event) => event.id === "isaac-born",
+  );
   assert.ok(covenant);
+  assert.ok(isaacBirth);
   assert.deepEqual(covenant.date, {
     calendar: "hebrew",
-    year: 2048,
+    year: 2047,
     month: 1,
     day: 13,
     precision: "day",
   });
+  assert.equal(isaacBirth.date.calendar, "hebrew");
+  assert.equal(isaacBirth.date.year, 2048);
+  assert.ok(
+    historicalEventRange(isaacBirth).startFixed -
+      historicalEventRange(covenant).startFixed >
+      350,
+  );
 });
 
 test("maps the featured historical events to their nearest 293-year alignments", () => {
@@ -275,10 +286,13 @@ test("uses Hebrew chronology and honest ranges for ancient sacred events", () =>
   const templeCompletion = HISTORICAL_EVENTS.find(
     (event) => event.id === "first-temple-completed",
   );
+  const templeDedication = HISTORICAL_EVENTS.find(
+    (event) => event.id === "first-temple-dedicated",
+  );
   const templeDestruction = HISTORICAL_EVENTS.find(
     (event) => event.id === "first-temple-destroyed",
   );
-  assert.ok(creation && templeCompletion && templeDestruction);
+  assert.ok(creation && templeCompletion && templeDedication && templeDestruction);
   assert.equal(historicalEventRange(creation).startFixed, SACRED_EPOCH_FIXED);
   assert.equal(templeCompletion.date.calendar, "hebrew");
   assert.equal(templeCompletion.date.precision, "month");
@@ -286,6 +300,17 @@ test("uses Hebrew chronology and honest ranges for ancient sacred events", () =>
     historicalEventRange(templeCompletion).endFixed >
       historicalEventRange(templeCompletion).startFixed,
   );
+  assert.deepEqual(templeDedication.date, {
+    calendar: "hebrew",
+    year: 2936,
+    month: 7,
+    day: 8,
+    precision: "day",
+  });
+  const templeGap =
+    historicalEventRange(templeDedication).startFixed -
+    historicalEventRange(templeCompletion).startFixed;
+  assert.ok(templeGap > 300 && templeGap < 360);
   assert.deepEqual(templeDestruction.date, {
     calendar: "hebrew",
     year: 3338,

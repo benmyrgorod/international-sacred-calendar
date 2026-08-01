@@ -126,7 +126,7 @@ const ALIGNMENT_STORY_IMAGES: Record<
   "great-pyramid": "/rotation-history/great-pyramid.webp?v=20260801",
   "covenant-circumcision": "/rotation-history/abraham-covenant.webp?v=20260801",
   "isaac-born": "/rotation-history/isaac.webp?v=20260801",
-  "egypt-midpoint": "/rotation-history/egypt-midpoint.webp?v=20260801",
+  "egypt-midpoint": "/rotation-history/egypt-midpoint.webp?v=20260801-2",
   "first-temple-work": "/rotation-history/first-temple.webp?v=20260801",
   "babylonian-exile": "/rotation-history/babylonian-exile.webp?v=20260801",
   "second-temple-destroyed": "/rotation-history/second-temple.webp?v=20260801",
