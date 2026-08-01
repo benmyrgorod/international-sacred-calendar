@@ -5,6 +5,11 @@ import {
   majorHolidaysBetween,
 } from "../lib/holidays.ts";
 import {
+  HISTORICAL_EVENTS,
+  SORTED_HISTORICAL_EVENTS,
+  historicalEventRange,
+} from "../lib/historical-events.ts";
+import {
   calculatePlanetaryHour,
   planetForPlanetaryHour,
 } from "../lib/planetary-hours.ts";
@@ -129,6 +134,64 @@ test("calculates unequal daylight and night planetary hours", () => {
 
   const longSummerDay = calculatePlanetaryHour(0, "05:30", "20:30", "10:00");
   assert.equal(longSummerDay.durationMinutes, 75);
+});
+
+test("maintains exactly 80 unique historical dates in chronological order", () => {
+  assert.equal(HISTORICAL_EVENTS.length, 80);
+  assert.equal(new Set(HISTORICAL_EVENTS.map((event) => event.id)).size, 80);
+  assert.equal(SORTED_HISTORICAL_EVENTS[0].id, "creation-begins");
+  assert.equal(SORTED_HISTORICAL_EVENTS.at(-1)?.id, "isc-discovery");
+  assert.ok(HISTORICAL_EVENTS.filter((event) => event.symbolism).length >= 8);
+
+  for (let index = 1; index < SORTED_HISTORICAL_EVENTS.length; index++) {
+    assert.ok(
+      historicalEventRange(SORTED_HISTORICAL_EVENTS[index - 1]).startFixed <=
+        historicalEventRange(SORTED_HISTORICAL_EVENTS[index]).startFixed,
+    );
+  }
+});
+
+test("uses Hebrew chronology and honest ranges for ancient sacred events", () => {
+  const creation = HISTORICAL_EVENTS.find((event) => event.id === "creation-begins");
+  const templeCompletion = HISTORICAL_EVENTS.find(
+    (event) => event.id === "first-temple-completed",
+  );
+  const templeDestruction = HISTORICAL_EVENTS.find(
+    (event) => event.id === "first-temple-destroyed",
+  );
+  assert.ok(creation && templeCompletion && templeDestruction);
+  assert.equal(historicalEventRange(creation).startFixed, SACRED_EPOCH_FIXED);
+  assert.equal(templeCompletion.date.calendar, "hebrew");
+  assert.equal(templeCompletion.date.precision, "month");
+  assert.ok(
+    historicalEventRange(templeCompletion).endFixed >
+      historicalEventRange(templeCompletion).startFixed,
+  );
+  assert.deepEqual(templeDestruction.date, {
+    calendar: "hebrew",
+    year: 3338,
+    month: 5,
+    day: 9,
+    precision: "day",
+  });
+});
+
+test("includes requested secular and symbolic chronology anchors", () => {
+  const frenchRevolution = HISTORICAL_EVENTS.find(
+    (event) => event.id === "french-revolution",
+  );
+  const armistice = HISTORICAL_EVENTS.find((event) => event.id === "armistice");
+  const beijing = HISTORICAL_EVENTS.find((event) => event.id === "beijing-olympics");
+  assert.deepEqual(frenchRevolution?.date, {
+    calendar: "gregorian",
+    year: 1789,
+    month: 7,
+    day: 14,
+    precision: "day",
+    approximate: false,
+  });
+  assert.match(armistice?.symbolism ?? "", /eleventh hour/i);
+  assert.match(beijing?.symbolism ?? "", /8\/8\/08/);
 });
 
 test("round-trips representative dates in every calendar", () => {

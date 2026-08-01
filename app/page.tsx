@@ -39,6 +39,14 @@ import {
   majorHolidaysBetween,
 } from "@/lib/holidays";
 import {
+  HISTORY_SOURCES,
+  SORTED_HISTORICAL_EVENTS,
+  historicalEventRange,
+  type HistoricalEvent,
+  type HistoryCategory,
+} from "@/lib/historical-events";
+import { HISTORY_TRANSLATIONS } from "@/lib/history-translations";
+import {
   PLANETS,
   PLANETARY_SEQUENCE,
   WEEKDAY_RULERS,
@@ -68,6 +76,7 @@ const CALENDARS: CalendarKind[] = [
   "buddhist",
 ];
 type WeekStart = "sunday" | "monday";
+type HistoryFilter = "all" | HistoryCategory;
 
 interface ImportantDateDefinition {
   id: "discovery" | "birthday";
@@ -283,6 +292,53 @@ function equivalentFor(kind: CalendarKind, fixed: number): CalendarDate {
   return dateFromFixed(kind, fixed);
 }
 
+function historicalSourceDateLabel(
+  event: HistoricalEvent,
+  translations: TranslationPack,
+  locale: string,
+): string {
+  const prefix = event.date.approximate ? "c. " : "";
+  if (event.date.precision === "year") {
+    return `${prefix}${
+      event.date.calendar === "hebrew"
+        ? `AM ${event.date.year}`
+        : formatYear(event.date.year)
+    }`;
+  }
+  if (event.date.precision === "month") {
+    return `${prefix}${monthLabel(
+      event.date.calendar,
+      event.date.year,
+      event.date.month,
+      translations,
+      locale,
+    )} ${event.date.calendar === "hebrew" ? `AM ${event.date.year}` : formatYear(event.date.year)}`;
+  }
+  return `${prefix}${formatDate(
+    event.date.calendar,
+    event.date,
+    translations,
+    locale,
+  )}`;
+}
+
+function historicalCalendarSpan(
+  kind: CalendarKind,
+  startFixed: number,
+  endFixed: number,
+  translations: TranslationPack,
+  locale: string,
+): string {
+  const start = dateFromFixed(kind, startFixed);
+  if (startFixed === endFixed) {
+    return formatDate(kind, start, translations, locale);
+  }
+  return `${dateCode(kind, start)} → ${dateCode(
+    kind,
+    dateFromFixed(kind, endFixed),
+  )}`;
+}
+
 function safeDate(kind: CalendarKind, candidate: CalendarDate): CalendarDate {
   if (kind === "chinese") {
     const year = Math.max(1, candidate.year);
@@ -440,6 +496,9 @@ export default function Home() {
   const [planetarySunrise, setPlanetarySunrise] = useState("06:00");
   const [planetarySunset, setPlanetarySunset] = useState("18:00");
   const [planetaryTime, setPlanetaryTime] = useState("12:00");
+  const [historyFilter, setHistoryFilter] = useState<HistoryFilter>("all");
+  const [historyQuery, setHistoryQuery] = useState("");
+  const [symbolicOnly, setSymbolicOnly] = useState(false);
   const [sourceDate, setSourceDate] = useState<CalendarDate>(() =>
     equivalentFor("gregorian", DEFAULT_FIXED),
   );
@@ -450,6 +509,7 @@ export default function Home() {
   const moonTranslations = MOON_TRANSLATIONS[language];
   const importantDateCopy = IMPORTANT_DATE_TRANSLATIONS[language];
   const planetaryCopy = PLANETARY_TRANSLATIONS[language];
+  const historyCopy = HISTORY_TRANSLATIONS[language];
 
   useEffect(() => {
     const stored = window.localStorage.getItem("isc-language") as LanguageCode | null;
@@ -604,6 +664,27 @@ export default function Home() {
     gridStartFixed,
     gridStartFixed + SACRED_DAYS_PER_MONTH - 1,
   );
+  const historicalEntries = SORTED_HISTORICAL_EVENTS.map((event, index) => ({
+    event,
+    number: index + 1,
+    ...historicalEventRange(event),
+  }));
+  const normalizedHistoryQuery = historyQuery.trim().toLocaleLowerCase(
+    languageConfig.locale,
+  );
+  const filteredHistoricalEntries = historicalEntries.filter(({ event }) => {
+    if (historyFilter !== "all" && event.category !== historyFilter) return false;
+    if (symbolicOnly && !event.symbolism) return false;
+    if (!normalizedHistoryQuery) return true;
+    return `${event.title} ${event.note ?? ""} ${event.symbolism ?? ""}`
+      .toLocaleLowerCase(languageConfig.locale)
+      .includes(normalizedHistoryQuery);
+  });
+  const gridHistoricalEvents = historicalEntries.filter(
+    ({ startFixed }) =>
+      startFixed >= gridStartFixed &&
+      startFixed < gridStartFixed + SACRED_DAYS_PER_MONTH,
+  );
   const gridMoonAlignment = moonAlignmentAtSacredMonth(gridSacred);
   const gridRotationAnniversary =
     gridSacred.month === 1 &&
@@ -643,14 +724,33 @@ export default function Home() {
             <small>{translations.brandSubtitle}</small>
           </span>
         </a>
-        <div className="nav-links">
-          <a href="#converter">{translations.navConvert}</a>
-          <a href="#cycle">{translations.navCycle}</a>
-          <a href="#important-dates">{importantDateCopy.navLabel}</a>
-          <a href="#calendar">{moonTranslations.calendarKicker}</a>
-          <a href="#planetary-hours">{planetaryCopy.navLabel}</a>
-          <a href="#definition">{translations.navDefinition}</a>
-        </div>
+        <details className="site-menu">
+          <summary>
+            <span aria-hidden="true">☰</span> {historyCopy.menuLabel}
+          </summary>
+          <div className="site-menu-panel" aria-label="Site sections">
+            <div className="menu-group">
+              <strong>{historyCopy.menuTools}</strong>
+              <a href="#converter">{translations.navConvert}</a>
+              <a href="#calendar">{moonTranslations.calendarKicker}</a>
+              <a href="#planetary-hours">{planetaryCopy.navLabel}</a>
+            </div>
+            <div className="menu-group">
+              <strong>{historyCopy.menuCycles}</strong>
+              <a href="#cycle">{translations.navCycle}</a>
+              <a href="#lunar-alignments">{moonTranslations.alignmentsTitle}</a>
+            </div>
+            <div className="menu-group">
+              <strong>{historyCopy.menuHistory}</strong>
+              <a href="#important-dates">{importantDateCopy.navLabel}</a>
+              <a href="#major-events">{historyCopy.navLabel}</a>
+            </div>
+            <div className="menu-group">
+              <strong>{historyCopy.menuAbout}</strong>
+              <a href="#definition">{translations.navDefinition}</a>
+            </div>
+          </div>
+        </details>
         <label className="language-picker">
           <span className="sr-only">Language</span>
           <select
@@ -1030,9 +1130,176 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="history-section" id="major-events">
+        <div className="section-heading history-heading">
+          <span>04 — {historyCopy.kicker}</span>
+          <h2>{historyCopy.title}</h2>
+          <p>{historyCopy.body}</p>
+        </div>
+
+        <div className="history-toolbar">
+          <label className="history-search">
+            <span className="sr-only">{historyCopy.searchPlaceholder}</span>
+            <input
+              type="search"
+              value={historyQuery}
+              placeholder={historyCopy.searchPlaceholder}
+              onChange={(event) => setHistoryQuery(event.target.value)}
+            />
+          </label>
+          <div className="history-filters" aria-label={historyCopy.kicker}>
+            {(
+              [
+                ["all", historyCopy.all],
+                ["hebrew", historyCopy.hebrew],
+                ["civilization", historyCopy.civilization],
+                ["freedom", historyCopy.freedom],
+                ["science", historyCopy.science],
+                ["modern", historyCopy.modern],
+              ] as Array<[HistoryFilter, string]>
+            ).map(([value, label]) => (
+              <button
+                type="button"
+                className={historyFilter === value ? "active" : ""}
+                onClick={() => setHistoryFilter(value)}
+                key={value}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <label className="symbolic-filter">
+            <input
+              type="checkbox"
+              checked={symbolicOnly}
+              onChange={(event) => setSymbolicOnly(event.target.checked)}
+            />
+            <span>✦ {historyCopy.symbolicOnly}</span>
+          </label>
+          <strong className="history-count">
+            {filteredHistoricalEntries.length.toLocaleString(languageConfig.locale)} / 80
+          </strong>
+        </div>
+
+        <div className="history-list">
+          {filteredHistoricalEntries.map(
+            ({ event, number, startFixed, endFixed }) => {
+              const source = HISTORY_SOURCES[event.source];
+              const sacredSpan = historicalCalendarSpan(
+                "sacred",
+                startFixed,
+                endFixed,
+                translations,
+                languageConfig.locale,
+              );
+
+              return (
+                <details
+                  className={`history-event history-${event.category}`}
+                  key={event.id}
+                >
+                  <summary>
+                    <span className="history-number">
+                      {String(number).padStart(2, "0")}
+                    </span>
+                    <div className="history-event-title">
+                      <span>
+                        {event.date.approximate ? (
+                          <i>{historyCopy.approximate}</i>
+                        ) : null}
+                        {event.date.precision !== "day" ? (
+                          <i>{historyCopy.range}</i>
+                        ) : null}
+                        {event.symbolism ? (
+                          <i className="symbolic-tag">✦ {historyCopy.symbolicDate}</i>
+                        ) : null}
+                      </span>
+                      <strong>{event.title}</strong>
+                      <small>
+                        {historicalSourceDateLabel(
+                          event,
+                          translations,
+                          languageConfig.locale,
+                        )}{" "}
+                        · {calendarLabel(event.date.calendar, translations, language)}
+                      </small>
+                    </div>
+                    <div className="history-sacred-date">
+                      <span>International Sacred Calendar</span>
+                      <strong>{sacredSpan}</strong>
+                    </div>
+                    <span className="history-expand" aria-hidden="true">＋</span>
+                  </summary>
+
+                  <div className="history-event-details">
+                    <div className="history-calendar-conversions">
+                      {CALENDARS.map((kind) => (
+                        <div key={kind}>
+                          <span>{calendarLabel(kind, translations, language)}</span>
+                          <strong>
+                            {historicalCalendarSpan(
+                              kind,
+                              startFixed,
+                              endFixed,
+                              translations,
+                              languageConfig.locale,
+                            )}
+                          </strong>
+                        </div>
+                      ))}
+                    </div>
+                    {event.symbolism ? (
+                      <p className="history-symbolism">
+                        <span aria-hidden="true">✦</span>
+                        {event.symbolism}
+                      </p>
+                    ) : null}
+                    {event.note ? <p className="history-note">{event.note}</p> : null}
+                    <div className="history-event-actions">
+                      <a href={source.url} target="_blank" rel="noreferrer">
+                        {historyCopy.source}: {source.label} ↗
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const targetSacred = sacredFromFixed(startFixed);
+                          const targetMonth =
+                            (targetSacred.year - 1) * SACRED_MONTHS_PER_YEAR +
+                            targetSacred.month -
+                            1;
+                          setGridOffset(targetMonth - baseGridMonth);
+                          document
+                            .getElementById("calendar")
+                            ?.scrollIntoView({ behavior: "smooth" });
+                        }}
+                      >
+                        {historyCopy.viewCalendar} →
+                      </button>
+                    </div>
+                  </div>
+                </details>
+              );
+            },
+          )}
+        </div>
+
+        <details className="history-method">
+          <summary>{historyCopy.method}</summary>
+          <p>{historyCopy.methodNote}</p>
+          <p>{historyCopy.prolepticNote}</p>
+          <div>
+            {Object.entries(HISTORY_SOURCES).map(([id, source]) => (
+              <a href={source.url} target="_blank" rel="noreferrer" key={id}>
+                {source.label} ↗
+              </a>
+            ))}
+          </div>
+        </details>
+      </section>
+
       <section className="calendar-section" id="calendar">
         <div className="section-heading calendar-heading">
-          <span>04 — {moonTranslations.calendarKicker}</span>
+          <span>05 — {moonTranslations.calendarKicker}</span>
           <h2>{moonTranslations.calendarTitle}</h2>
           <p>{moonTranslations.calendarBody}</p>
         </div>
@@ -1134,6 +1401,10 @@ export default function Home() {
             <i className="important-marker" aria-hidden="true">◆</i>
             {importantDateCopy.kicker}
           </span>
+          <span>
+            <i className="history-marker" aria-hidden="true">⌛</i>
+            {historyCopy.navLabel}
+          </span>
         </div>
 
         <div className="calendar-grid" role="grid">
@@ -1178,6 +1449,9 @@ export default function Home() {
                   ...event,
                   anniversaryNumber: gridSacred.year - event.sacred.year,
                 }));
+              const historyEvents = gridHistoricalEvents.filter(
+                (event) => event.startFixed === cellFixed,
+              );
 
               return (
                 <div
@@ -1190,6 +1464,7 @@ export default function Home() {
                     hasNewMoon ||
                     hasMoonAlignment ||
                     hasRotationAnniversary ||
+                    historyEvents.length > 0 ||
                     importantEvents.length > 0
                       ? "has-event"
                       : "",
@@ -1262,6 +1537,20 @@ export default function Home() {
                           : `Ovadia Binyamin · ${(event.baseBirthday ?? 0) + event.anniversaryNumber} ${importantDateCopy.birthdayLabel}`}
                       </span>
                     ))}
+                    {historyEvents.map(({ event, number }) => (
+                      <span
+                        className="event-pill history-event-pill"
+                        title={
+                          event.date.precision === "day"
+                            ? event.title
+                            : `${event.title} · ${historyCopy.rangeMarker}`
+                        }
+                        key={event.id}
+                      >
+                        ⌛ #{number} · {event.title}
+                        {event.date.precision !== "day" ? " ≈" : ""}
+                      </span>
+                    ))}
                   </div>
                 </div>
               );
@@ -1277,7 +1566,7 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="lunar-alignment-section">
+        <div className="lunar-alignment-section" id="lunar-alignments">
           <div className="lunar-copy">
             <span className="section-number">28 ↔ 29.530588853</span>
             <h3>{moonTranslations.alignmentsTitle}</h3>
@@ -1353,7 +1642,7 @@ export default function Home() {
 
       <section className="planetary-section" id="planetary-hours">
         <div className="section-heading planetary-heading">
-          <span>05 — {planetaryCopy.kicker}</span>
+          <span>06 — {planetaryCopy.kicker}</span>
           <h2>{planetaryCopy.title}</h2>
         </div>
 
@@ -1536,7 +1825,7 @@ export default function Home() {
 
       <section className="definition-section" id="definition">
         <div className="section-heading">
-          <span>06 — {translations.definitionKicker}</span>
+          <span>07 — {translations.definitionKicker}</span>
           <h2>{translations.definitionTitle}</h2>
         </div>
 

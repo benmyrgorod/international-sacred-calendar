@@ -120,16 +120,77 @@ a {
   font-size: 10px;
 }
 
-.nav-links {
-  display: flex;
-  gap: 30px;
+.site-menu {
+  position: relative;
+}
+
+.site-menu > summary {
+  min-height: 38px;
+  padding: 9px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
   color: var(--ink-soft);
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  list-style: none;
   text-transform: uppercase;
 }
 
-.nav-links a:hover {
+.site-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.site-menu[open] > summary,
+.site-menu > summary:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.site-menu-panel {
+  width: min(760px, calc(100vw - 40px));
+  padding: 22px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  gap: 16px;
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  z-index: 30;
+  border: 1px solid var(--gold-light);
+  background: #fffdf8;
+  box-shadow: 0 18px 50px rgba(15, 41, 33, 0.18);
+  transform: translateX(-50%);
+}
+
+.menu-group {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+
+.menu-group strong {
+  margin-bottom: 7px;
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.menu-group a {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.menu-group a:hover {
   color: var(--gold);
 }
 
@@ -262,7 +323,8 @@ h1 em {
 
 .converter-section,
 .definition-section,
-.planetary-section {
+.planetary-section,
+.history-section {
   padding: 112px 6vw;
 }
 
@@ -1036,6 +1098,345 @@ h1 em {
   color: var(--gold);
 }
 
+.history-section {
+  color: #f7f0e2;
+  background:
+    radial-gradient(circle at 90% 6%, rgba(182, 144, 78, 0.2), transparent 28%),
+    var(--forest);
+}
+
+.history-heading h2 {
+  color: #f7f0e2;
+}
+
+.history-heading > span {
+  color: var(--gold-light);
+}
+
+.history-heading p {
+  max-width: 760px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.history-toolbar {
+  margin-bottom: 18px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: minmax(180px, 0.7fr) minmax(420px, 2fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  color: var(--ink);
+  background: #fffdf8;
+}
+
+.history-search input {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  outline: none;
+  font-size: 11px;
+}
+
+.history-search input:focus {
+  border-color: var(--gold);
+}
+
+.history-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.history-filters button {
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.history-filters button:hover,
+.history-filters button.active {
+  border-color: var(--gold);
+  background: rgba(182, 144, 78, 0.12);
+  color: var(--forest);
+}
+
+.symbolic-filter {
+  min-height: 34px;
+  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-left: 1px solid var(--line);
+  color: var(--gold);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.symbolic-filter input {
+  accent-color: var(--gold);
+}
+
+.history-count {
+  color: var(--forest);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.history-list {
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.history-event {
+  color: var(--ink);
+  background: #fffdf8;
+  border-bottom: 1px solid var(--line);
+  border-inline-start: 4px solid var(--history-accent, var(--gold));
+}
+
+.history-event summary {
+  min-height: 94px;
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: 42px minmax(260px, 1.4fr) minmax(260px, 1fr) 24px;
+  gap: 18px;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+
+.history-event summary::-webkit-details-marker {
+  display: none;
+}
+
+.history-event summary:hover {
+  background: rgba(182, 144, 78, 0.06);
+}
+
+.history-hebrew {
+  --history-accent: #b6904e;
+}
+
+.history-civilization {
+  --history-accent: #8b7654;
+}
+
+.history-freedom {
+  --history-accent: #4d7b68;
+}
+
+.history-science {
+  --history-accent: #607e8d;
+}
+
+.history-modern {
+  --history-accent: #8d6262;
+}
+
+.history-number {
+  color: var(--history-accent);
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 25px;
+}
+
+.history-event-title > span {
+  min-height: 19px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.history-event-title i {
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 7px;
+  font-style: normal;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.history-event-title i.symbolic-tag {
+  border-color: var(--gold-light);
+  color: var(--gold);
+  background: rgba(182, 144, 78, 0.09);
+}
+
+.history-event-title strong {
+  display: block;
+  margin: 5px 0 4px;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 1.08;
+}
+
+.history-event-title small,
+.history-sacred-date span {
+  color: var(--ink-soft);
+  font-size: 8px;
+  letter-spacing: 0.04em;
+}
+
+.history-sacred-date {
+  padding-inline-start: 18px;
+  border-inline-start: 1px solid var(--line);
+}
+
+.history-sacred-date span,
+.history-sacred-date strong {
+  display: block;
+}
+
+.history-sacred-date span {
+  margin-bottom: 5px;
+  color: var(--gold);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.history-sacred-date strong {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.history-expand {
+  color: var(--gold);
+  font-size: 18px;
+  transition: transform 160ms ease;
+}
+
+.history-event[open] .history-expand {
+  transform: rotate(45deg);
+}
+
+.history-event-details {
+  padding: 0 20px 22px 80px;
+}
+
+.history-calendar-conversions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  border-top: 1px solid var(--line);
+  border-inline-start: 1px solid var(--line);
+}
+
+.history-calendar-conversions > div {
+  min-height: 76px;
+  padding: 12px;
+  border-inline-end: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.history-calendar-conversions span,
+.history-calendar-conversions strong {
+  display: block;
+}
+
+.history-calendar-conversions span {
+  margin-bottom: 7px;
+  color: var(--gold);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.history-calendar-conversions strong {
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.history-symbolism,
+.history-note {
+  margin: 12px 0 0;
+  padding: 11px 13px;
+  color: var(--ink-soft);
+  background: var(--cream);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.history-symbolism {
+  display: flex;
+  gap: 9px;
+  border-inline-start: 3px solid var(--gold);
+}
+
+.history-symbolism span {
+  color: var(--gold);
+}
+
+.history-event-actions {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.history-event-actions a,
+.history-event-actions button {
+  border: 0;
+  background: transparent;
+  color: var(--gold);
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.history-event-actions a:hover,
+.history-event-actions button:hover {
+  color: var(--forest);
+}
+
+.history-method {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 10px;
+}
+
+.history-method summary {
+  color: var(--gold-light);
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.history-method p {
+  max-width: 820px;
+  line-height: 1.65;
+}
+
+.history-method > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.history-method a {
+  color: var(--gold-light);
+}
+
 .calendar-section {
   padding: 112px 6vw;
   background: var(--paper);
@@ -1226,6 +1627,11 @@ h1 em {
   background: #7d622e;
 }
 
+.history-marker {
+  color: #fffdf8;
+  background: #607e8d;
+}
+
 .jump-symbol {
   color: var(--forest);
   font-size: 13px;
@@ -1380,6 +1786,11 @@ h1 em {
 
 .birthday-pill {
   background: var(--forest);
+}
+
+.history-event-pill {
+  color: #fffdf8;
+  background: #607e8d;
 }
 
 .lunar-alignment-section {
@@ -2044,8 +2455,8 @@ footer > a {
 }
 
 @media (max-width: 1100px) {
-  .nav-links {
-    display: none;
+  .site-menu-panel {
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
   }
 }
 
@@ -2111,6 +2522,23 @@ footer > a {
     grid-column: 1 / -1;
   }
 
+  .history-toolbar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .history-search,
+  .history-filters {
+    grid-column: 1 / -1;
+  }
+
+  .history-event summary {
+    grid-template-columns: 42px minmax(240px, 1.4fr) minmax(210px, 1fr) 24px;
+  }
+
+  .history-calendar-conversions {
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+  }
+
   .important-dates-grid {
     grid-template-columns: 1fr;
   }
@@ -2152,12 +2580,36 @@ footer > a {
     flex-basis: 52px;
   }
 
-  .nav-links {
-    display: none;
-  }
-
   .language-picker select {
     max-width: 120px;
+  }
+
+  .site-menu {
+    order: 3;
+  }
+
+  .site-menu > summary {
+    width: 42px;
+    padding: 9px;
+    justify-content: center;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .site-menu > summary span {
+    flex: 0 0 auto;
+    font-size: 15px;
+  }
+
+  .site-menu-panel {
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    position: fixed;
+    top: 88px;
+    left: 12px;
+    grid-template-columns: 1fr 1fr;
+    transform: none;
   }
 
   .hero {
@@ -2190,8 +2642,65 @@ footer > a {
   .cycle-section,
   .important-dates-section,
   .calendar-section,
-  .planetary-section {
+  .planetary-section,
+  .history-section {
     padding: 80px 20px;
+  }
+
+  .history-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .history-search,
+  .history-filters {
+    grid-column: auto;
+  }
+
+  .symbolic-filter {
+    border-left: 0;
+  }
+
+  .history-count {
+    justify-self: end;
+  }
+
+  .history-event summary {
+    padding: 15px 13px;
+    grid-template-columns: 34px 1fr 20px;
+    gap: 10px;
+  }
+
+  .history-number {
+    font-size: 20px;
+  }
+
+  .history-event-title strong {
+    font-size: 20px;
+  }
+
+  .history-sacred-date {
+    grid-column: 2 / -1;
+    padding: 10px 0 0;
+    border-inline-start: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .history-expand {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .history-event-details {
+    padding: 0 13px 18px;
+  }
+
+  .history-calendar-conversions {
+    grid-template-columns: 1fr;
+  }
+
+  .history-event-actions {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .planet-orbit-grid {

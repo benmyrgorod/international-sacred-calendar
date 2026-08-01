@@ -196,6 +196,36 @@ sunset, and clock time in the calculator; the selected converter date supplies
 the weekday. These correspondences are traditional and symbolic, not a
 scientific prediction.
 
+## Eighty major events
+
+The separate world-chronology section lists exactly 80 dates from the first day
+of Creation through the discovery of the International Sacred Calendar. It can
+be searched or filtered by Hebrew chronology, civilizations, freedom and
+ideas, science, the modern world, or dates with special symbolism. Expanding an
+event shows its date or date range in every supported calendar; its action
+jumps directly to the matching ISC calendar-grid marker.
+
+Biblical milestones follow traditional Hebrew chronology. Exact dates remain
+exact, while events known only by a month or year convert to a full fixed-day
+range. For those ranges, the calendar grid places a visibly approximate marker
+on the first day rather than inventing historical day precision. Secular events
+retain their stated historical civil calendar, including Julian dates where
+appropriate. Each entry identifies its reference collection and notes major
+chronology disagreements, including the traditional and academic dating of the
+First Temple's destruction.
+
+Dates shown in calendars that were not historically used at the time are
+proleptic mathematical equivalents. They make cross-calendar comparison
+possible but do not claim that a historical community recorded the event in
+that calendar.
+
+Several entries also explain why the date itself became symbolic—for example,
+the eleventh hour of 11 November 1918, Earth Day, Pi Day, Human Rights Day, and
+the Beijing opening ceremony at 8:08 p.m. on 8/8/08.
+
+Chronology data and fixed-day ranges are provided by
+[`lib/historical-events.ts`](./lib/historical-events.ts).
+
 ## Calendar conventions
 
 - **Hebrew:** arithmetic Hebrew calendar with its 19-year leap cycle and
@@ -264,6 +294,7 @@ Public conversion helpers include:
 - `internationalHolidaysBetween`
 - `planetForPlanetaryHour`
 - `calculatePlanetaryHour`
+- `historicalEventRange`
 - `weekdayFromFixed`
 - date validation and month-length helpers
 

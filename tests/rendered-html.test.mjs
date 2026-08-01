@@ -46,6 +46,34 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /To the 20th anniversary/);
   assert.match(html, /Rotation anniversaries 1–20/);
   assert.match(html, /Five past and five future lunar alignments/);
+  assert.match(html, /Eighty dates from Creation to today/);
+  assert.match(html, /80 major events/);
+  assert.match(html, /First Temple completed/);
+  assert.match(html, /First Temple destroyed/);
+  assert.match(html, /Storming of the Bastille · French Revolution/);
+  assert.match(html, /The eleventh hour of the eleventh day/);
+  assert.match(html, /8\/8\/08/);
+  assert.match(html, /Date policy &amp; sources/);
+  assert.equal((html.match(/class="history-event history-/g) ?? []).length, 80);
+  assert.equal((html.match(/class="history-calendar-conversions"/g) ?? []).length, 80);
+  assert.match(html, /class="event-pill history-event-pill"/);
+  assert.match(html, /Discovery of the International Sacred Calendar/);
+  assert.match(html, /href="#major-events"/);
+  assert.match(html, /href="#lunar-alignments"/);
+  assert.match(html, /class="site-menu"/);
+  assert.match(html, /class="site-menu-panel"/);
+  for (const anchor of [
+    "converter",
+    "calendar",
+    "planetary-hours",
+    "cycle",
+    "lunar-alignments",
+    "important-dates",
+    "major-events",
+    "definition",
+  ]) {
+    assert.match(html, new RegExp(`href="#${anchor}"`));
+  }
   assert.match(html, /Hours and days under seven planets/);
   assert.match(html, /Planetary hour calculator/);
   assert.match(html, /Days and their planets/);
