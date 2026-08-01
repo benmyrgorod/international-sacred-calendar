@@ -1,10 +1,9 @@
 import {
-  SACRED_EPOCH_FIXED,
   SACRED_DAYS_PER_YEAR,
-  SACRED_ROTATION_YEARS,
   fixedFromDate,
   fixedFromSacred,
   sacredRotationAnniversary,
+  sacredRotationHalfAnniversary,
 } from "./sacred-calendar.ts";
 
 export const NEAR_ROTATION_ALIGNMENT_YEARS = 33;
@@ -92,7 +91,6 @@ export function nearestRotationHalfAlignment(
   }
 
   const midpoint = (startFixed + endFixed) / 2;
-  const rotationDays = SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR;
   let closest: RotationAlignmentProximity | null = null;
 
   for (
@@ -100,8 +98,9 @@ export function nearestRotationHalfAlignment(
     alignmentNumber < maximumAlignment;
     alignmentNumber += 1
   ) {
-    const alignmentFixed =
-      SACRED_EPOCH_FIXED + alignmentNumber * rotationDays;
+    const alignmentFixed = fixedFromSacred(
+      sacredRotationHalfAnniversary(alignmentNumber),
+    );
     const offsetDays = midpoint - alignmentFixed;
     const candidate: RotationAlignmentProximity = {
       alignmentNumber,

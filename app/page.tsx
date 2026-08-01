@@ -53,7 +53,7 @@ import { historicalEventName } from "@/lib/event-name-translations";
 import { holidayName } from "@/lib/holiday-name-translations";
 import { ALIGNMENT_HISTORY_TRANSLATIONS } from "@/lib/alignment-history-translations";
 import {
-  COSMIC_DAY_CIVIL_DAYS,
+  COSMIC_DAY_DURATION,
   COSMIC_HOUR_DURATION,
   COSMIC_MINUTE_DURATION,
   COSMIC_SECOND_DURATION,
@@ -185,11 +185,22 @@ function formatCivilDuration(
   duration: CivilDuration,
   locale: string,
 ): string {
+  const commonYearSeconds = 365 * 24 * 60 * 60;
+  const years = Math.floor(duration.totalSeconds / commonYearSeconds);
+  let remainder = duration.totalSeconds % commonYearSeconds;
+  const days = Math.floor(remainder / (24 * 60 * 60));
+  remainder %= 24 * 60 * 60;
+  const hours = Math.floor(remainder / (60 * 60));
+  remainder %= 60 * 60;
+  const minutes = Math.floor(remainder / 60);
+  const seconds = remainder % 60;
+
   return [
-    duration.days ? `${duration.days.toLocaleString(locale)} d` : "",
-    duration.hours ? `${duration.hours.toLocaleString(locale)} h` : "",
-    duration.minutes ? `${duration.minutes.toLocaleString(locale)} min` : "",
-    duration.seconds ? `${duration.seconds.toLocaleString(locale)} s` : "",
+    years ? `${years.toLocaleString(locale)} y` : "",
+    days ? `${days.toLocaleString(locale)} d` : "",
+    hours ? `${hours.toLocaleString(locale)} h` : "",
+    minutes ? `${minutes.toLocaleString(locale)} min` : "",
+    seconds ? `${seconds.toLocaleString(locale)} s` : "",
   ]
     .filter(Boolean)
     .join(" · ");
@@ -936,6 +947,12 @@ export default function Home() {
     (gridSacred.year - 1) % SACRED_ROTATION_YEARS === 0
       ? (gridSacred.year - 1) / SACRED_ROTATION_YEARS
       : null;
+  const gridHalfRotationAnniversary =
+    gridSacred.month === 7 &&
+    gridSacred.year >= 147 &&
+    (gridSacred.year - 147) % SACRED_ROTATION_YEARS === 0
+      ? (gridSacred.year - 147) / SACRED_ROTATION_YEARS + 0.5
+      : null;
   const moonAlignments = moonAlignmentsAround(calculation.fixed, 5, 5);
   const importantDates = IMPORTANT_DATES.map((event) => ({
     ...event,
@@ -1310,7 +1327,10 @@ export default function Home() {
                   {SACRED_ROTATION_YEARS.toLocaleString(languageConfig.locale)} ISC y
                 </strong>
                 <em>
-                  {COSMIC_DAY_CIVIL_DAYS.toLocaleString(languageConfig.locale)} d
+                  {formatCivilDuration(
+                    COSMIC_DAY_DURATION,
+                    languageConfig.locale,
+                  )}
                 </em>
               </article>
               <i aria-hidden="true">÷ 24</i>
@@ -1350,6 +1370,9 @@ export default function Home() {
                 <em>{formatCivilDuration(COSMIC_SECOND_DURATION, languageConfig.locale)}</em>
               </article>
             </div>
+            <small className="cosmic-common-year-note">
+              {cosmicTimeCopy.commonYearNote}
+            </small>
 
             <div className="cosmic-date-card">
               <div className="cosmic-date-title">
@@ -1956,6 +1979,10 @@ export default function Home() {
             {moonTranslations.rotationAnniversary}
           </span>
           <span>
+            <i className="half-rotation-marker" aria-hidden="true">✧</i>
+            {moonTranslations.halfRotationAnniversary}
+          </span>
+          <span>
             <i className="important-marker" aria-hidden="true">◆</i>
             {importantDateCopy.kicker}
           </span>
@@ -1999,6 +2026,8 @@ export default function Home() {
               const hasMoonAlignment = day === 1 && Boolean(gridMoonAlignment);
               const hasRotationAnniversary =
                 day === 1 && gridRotationAnniversary !== null;
+              const hasHalfRotationAnniversary =
+                day === 15 && gridHalfRotationAnniversary !== null;
               const importantEvents = importantDates
                 .filter(
                   (event) =>
@@ -2026,6 +2055,7 @@ export default function Home() {
                     hasFullMoon ||
                     hasMoonAlignment ||
                     hasRotationAnniversary ||
+                    hasHalfRotationAnniversary ||
                     historyEvents.length > 0 ||
                     importantEvents.length > 0
                       ? "has-event"
@@ -2094,6 +2124,14 @@ export default function Home() {
                     {hasRotationAnniversary ? (
                       <span className="event-pill rotation-pill">
                         ✦ {moonTranslations.rotationAnniversary} #{gridRotationAnniversary}
+                      </span>
+                    ) : null}
+                    {hasHalfRotationAnniversary ? (
+                      <span
+                        className="event-pill half-rotation-pill"
+                        data-half-rotation-anniversary={gridHalfRotationAnniversary}
+                      >
+                        ✧ {moonTranslations.halfRotationAnniversary} #{gridHalfRotationAnniversary}
                       </span>
                     ) : null}
                     {importantEvents.map((event) => (

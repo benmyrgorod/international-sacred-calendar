@@ -112,10 +112,11 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Near a 293-year half-cycle/);
   assert.match(html, /Current \/ selected Cosmic Date/);
   assert.match(html, /A 293-year day, divided like a clock/);
-  assert.match(html, /106,652<!-- --> d/);
-  assert.match(html, /4,443 d · 20 h/);
+  assert.match(html, /292 y · 72 d/);
+  assert.match(html, /12 y · 63 d · 20 h/);
   assert.match(html, /74 d · 1 h · 32 min/);
   assert.match(html, /1 d · 5 h · 37 min · 32 s/);
+  assert.match(html, /365-day common year/);
   assert.match(html, /aria-label="Cosmic Week"/);
   assert.match(html, /aria-label="Cosmic Day"/);
   assert.match(html, /aria-label="Cosmic Second"/);
@@ -132,7 +133,7 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.equal((html.match(/class="history-event history-/g) ?? []).length, 80);
   assert.equal((html.match(/class="history-calendar-conversions"/g) ?? []).length, 80);
   assert.match(html, /class="event-pill history-event-pill"/);
-  assert.match(html, /80 event anniversaries/);
+  assert.match(html, /80 events in Sacred rhythm/);
   assert.match(html, /history-anniversary-pill/);
   assert.match(html, /Anniversary #/);
   assert.match(html, /href="#history-/);
@@ -206,6 +207,9 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /International holiday/);
   assert.match(html, /Moon alignment/);
   assert.match(html, /293-year anniversary/);
+  assert.match(html, /293-year half-cycle anniversary/);
+  assert.match(html, /class="half-rotation-marker"/);
+  assert.match(html, /80 events in Sacred rhythm/);
   assert.match(html, /<span class="grid-calendar-date">Jul 27, 2026<\/span>/);
   assert.match(html, /class="future-alignment"/);
   assert.match(

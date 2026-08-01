@@ -693,6 +693,30 @@ export function sacredRotationAnniversary(anniversary: number): CalendarDate {
   };
 }
 
+/**
+ * Returns the midpoint between two whole 293-year rotation boundaries.
+ * Half-cycle 0.5 is Sacred Year 147, Month 7, Day 15.
+ */
+export function sacredRotationHalfAnniversary(
+  alignmentNumber: number,
+): CalendarDate {
+  const doubledAlignment = alignmentNumber * 2;
+  if (
+    !Number.isInteger(doubledAlignment) ||
+    doubledAlignment < 1 ||
+    doubledAlignment % 2 === 0
+  ) {
+    throw new RangeError(
+      "Half-cycle anniversary must be a positive number ending in .5.",
+    );
+  }
+
+  const rotationDays = SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR;
+  return sacredFromFixed(
+    SACRED_EPOCH_FIXED + alignmentNumber * rotationDays,
+  );
+}
+
 function sacredMonthIndex(date: CalendarDate): number {
   return (date.year - 1) * SACRED_MONTHS_PER_YEAR + date.month - 1;
 }

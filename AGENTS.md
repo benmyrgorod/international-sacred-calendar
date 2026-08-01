@@ -24,7 +24,9 @@ correct calendar name; never change it to “Georgian.”
   near-alignment of year boundaries, not a weekday reset.
 - Chronology rows compare events with both full 293-year boundaries and their
   146.5-year half-cycle marks. Both use the documented 33-ISC-year proximity
-  window; full-cycle matches are gold and half-cycle matches are sapphire.
+  window; full-cycle matches are gold and half-cycle matches are sapphire. The
+  grid marks every `n + 0.5` half-cycle anniversary at ISC Month 7, Day 15 of
+  Sacred Years 147, 440, 733, and so on.
 - Cosmic time treats one 293-ISC-year interval as one Cosmic Day and divides it
   into 24 hours, 60 minutes per hour, and 60 seconds per minute. Each 293-year
   alignment is one symbolic Cosmic Day: alignments 1 through 7 are Monday

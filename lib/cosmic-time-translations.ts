@@ -14,6 +14,7 @@ export interface CosmicTimeTranslationPack {
   apply: string;
   weekHelp: string;
   scaleNote: string;
+  commonYearNote: string;
   nearestDayNote: string;
   invalid: string;
 }
@@ -36,6 +37,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "Apply Cosmic Date",
     weekHelp: "Each alignment is a Cosmic Day in a seven-day Cosmic Week: #1 is Monday of Week 1, #7 is Sunday of Week 1, and #8 is Monday of Week 2.",
     scaleNote: "A proportional calendar scale—not a physical clock or astronomical standard.",
+    commonYearNote: "Duration years use a 365-day common year; remaining days, hours, minutes, and seconds are shown exactly.",
     nearestDayNote: "Cosmic Seconds are shown to three decimals; applying them selects the nearest civil day.",
     invalid: "Enter a valid Cosmic Week and time.",
   },
@@ -53,6 +55,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "החלת תאריך קוסמי",
     weekHelp: "כל יישור הוא יום קוסמי בשבוע קוסמי בן שבעה ימים: מס׳ 1 הוא יום שני בשבוע 1, מס׳ 7 הוא יום ראשון בשבוע 1 ומס׳ 8 הוא יום שני בשבוע 2.",
     scaleNote: "קנה מידה יחסי של לוח שנה, לא שעון פיזי או תקן אסטרונומי.",
+    commonYearNote: "שנות משך הן שנים רגילות של 365 ימים; יתרת הימים, השעות, הדקות והשניות מוצגת במדויק.",
     nearestDayNote: "השניות מוצגות בשלוש ספרות עשרוניות; ההחלה בוחרת את היום האזרחי הקרוב ביותר.",
     invalid: "יש להזין שבוע וזמן קוסמיים תקינים.",
   },
@@ -70,6 +73,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "تطبيق التاريخ الكوني",
     weekHelp: "كل محاذاة هي يوم كوني ضمن أسبوع كوني من سبعة أيام: رقم 1 هو الاثنين من الأسبوع 1، ورقم 7 الأحد من الأسبوع 1، ورقم 8 الاثنين من الأسبوع 2.",
     scaleNote: "مقياس تقويمي نسبي، وليس ساعة مادية أو معياراً فلكياً.",
+    commonYearNote: "تستخدم المدد سنة عادية من 365 يومًا، وتُعرض الأيام والساعات والدقائق والثواني المتبقية بدقة.",
     nearestDayNote: "تُعرض الثواني بثلاث مراتب عشرية؛ ويختار التطبيق أقرب يوم مدني.",
     invalid: "أدخل أسبوعاً ووقتاً كونيين صالحين.",
   },
@@ -87,6 +91,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "Applica Data Cosmica",
     weekHelp: "Ogni allineamento è un Giorno Cosmico in una Settimana Cosmica di sette giorni: il n. 1 è lunedì della Settimana 1, il n. 7 domenica della Settimana 1 e il n. 8 lunedì della Settimana 2.",
     scaleNote: "Una scala calendaria proporzionale, non un orologio fisico né uno standard astronomico.",
+    commonYearNote: "Le durate usano un anno comune di 365 giorni; giorni, ore, minuti e secondi restanti sono esatti.",
     nearestDayNote: "I secondi hanno tre decimali; l’applicazione sceglie il giorno civile più vicino.",
     invalid: "Inserisci una settimana e un’ora cosmiche valide.",
   },
@@ -104,6 +109,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "Εφαρμογή Κοσμικής Ημερομηνίας",
     weekHelp: "Κάθε ευθυγράμμιση είναι μία Κοσμική Ημέρα σε επταήμερη Κοσμική Εβδομάδα: η #1 είναι Δευτέρα της Εβδομάδας 1, η #7 Κυριακή της Εβδομάδας 1 και η #8 Δευτέρα της Εβδομάδας 2.",
     scaleNote: "Αναλογική ημερολογιακή κλίμακα, όχι φυσικό ρολόι ή αστρονομικό πρότυπο.",
+    commonYearNote: "Οι διάρκειες χρησιμοποιούν κοινό έτος 365 ημερών· οι υπόλοιπες ημέρες, ώρες, λεπτά και δευτερόλεπτα είναι ακριβή.",
     nearestDayNote: "Τα δευτερόλεπτα εμφανίζονται με τρία δεκαδικά· εφαρμόζεται η πλησιέστερη πολιτική ημέρα.",
     invalid: "Εισαγάγετε έγκυρη Κοσμική Εβδομάδα και ώρα.",
   },
@@ -121,6 +127,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "Применить Космическую дату",
     weekHelp: "Каждое совпадение — Космический день семидневной Космической недели: №1 — понедельник Недели 1, №7 — воскресенье Недели 1, а №8 — понедельник Недели 2.",
     scaleNote: "Пропорциональная календарная шкала, а не физические часы или астрономический стандарт.",
+    commonYearNote: "Для длительности используется обычный 365-дневный год; остаток дней, часов, минут и секунд указан точно.",
     nearestDayNote: "Секунды показаны до тысячных; применяется ближайший гражданский день.",
     invalid: "Введите допустимую Космическую неделю и время.",
   },
@@ -138,6 +145,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "应用宇宙日期",
     weekHelp: "每次对齐是七日宇宙周中的一个宇宙日：第1次为第1周周一，第7次为第1周周日，第8次为第2周周一。",
     scaleNote: "这是比例历法尺度，不是物理时钟或天文学标准。",
+    commonYearNote: "时长中的年按365天平年计算；余下的天、小时、分钟和秒为精确值。",
     nearestDayNote: "宇宙秒显示三位小数；应用时选择最近的民用日。",
     invalid: "请输入有效的宇宙周和时间。",
   },
@@ -155,6 +163,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "ब्रह्मांडीय तारीख लागू करें",
     weekHelp: "हर संरेखण सात-दिवसीय ब्रह्मांडीय सप्ताह का एक ब्रह्मांडीय दिन है: #1 सप्ताह 1 का सोमवार, #7 सप्ताह 1 का रविवार और #8 सप्ताह 2 का सोमवार है।",
     scaleNote: "यह आनुपातिक कैलेंडर पैमाना है, भौतिक घड़ी या खगोलीय मानक नहीं।",
+    commonYearNote: "अवधि में वर्ष 365-दिन का सामान्य वर्ष है; शेष दिन, घंटे, मिनट और सेकंड सटीक हैं।",
     nearestDayNote: "सेकंड तीन दशमलव तक दिखते हैं; लागू करने पर निकटतम नागरिक दिन चुना जाता है।",
     invalid: "मान्य ब्रह्मांडीय सप्ताह और समय दर्ज करें।",
   },
@@ -172,6 +181,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "Aplicar Fecha Cósmica",
     weekHelp: "Cada alineación es un Día Cósmico de una Semana Cósmica de siete días: la n.º 1 es lunes de la Semana 1, la n.º 7 domingo de la Semana 1 y la n.º 8 lunes de la Semana 2.",
     scaleNote: "Una escala calendárica proporcional, no un reloj físico ni una norma astronómica.",
+    commonYearNote: "Las duraciones usan un año común de 365 días; los días, horas, minutos y segundos restantes son exactos.",
     nearestDayNote: "Los segundos se muestran con tres decimales; se aplica el día civil más cercano.",
     invalid: "Introduce una Semana Cósmica y una hora válidas.",
   },
@@ -189,6 +199,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "Appliquer la Date Cosmique",
     weekHelp: "Chaque alignement est un Jour Cosmique d’une Semaine Cosmique de sept jours : le no 1 est le lundi de la Semaine 1, le no 7 le dimanche de la Semaine 1 et le no 8 le lundi de la Semaine 2.",
     scaleNote: "Une échelle calendaire proportionnelle, pas une horloge physique ni une norme astronomique.",
+    commonYearNote: "Les durées utilisent une année commune de 365 jours ; les jours, heures, minutes et secondes restants sont exacts.",
     nearestDayNote: "Les secondes ont trois décimales ; l’application choisit le jour civil le plus proche.",
     invalid: "Saisissez une Semaine Cosmique et une heure valides.",
   },
@@ -206,6 +217,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "宇宙日付を適用",
     weekHelp: "各整列は7日間の宇宙週における宇宙日です。#1は第1週の月曜日、#7は第1週の日曜日、#8は第2週の月曜日です。",
     scaleNote: "比例的な暦の尺度であり、物理時計や天文学的標準ではありません。",
+    commonYearNote: "期間の年は365日の平年です。残りの日・時・分・秒は正確に表示します。",
     nearestDayNote: "秒は小数第3位まで表示し、適用時に最も近い暦日を選びます。",
     invalid: "有効な宇宙週と時刻を入力してください。",
   },
@@ -223,6 +235,7 @@ export const COSMIC_TIME_TRANSLATIONS: Record<
     apply: "우주 날짜 적용",
     weekHelp: "각 정렬은 7일 우주 주간의 한 우주일입니다. #1은 1주 월요일, #7은 1주 일요일, #8은 2주 월요일입니다.",
     scaleNote: "비례 달력 척도이며 물리적 시계나 천문학 표준이 아닙니다.",
+    commonYearNote: "기간의 1년은 365일 평년이며, 남은 일·시간·분·초는 정확히 표시합니다.",
     nearestDayNote: "초는 소수 셋째 자리까지 표시하며 적용 시 가장 가까운 민간일을 선택합니다.",
     invalid: "올바른 우주 주간과 시간을 입력하세요.",
   },

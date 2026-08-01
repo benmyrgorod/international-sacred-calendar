@@ -1129,6 +1129,14 @@ h1 em {
   background: rgba(15, 82, 186, 0.24);
 }
 
+.cosmic-common-year-note {
+  display: block;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 8px;
+  text-align: end;
+}
+
 .cosmic-date-card {
   margin-top: 24px;
   padding: 24px;
@@ -2129,6 +2137,11 @@ h1 em {
   background: var(--forest);
 }
 
+.half-rotation-marker {
+  color: #fff;
+  background: #0f52ba;
+}
+
 .important-marker {
   color: #fffdf8;
   background: #7d622e;
@@ -2296,6 +2309,13 @@ h1 em {
 .rotation-pill {
   color: #f7f0e2;
   background: var(--forest);
+}
+
+.half-rotation-pill {
+  color: #fff;
+  border: 1px solid #8bb8ff;
+  background: #0f52ba;
+  font-weight: 700;
 }
 
 .important-pill {

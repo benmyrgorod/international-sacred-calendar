@@ -26,6 +26,7 @@ import {
 } from "../lib/local-preferences.ts";
 import {
   COSMIC_DAY_CIVIL_DAYS,
+  COSMIC_DAY_DURATION,
   COSMIC_HOUR_DURATION,
   COSMIC_MINUTE_DURATION,
   COSMIC_SECOND_DURATION,
@@ -64,6 +65,7 @@ import {
   moonAlignmentsAround,
   sacredRotation,
   sacredRotationAnniversary,
+  sacredRotationHalfAnniversary,
   weekdayFromFixed,
   type CalendarDate,
   type CalendarKind,
@@ -548,11 +550,42 @@ test("lists rotation anniversaries at completed 293-year boundaries", () => {
   );
 });
 
+test("lists half-cycle anniversaries at 146.5-year midpoints", () => {
+  assert.deepEqual(sacredRotationHalfAnniversary(0.5), {
+    year: 147,
+    month: 7,
+    day: 15,
+  });
+  assert.deepEqual(sacredRotationHalfAnniversary(1.5), {
+    year: 440,
+    month: 7,
+    day: 15,
+  });
+  assert.deepEqual(sacredRotationHalfAnniversary(21.5), {
+    year: 6300,
+    month: 7,
+    day: 15,
+  });
+  assert.equal(
+    fixedFromSacred(sacredRotationHalfAnniversary(1.5)) -
+      fixedFromSacred(sacredRotationHalfAnniversary(0.5)),
+    SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR,
+  );
+  assert.throws(() => sacredRotationHalfAnniversary(1), RangeError);
+});
+
 test("divides a 293-year Cosmic Day into clock units", () => {
   assert.equal(
     COSMIC_DAY_CIVIL_DAYS,
     SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR,
   );
+  assert.deepEqual(COSMIC_DAY_DURATION, {
+    totalSeconds: 9214732800,
+    days: 106652,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
   assert.deepEqual(COSMIC_HOUR_DURATION, {
     totalSeconds: 383947200,
     days: 4443,

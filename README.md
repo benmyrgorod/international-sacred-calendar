@@ -206,6 +206,17 @@ civil days. Dividing it like a 24-hour clock gives:
 - 1 Cosmic Second = 293 / 86,400 ISC years = 1 day, 5 hours, 37 minutes, and
   32 seconds.
 
+For compact display, the infographic also decomposes long durations using a
+**365-day common year**:
+
+- 1 Cosmic Day = 292 common years and 72 days;
+- 1 Cosmic Hour = 12 common years, 63 days, and 20 hours;
+- 1 Cosmic Minute = 74 days, 1 hour, and 32 minutes;
+- 1 Cosmic Second = 1 day, 5 hours, 37 minutes, and 32 seconds.
+
+This `365-day year` is only a readable duration unit; it is not a mean
+Gregorian, Hebrew, or astronomical year.
+
 The selected Cosmic Date is measured from the ISC epoch. Each completed
 293-year interval is one Cosmic Day. Seven consecutive Cosmic Days form one
 Cosmic Week: Days #1–#7 make Week 1, Days #8–#14 make Week 2, and so on. The
@@ -255,6 +266,7 @@ The 28-day grid displays one International Sacred month at a time. It marks:
 - international holidays and observances on their Gregorian anniversaries;
 - annual anniversaries of all 80 chronology events on their International
   Sacred month/day;
+- 293-year half-cycle anniversaries every 146.5 ISC years;
 - 293-year rotation anniversaries.
 
 The week-start selector supports Monday or Sunday. Monday is selected by
@@ -274,6 +286,12 @@ Only the secondary date label changes—the anniversary remains anchored to the
 same fixed day in the 364-day Sacred cycle. For year- or month-range events,
 the recurrence uses the first day of the documented range and keeps the
 approximation marker visible.
+
+The sapphire half-cycle marker identifies the midpoint between successive
+293-year boundaries. These marks are numbered `0.5`, `1.5`, `2.5`, and so on.
+Because half of 293 ISC years is 146 years plus 182 days, every half-cycle mark
+falls on ISC Month 7, Day 15: `ISC 147 · 07 · 15` for 0.5, then
+`ISC 440 · 07 · 15` for 1.5, continuing every 293 ISC years.
 
 Holiday markers follow the selected calendar: Jewish holidays for Hebrew,
 Western Christian holidays for Gregorian, Russian Orthodox holidays calculated
@@ -425,6 +443,7 @@ Public conversion helpers include:
 - `convertDate`
 - `sacredRotation`
 - `sacredRotationAnniversary`
+- `sacredRotationHalfAnniversary`
 - `moonAlignmentAtSacredMonth`
 - `moonAlignmentsAround`
 - `meanNewMoonsBetween`

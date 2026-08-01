@@ -141,3 +141,4 @@ export function cosmicUnitDuration(
 export const COSMIC_HOUR_DURATION = cosmicUnitDuration(24);
 export const COSMIC_MINUTE_DURATION = cosmicUnitDuration(24 * 60);
 export const COSMIC_SECOND_DURATION = cosmicUnitDuration(24 * 60 * 60);
+export const COSMIC_DAY_DURATION = cosmicUnitDuration(1);

@@ -953,6 +953,7 @@ export interface MoonTranslationPack {
   majorHoliday: string;
   internationalHoliday: string;
   rotationAnniversary: string;
+  halfRotationAnniversary: string;
   selectedDate: string;
   today: string;
   quickFind: string;
@@ -983,6 +984,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "Major holiday",
     internationalHoliday: "International holiday",
     rotationAnniversary: "293-year anniversary",
+    halfRotationAnniversary: "293-year half-cycle anniversary",
     selectedDate: "Selected date",
     today: "Today",
     quickFind: "Quick find",
@@ -1011,6 +1013,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "חג מרכזי",
     internationalHoliday: "יום בינלאומי",
     rotationAnniversary: "יום שנה של 293 שנים",
+    halfRotationAnniversary: "יום שנה של חצי מחזור 293 השנים",
     selectedDate: "תאריך נבחר",
     today: "היום",
     quickFind: "איתור מהיר",
@@ -1039,6 +1042,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "عيد رئيسي",
     internationalHoliday: "مناسبة دولية",
     rotationAnniversary: "ذكرى 293 سنة",
+    halfRotationAnniversary: "ذكرى نصف دورة 293 سنة",
     selectedDate: "التاريخ المحدد",
     today: "اليوم",
     quickFind: "وصول سريع",
@@ -1067,6 +1071,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "Festa principale",
     internationalHoliday: "Ricorrenza internazionale",
     rotationAnniversary: "Anniversario di 293 anni",
+    halfRotationAnniversary: "Anniversario di metà ciclo di 293 anni",
     selectedDate: "Data selezionata",
     today: "Oggi",
     quickFind: "Trova rapidamente",
@@ -1095,6 +1100,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "Μεγάλη εορτή",
     internationalHoliday: "Διεθνής εορτή",
     rotationAnniversary: "Επέτειος 293 ετών",
+    halfRotationAnniversary: "Επέτειος μισού κύκλου 293 ετών",
     selectedDate: "Επιλεγμένη ημερομηνία",
     today: "Σήμερα",
     quickFind: "Γρήγορη εύρεση",
@@ -1123,6 +1129,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "Большой праздник",
     internationalHoliday: "Международный праздник",
     rotationAnniversary: "293-летняя годовщина",
+    halfRotationAnniversary: "Годовщина половины 293-летнего цикла",
     selectedDate: "Выбранная дата",
     today: "Сегодня",
     quickFind: "Быстрый переход",
@@ -1151,6 +1158,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "重要节日",
     internationalHoliday: "国际节日",
     rotationAnniversary: "293年纪念日",
+    halfRotationAnniversary: "293年半周期纪念日",
     selectedDate: "所选日期",
     today: "今天",
     quickFind: "快速查找",
@@ -1179,6 +1187,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "प्रमुख त्योहार",
     internationalHoliday: "अंतरराष्ट्रीय दिवस",
     rotationAnniversary: "293-वर्षीय वर्षगाँठ",
+    halfRotationAnniversary: "293-वर्षीय अर्ध-चक्र वर्षगाँठ",
     selectedDate: "चुनी हुई तारीख",
     today: "आज",
     quickFind: "जल्दी खोजें",
@@ -1207,6 +1216,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "Festividad principal",
     internationalHoliday: "Día internacional",
     rotationAnniversary: "Aniversario de 293 años",
+    halfRotationAnniversary: "Aniversario de medio ciclo de 293 años",
     selectedDate: "Fecha elegida",
     today: "Hoy",
     quickFind: "Búsqueda rápida",
@@ -1235,6 +1245,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "Fête majeure",
     internationalHoliday: "Journée internationale",
     rotationAnniversary: "Anniversaire de 293 ans",
+    halfRotationAnniversary: "Anniversaire de demi-cycle de 293 ans",
     selectedDate: "Date choisie",
     today: "Aujourd’hui",
     quickFind: "Accès rapide",
@@ -1263,6 +1274,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "主要な祝日",
     internationalHoliday: "国際的な記念日",
     rotationAnniversary: "293年記念日",
+    halfRotationAnniversary: "293年半周期記念日",
     selectedDate: "選択日",
     today: "今日",
     quickFind: "クイック検索",
@@ -1291,6 +1303,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     majorHoliday: "주요 명절",
     internationalHoliday: "국제 기념일",
     rotationAnniversary: "293년 기념일",
+    halfRotationAnniversary: "293년 반주기 기념일",
     selectedDate: "선택한 날짜",
     today: "오늘",
     quickFind: "빠른 찾기",
