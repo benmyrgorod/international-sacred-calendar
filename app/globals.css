@@ -1371,32 +1371,32 @@ h1 em {
 }
 
 .history-event.near-rotation-alignment > summary {
-  color: #f7f0e2;
-  background: #23483b;
+  color: var(--ink);
+  background: rgba(182, 144, 78, 0.2);
 }
 
 .history-event.near-rotation-alignment > summary:hover {
-  background: #2b5647;
+  background: rgba(182, 144, 78, 0.28);
 }
 
 .history-event.near-rotation-alignment .history-number,
 .history-event.near-rotation-alignment .history-expand,
 .history-event.near-rotation-alignment .history-sacred-date span {
-  color: var(--gold-light);
+  color: #846326;
 }
 
 .history-event.near-rotation-alignment .history-event-title small,
 .history-event.near-rotation-alignment .history-sacred-date strong {
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--ink-soft);
 }
 
 .history-event.near-rotation-alignment .history-sacred-date {
-  border-inline-start-color: rgba(255, 255, 255, 0.24);
+  border-inline-start-color: rgba(132, 99, 38, 0.28);
 }
 
 .history-event.near-rotation-alignment .history-event-title i:not(.alignment-proximity-tag) {
-  border-color: rgba(255, 255, 255, 0.3);
-  color: rgba(255, 255, 255, 0.78);
+  border-color: rgba(132, 99, 38, 0.3);
+  color: var(--ink-soft);
 }
 
 .history-event summary {

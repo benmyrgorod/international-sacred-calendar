@@ -31,7 +31,7 @@ test("major headings stay on one line at desktop widths and wrap on small screen
   );
   assert.match(
     css,
-    /\.history-event\.near-rotation-alignment\s*>\s*summary\s*\{[^}]*background:\s*#23483b;/s,
+    /\.history-event\.near-rotation-alignment\s*>\s*summary\s*\{[^}]*background:\s*rgba\(182, 144, 78, 0\.2\);/s,
   );
   assert.match(css, /\.history-event-pill\.near-alignment-pill/);
 });

@@ -123,18 +123,18 @@ const ALIGNMENT_STORY_IMAGES: Record<
   FeaturedAlignmentEventId | "egypt-midpoint" | "babylonian-exile",
   string
 > = {
-  "great-pyramid": "/rotation-history/great-pyramid.webp",
-  "covenant-circumcision": "/rotation-history/abraham-covenant.webp",
-  "isaac-born": "/rotation-history/isaac.webp",
-  "egypt-midpoint": "/rotation-history/egypt-midpoint.webp",
-  "first-temple-work": "/rotation-history/first-temple.webp",
-  "babylonian-exile": "/rotation-history/babylonian-exile.webp",
-  "second-temple-destroyed": "/rotation-history/second-temple.webp",
-  hijra: "/rotation-history/hijra.webp",
-  "magna-carta": "/rotation-history/magna-carta.webp",
-  "columbus-americas": "/rotation-history/columbus.webp",
-  "us-declaration": "/rotation-history/us-independence.webp",
-  "french-revolution": "/rotation-history/bastille.webp",
+  "great-pyramid": "/rotation-history/great-pyramid.webp?v=20260801",
+  "covenant-circumcision": "/rotation-history/abraham-covenant.webp?v=20260801",
+  "isaac-born": "/rotation-history/isaac.webp?v=20260801",
+  "egypt-midpoint": "/rotation-history/egypt-midpoint.webp?v=20260801",
+  "first-temple-work": "/rotation-history/first-temple.webp?v=20260801",
+  "babylonian-exile": "/rotation-history/babylonian-exile.webp?v=20260801",
+  "second-temple-destroyed": "/rotation-history/second-temple.webp?v=20260801",
+  hijra: "/rotation-history/hijra.webp?v=20260801",
+  "magna-carta": "/rotation-history/magna-carta.webp?v=20260801",
+  "columbus-americas": "/rotation-history/columbus.webp?v=20260801",
+  "us-declaration": "/rotation-history/us-independence.webp?v=20260801",
+  "french-revolution": "/rotation-history/bastille.webp?v=20260801",
 };
 
 function currentLocalFixed(): number {
@@ -1181,6 +1181,8 @@ export default function Home() {
                       width={369}
                       height={346}
                       sizes="(max-width: 620px) 100vw, (max-width: 1080px) 50vw, 25vw"
+                      loading="eager"
+                      unoptimized
                     />
                   </span>
                   <span>
