@@ -769,17 +769,17 @@ export const LANGUAGES: Array<{
   locale: string;
   direction: "ltr" | "rtl";
 }> = [
-  { code: "ar", label: "العربية", locale: "ar", direction: "rtl" },
-  { code: "zh", label: "中文（简体）", locale: "zh-CN", direction: "ltr" },
   { code: "en", label: "English", locale: "en-US", direction: "ltr" },
-  { code: "fr", label: "Français", locale: "fr-FR", direction: "ltr" },
-  { code: "el", label: "Ελληνικά", locale: "el-GR", direction: "ltr" },
-  { code: "he", label: "עברית", locale: "he-IL", direction: "rtl" },
-  { code: "hi", label: "हिन्दी", locale: "hi-IN", direction: "ltr" },
-  { code: "it", label: "Italiano", locale: "it-IT", direction: "ltr" },
-  { code: "ja", label: "日本語", locale: "ja-JP", direction: "ltr" },
-  { code: "ru", label: "Русский", locale: "ru-RU", direction: "ltr" },
   { code: "es", label: "Español", locale: "es-ES", direction: "ltr" },
+  { code: "fr", label: "Français", locale: "fr-FR", direction: "ltr" },
+  { code: "it", label: "Italiano", locale: "it-IT", direction: "ltr" },
+  { code: "el", label: "Ελληνικά", locale: "el-GR", direction: "ltr" },
+  { code: "ru", label: "Русский", locale: "ru-RU", direction: "ltr" },
+  { code: "he", label: "עברית", locale: "he-IL", direction: "rtl" },
+  { code: "ar", label: "العربية", locale: "ar", direction: "rtl" },
+  { code: "hi", label: "हिन्दी", locale: "hi-IN", direction: "ltr" },
+  { code: "zh", label: "中文（简体）", locale: "zh-CN", direction: "ltr" },
+  { code: "ja", label: "日本語", locale: "ja-JP", direction: "ltr" },
 ];
 
 export interface MoonTranslationPack {
@@ -789,6 +789,7 @@ export interface MoonTranslationPack {
   previousMonth: string;
   nextMonth: string;
   lunarAlignment: string;
+  newMoon: string;
   rotationAnniversary: string;
   selectedDate: string;
   today: string;
@@ -815,6 +816,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     previousMonth: "Previous month",
     nextMonth: "Next month",
     lunarAlignment: "Moon alignment",
+    newMoon: "New moon",
     rotationAnniversary: "293-year anniversary",
     selectedDate: "Selected date",
     today: "Today",
@@ -839,6 +841,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     previousMonth: "החודש הקודם",
     nextMonth: "החודש הבא",
     lunarAlignment: "יישור ירח",
+    newMoon: "ירח חדש",
     rotationAnniversary: "יום שנה של 293 שנים",
     selectedDate: "תאריך נבחר",
     today: "היום",
@@ -863,6 +866,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     previousMonth: "الشهر السابق",
     nextMonth: "الشهر التالي",
     lunarAlignment: "محاذاة القمر",
+    newMoon: "المحاق",
     rotationAnniversary: "ذكرى 293 سنة",
     selectedDate: "التاريخ المحدد",
     today: "اليوم",
@@ -887,6 +891,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     previousMonth: "Mese precedente",
     nextMonth: "Mese successivo",
     lunarAlignment: "Allineamento lunare",
+    newMoon: "Luna nuova",
     rotationAnniversary: "Anniversario di 293 anni",
     selectedDate: "Data selezionata",
     today: "Oggi",
@@ -911,6 +916,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     previousMonth: "Προηγούμενος μήνας",
     nextMonth: "Επόμενος μήνας",
     lunarAlignment: "Σεληνιακή ευθυγράμμιση",
+    newMoon: "Νέα Σελήνη",
     rotationAnniversary: "Επέτειος 293 ετών",
     selectedDate: "Επιλεγμένη ημερομηνία",
     today: "Σήμερα",
@@ -935,6 +941,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     previousMonth: "Предыдущий месяц",
     nextMonth: "Следующий месяц",
     lunarAlignment: "Лунное совпадение",
+    newMoon: "Новолуние",
     rotationAnniversary: "293-летняя годовщина",
     selectedDate: "Выбранная дата",
     today: "Сегодня",
@@ -959,6 +966,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     previousMonth: "上个月",
     nextMonth: "下个月",
     lunarAlignment: "月相对齐",
+    newMoon: "新月",
     rotationAnniversary: "293年纪念日",
     selectedDate: "所选日期",
     today: "今天",
@@ -983,6 +991,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     previousMonth: "पिछला महीना",
     nextMonth: "अगला महीना",
     lunarAlignment: "चंद्र संरेखण",
+    newMoon: "अमावस्या",
     rotationAnniversary: "293-वर्षीय वर्षगाँठ",
     selectedDate: "चुनी हुई तारीख",
     today: "आज",
@@ -1007,6 +1016,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     previousMonth: "Mes anterior",
     nextMonth: "Mes siguiente",
     lunarAlignment: "Alineación lunar",
+    newMoon: "Luna nueva",
     rotationAnniversary: "Aniversario de 293 años",
     selectedDate: "Fecha elegida",
     today: "Hoy",
@@ -1031,6 +1041,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     previousMonth: "Mois précédent",
     nextMonth: "Mois suivant",
     lunarAlignment: "Alignement lunaire",
+    newMoon: "Nouvelle lune",
     rotationAnniversary: "Anniversaire de 293 ans",
     selectedDate: "Date choisie",
     today: "Aujourd’hui",
@@ -1055,6 +1066,7 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     previousMonth: "前の月",
     nextMonth: "次の月",
     lunarAlignment: "月相整列",
+    newMoon: "新月",
     rotationAnniversary: "293年記念日",
     selectedDate: "選択日",
     today: "今日",

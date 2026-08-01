@@ -62,6 +62,8 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Discovery of the International Sacred Calendar/);
   assert.match(html, /40th birthday of Ovadia Binyamin/);
   assert.match(html, /Discovery anniversary/);
+  assert.match(html, /class="new-moon-marker"/);
+  assert.match(html, /New moon/);
   assert.match(html, /Moon alignment/);
   assert.match(html, /293-year anniversary/);
   assert.match(html, /<span class="grid-calendar-date">Jul 27, 2026<\/span>/);
@@ -72,7 +74,7 @@ test("server-renders the International Sacred Calendar converter", async () => {
   );
   assert.match(
     html,
-    /<select aria-label="Language">[\s\S]*?<option value="ar">[\s\S]*?<option value="zh">[\s\S]*?<option value="en" selected="">[\s\S]*?<option value="fr">[\s\S]*?<option value="el">[\s\S]*?<option value="he">[\s\S]*?<option value="hi">[\s\S]*?<option value="it">[\s\S]*?<option value="ja">[\s\S]*?<option value="ru">[\s\S]*?<option value="es">/,
+    /<select aria-label="Language">[\s\S]*?<option value="en" selected="">[\s\S]*?<option value="es">[\s\S]*?<option value="fr">[\s\S]*?<option value="it">[\s\S]*?<option value="el">[\s\S]*?<option value="ru">[\s\S]*?<option value="he">[\s\S]*?<option value="ar">[\s\S]*?<option value="hi">[\s\S]*?<option value="zh">[\s\S]*?<option value="ja">/,
   );
   assert.doesNotMatch(html, /Georgian/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Building your site/i);

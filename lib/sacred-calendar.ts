@@ -33,6 +33,11 @@ export interface MoonMonthAlignment {
   offsetHours: number;
 }
 
+export interface MeanNewMoon {
+  fixed: number;
+  meanNewMoonFixed: number;
+}
+
 const HEBREW_EPOCH = -1_373_429;
 const ISLAMIC_EPOCH = 227_015;
 
@@ -530,6 +535,39 @@ export function moonAlignmentsAround(
   const past = events.filter((event) => event.fixed <= fixed).slice(-pastCount);
   const future = events.filter((event) => event.fixed > fixed).slice(0, futureCount);
   return [...past, ...future];
+}
+
+/**
+ * Lists mean new-moon instants whose UTC dates fall within an inclusive
+ * fixed-day range. This is a mean-phase model, not an observed moon forecast.
+ */
+export function meanNewMoonsBetween(
+  startFixed: number,
+  endFixed: number,
+): MeanNewMoon[] {
+  assertInteger(startFixed, "Start fixed day");
+  assertInteger(endFixed, "End fixed day");
+  if (endFixed < startFixed) {
+    throw new RangeError("End fixed day must not be earlier than start fixed day.");
+  }
+
+  const firstLunation = Math.ceil(
+    (startFixed - MEAN_NEW_MOON_REFERENCE_FIXED) / MEAN_SYNODIC_MONTH_DAYS,
+  );
+  const events: MeanNewMoon[] = [];
+
+  for (let lunation = firstLunation; ; lunation++) {
+    const meanNewMoonFixed =
+      MEAN_NEW_MOON_REFERENCE_FIXED + lunation * MEAN_SYNODIC_MONTH_DAYS;
+    if (meanNewMoonFixed >= endFixed + 1) break;
+
+    const fixed = Math.floor(meanNewMoonFixed);
+    if (fixed >= startFixed && fixed <= endFixed) {
+      events.push({ fixed, meanNewMoonFixed });
+    }
+  }
+
+  return events;
 }
 
 export function maxDayForDate(kind: CalendarKind, year: number, month: number): number {

@@ -1183,6 +1183,11 @@ h1 em {
   background: rgba(217, 199, 158, 0.6);
 }
 
+.new-moon-marker {
+  color: #fffdf8;
+  background: #1c2824;
+}
+
 .rotation-marker {
   color: #f7f0e2;
   background: var(--forest);
@@ -1317,6 +1322,11 @@ h1 em {
 .moon-pill {
   color: #604b22;
   background: rgba(217, 199, 158, 0.44);
+}
+
+.new-moon-pill {
+  color: #fffdf8;
+  background: #1c2824;
 }
 
 .rotation-pill {

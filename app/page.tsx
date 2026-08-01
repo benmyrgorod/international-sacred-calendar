@@ -22,6 +22,7 @@ import {
   hebrewYearMonths,
   isHebrewLeapYear,
   maxDayForDate,
+  meanNewMoonsBetween,
   moonAlignmentAtSacredMonth,
   moonAlignmentsAround,
   sacredFromFixed,
@@ -454,6 +455,10 @@ export default function Home() {
     day: 1,
   };
   const gridStartFixed = fixedFromSacred(gridSacred);
+  const gridNewMoons = meanNewMoonsBetween(
+    gridStartFixed,
+    gridStartFixed + SACRED_DAYS_PER_MONTH - 1,
+  );
   const gridMoonAlignment = moonAlignmentAtSacredMonth(gridSacred);
   const gridRotationAnniversary =
     gridSacred.month === 1 &&
@@ -939,6 +944,10 @@ export default function Home() {
 
         <div className="calendar-legend" aria-label="Calendar event legend">
           <span>
+            <i className="new-moon-marker" aria-hidden="true">●</i>
+            {moonTranslations.newMoon}
+          </span>
+          <span>
             <i className="moon-marker" aria-hidden="true">◐</i>
             {moonTranslations.lunarAlignment}
           </span>
@@ -971,6 +980,9 @@ export default function Home() {
               const cellFixed = gridStartFixed + day - 1;
               const selected = cellFixed === calculation.fixed;
               const isToday = cellFixed === todayFixed;
+              const hasNewMoon = gridNewMoons.some(
+                (event) => event.fixed === cellFixed,
+              );
               const hasMoonAlignment = day === 1 && Boolean(gridMoonAlignment);
               const hasRotationAnniversary =
                 day === 1 && gridRotationAnniversary !== null;
@@ -992,6 +1004,7 @@ export default function Home() {
                     "calendar-day",
                     selected ? "selected" : "",
                     isToday ? "today" : "",
+                    hasNewMoon ||
                     hasMoonAlignment ||
                     hasRotationAnniversary ||
                     importantEvents.length > 0
@@ -1024,6 +1037,11 @@ export default function Home() {
                     {isToday ? (
                       <span className="event-pill today-pill">
                         {moonTranslations.today}
+                      </span>
+                    ) : null}
+                    {hasNewMoon ? (
+                      <span className="event-pill new-moon-pill">
+                        ● {moonTranslations.newMoon}
                       </span>
                     ) : null}
                     {hasMoonAlignment ? (

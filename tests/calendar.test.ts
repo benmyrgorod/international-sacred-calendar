@@ -11,6 +11,7 @@ import {
   dateFromFixed,
   fixedFromDate,
   fixedFromSacred,
+  meanNewMoonsBetween,
   moonAlignmentAtSacredMonth,
   moonAlignmentsAround,
   sacredRotation,
@@ -169,4 +170,26 @@ test("finds five past and five future mean-moon alignments", () => {
       alignment,
     );
   }
+});
+
+test("lists mean new moons by their UTC calendar day", () => {
+  const januaryStart = fixedFromDate("gregorian", {
+    year: 2000,
+    month: 1,
+    day: 1,
+  });
+  const januaryEnd = fixedFromDate("gregorian", {
+    year: 2000,
+    month: 1,
+    day: 31,
+  });
+  const events = meanNewMoonsBetween(januaryStart, januaryEnd);
+
+  assert.equal(events.length, 1);
+  assert.equal(
+    events[0].fixed,
+    fixedFromDate("gregorian", { year: 2000, month: 1, day: 6 }),
+  );
+  assert.ok(events[0].meanNewMoonFixed > events[0].fixed);
+  assert.ok(events[0].meanNewMoonFixed < events[0].fixed + 1);
 });

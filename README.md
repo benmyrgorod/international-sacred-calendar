@@ -130,6 +130,7 @@ The 28-day grid displays one International Sacred month at a time. It marks:
 - the currently selected date;
 - a secondary date from the selected converter source calendar in every day
   cell (Gregorian by default);
+- approximate mean new-moon dates;
 - approximate moon/month-start alignments;
 - 293-year rotation anniversaries.
 
@@ -211,6 +212,7 @@ Public conversion helpers include:
 - `sacredRotationAnniversary`
 - `moonAlignmentAtSacredMonth`
 - `moonAlignmentsAround`
+- `meanNewMoonsBetween`
 - `weekdayFromFixed`
 - date validation and month-length helpers
 
