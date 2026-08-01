@@ -80,6 +80,8 @@ test("server-renders the International Sacred Calendar converter", async () => {
   }
   assert.match(html, /Hours and days under seven planets/);
   assert.match(html, /Planetary hour calculator/);
+  assert.match(html, /aria-pressed="true"/);
+  assert.match(html, /Current time/);
   assert.match(html, /Days and their planets/);
   assert.match(html, /24-hour correspondence/);
   assert.match(html, /a planetary hour is not usually 60 minutes/);

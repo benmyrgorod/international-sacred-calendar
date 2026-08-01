@@ -48,6 +48,7 @@ import {
 } from "@/lib/historical-events";
 import { HISTORY_TRANSLATIONS } from "@/lib/history-translations";
 import {
+  formatLocalTime,
   isValidTimePreference,
   normalizeTimePreference,
   PLANETARY_SUNRISE_STORAGE_KEY,
@@ -503,6 +504,7 @@ export default function Home() {
   const [planetarySunrise, setPlanetarySunrise] = useState("06:00");
   const [planetarySunset, setPlanetarySunset] = useState("18:00");
   const [planetaryTime, setPlanetaryTime] = useState("12:00");
+  const [planetaryTimeIsLive, setPlanetaryTimeIsLive] = useState(true);
   const [historyFilter, setHistoryFilter] = useState<HistoryFilter>("all");
   const [historyQuery, setHistoryQuery] = useState("");
   const [symbolicOnly, setSymbolicOnly] = useState(false);
@@ -546,6 +548,15 @@ export default function Home() {
     });
     return () => window.cancelAnimationFrame(frame);
   }, []);
+
+  useEffect(() => {
+    if (!planetaryTimeIsLive) return;
+
+    const updateLocalTime = () => setPlanetaryTime(formatLocalTime(new Date()));
+    updateLocalTime();
+    const timer = window.setInterval(updateLocalTime, 1_000);
+    return () => window.clearInterval(timer);
+  }, [planetaryTimeIsLive]);
 
   const calculation = useMemo(() => {
     try {
@@ -1746,18 +1757,18 @@ export default function Home() {
                 <input
                   type="time"
                   value={planetaryTime}
-                  onChange={(event) => setPlanetaryTime(event.target.value)}
+                  onChange={(event) => {
+                    setPlanetaryTimeIsLive(false);
+                    setPlanetaryTime(event.target.value);
+                  }}
                 />
               </label>
               <button
                 type="button"
+                aria-pressed={planetaryTimeIsLive}
                 onClick={() => {
-                  const now = new Date();
-                  setPlanetaryTime(
-                    `${String(now.getHours()).padStart(2, "0")}:${String(
-                      now.getMinutes(),
-                    ).padStart(2, "0")}`,
-                  );
+                  setPlanetaryTime(formatLocalTime(new Date()));
+                  setPlanetaryTimeIsLive(true);
                 }}
               >
                 ◷ {planetaryCopy.useCurrentTime}

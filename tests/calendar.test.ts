@@ -11,6 +11,7 @@ import {
   historicalEventRange,
 } from "../lib/historical-events.ts";
 import {
+  formatLocalTime,
   isValidTimePreference,
   normalizeTimePreference,
 } from "../lib/local-preferences.ts";
@@ -437,6 +438,7 @@ test("accepts valid saved sunrise and sunset times and rejects invalid values", 
   assert.equal(isValidTimePreference("00:00"), true);
   assert.equal(isValidTimePreference("23:59"), true);
   assert.equal(isValidTimePreference("24:00"), false);
+  assert.equal(formatLocalTime(new Date(2026, 0, 1, 3, 4)), "03:04");
 });
 
 test("lists international holidays independently of the selected calendar", () => {
