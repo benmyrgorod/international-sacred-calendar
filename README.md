@@ -173,6 +173,29 @@ discovery marker shows its anniversary number, while the birthday marker shows
 Ovadia Binyamin’s advancing age. Its legend also identifies approximate moon
 alignments and 293-year rotation anniversaries.
 
+## Planetary hour correspondence
+
+The planetary-hours section follows the supplied Talmudic chart. Each weekday
+is ruled by one of seven traditional celestial bodies:
+
+| Day | Ruler |
+| --- | --- |
+| Sunday | Sun ☉ |
+| Monday | Moon ☽ |
+| Tuesday | Mars ♂ |
+| Wednesday | Mercury ☿ |
+| Thursday | Jupiter ♃ |
+| Friday | Venus ♀ |
+| Saturday | Saturn ♄ |
+
+The hourly sequence repeats continuously as Saturn → Jupiter → Mars → Sun →
+Venus → Mercury → Moon. The first hour after local sunrise takes the ruler of
+that weekday. Daylight and darkness are each divided into twelve equal parts,
+so a planetary hour is generally not sixty clock minutes. Enter local sunrise,
+sunset, and clock time in the calculator; the selected converter date supplies
+the weekday. These correspondences are traditional and symbolic, not a
+scientific prediction.
+
 ## Calendar conventions
 
 - **Hebrew:** arithmetic Hebrew calendar with its 19-year leap cycle and
@@ -239,6 +262,8 @@ Public conversion helpers include:
 - `meanNewMoonsBetween`
 - `majorHolidaysBetween`
 - `internationalHolidaysBetween`
+- `planetForPlanetaryHour`
+- `calculatePlanetaryHour`
 - `weekdayFromFixed`
 - date validation and month-length helpers
 

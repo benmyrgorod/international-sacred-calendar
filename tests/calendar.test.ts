@@ -5,6 +5,10 @@ import {
   majorHolidaysBetween,
 } from "../lib/holidays.ts";
 import {
+  calculatePlanetaryHour,
+  planetForPlanetaryHour,
+} from "../lib/planetary-hours.ts";
+import {
   HEBREW_YEARS_PER_ROTATION,
   SACRED_LUNAR_BEAT_DAYS,
   SACRED_DAYS_PER_YEAR,
@@ -98,6 +102,33 @@ test("anchors Sacred day one to 25 Elul AM 1 without forcing Sunday", () => {
     day: 1,
   });
   assert.equal(weekdayFromFixed(SACRED_EPOCH_FIXED), "Monday");
+});
+
+test("follows the seven-planet weekday and hourly sequence", () => {
+  assert.equal(planetForPlanetaryHour(5, 1).id, "saturn");
+  assert.equal(planetForPlanetaryHour(5, 13).id, "mercury");
+  assert.equal(planetForPlanetaryHour(6, 1).id, "sun");
+});
+
+test("calculates unequal daylight and night planetary hours", () => {
+  const middayWednesday = calculatePlanetaryHour(2, "06:00", "18:00", "12:00");
+  assert.equal(middayWednesday.period, "day");
+  assert.equal(middayWednesday.hour, 7);
+  assert.equal(middayWednesday.planet.id, "venus");
+
+  const beforeSunriseThursday = calculatePlanetaryHour(
+    3,
+    "06:00",
+    "18:00",
+    "00:30",
+  );
+  assert.equal(beforeSunriseThursday.period, "night");
+  assert.equal(beforeSunriseThursday.rulingWeekdayIndex, 2);
+  assert.equal(beforeSunriseThursday.hour, 7);
+  assert.equal(beforeSunriseThursday.planet.id, "mars");
+
+  const longSummerDay = calculatePlanetaryHour(0, "05:30", "20:30", "10:00");
+  assert.equal(longSummerDay.durationMinutes, 75);
 });
 
 test("round-trips representative dates in every calendar", () => {

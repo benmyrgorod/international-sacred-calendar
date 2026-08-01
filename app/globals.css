@@ -261,7 +261,8 @@ h1 em {
 }
 
 .converter-section,
-.definition-section {
+.definition-section,
+.planetary-section {
   padding: 112px 6vw;
 }
 
@@ -1475,6 +1476,411 @@ h1 em {
   font-size: 11px;
 }
 
+.planetary-section {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 86% 8%, rgba(182, 144, 78, 0.13), transparent 28%),
+    var(--cream);
+}
+
+.planetary-heading {
+  margin-bottom: 34px;
+}
+
+.planetary-heading h2 {
+  max-width: 1100px;
+}
+
+.planet-orbit-grid {
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(92px, 1fr));
+  gap: 10px;
+}
+
+.planet-card {
+  min-height: 146px;
+  padding: 18px 10px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--planet-color);
+  background: rgba(255, 253, 248, 0.68);
+}
+
+.planet-card strong {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.planet-disc,
+.planetary-result-symbol {
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--planet-color) 60%, transparent);
+  border-radius: 50%;
+  color: var(--planet-color);
+  background:
+    radial-gradient(circle at 36% 30%, #fffdf8 0 12%, transparent 13%),
+    var(--planet-surface);
+  box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.32);
+  font-family: Georgia, serif;
+}
+
+.planet-disc {
+  width: 70px;
+  height: 70px;
+  font-size: 39px;
+}
+
+.planet-sun {
+  --planet-color: #b98622;
+  --planet-surface: #f2dfaa;
+}
+
+.planet-moon {
+  --planet-color: #62757d;
+  --planet-surface: #dce5e4;
+}
+
+.planet-mercury {
+  --planet-color: #627065;
+  --planet-surface: #dfe5dd;
+}
+
+.planet-venus {
+  --planet-color: #a56b6e;
+  --planet-surface: #edd9d6;
+}
+
+.planet-mars {
+  --planet-color: #a54d32;
+  --planet-surface: #ebcfc3;
+}
+
+.planet-jupiter {
+  --planet-color: #9a6f31;
+  --planet-surface: #ead9b9;
+}
+
+.planet-saturn {
+  --planet-color: #455d50;
+  --planet-surface: #d2ddd5;
+}
+
+.planetary-calculator {
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.65fr);
+  border: 1px solid var(--forest);
+  background: #fffdf8;
+}
+
+.planetary-controls {
+  padding: 30px;
+}
+
+.planetary-calculator-title {
+  margin-bottom: 26px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.planetary-calculator-title span,
+.planetary-result-copy > span,
+.planetary-day-ruler span {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.planetary-calculator-title strong {
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.planetary-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(110px, 1fr)) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.planetary-inputs label {
+  display: grid;
+  gap: 7px;
+}
+
+.planetary-inputs label span {
+  color: var(--ink-soft);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.planetary-inputs input,
+.planetary-inputs button {
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+}
+
+.planetary-inputs input {
+  width: 100%;
+  padding: 10px 12px;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.planetary-inputs button {
+  padding: 10px 15px;
+  color: var(--forest);
+  background: var(--sage);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.planetary-inputs button:hover {
+  border-color: var(--gold);
+}
+
+.planetary-result {
+  min-height: 220px;
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 22px;
+  align-items: center;
+  color: #f7f0e2;
+  background:
+    radial-gradient(circle at 85% 18%, rgba(182, 144, 78, 0.28), transparent 30%),
+    var(--forest);
+}
+
+.planetary-result-symbol {
+  width: 96px;
+  height: 96px;
+  border-color: var(--gold-light);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 0 0 7px rgba(255, 255, 255, 0.04);
+  color: #f1d89e;
+  font-size: 56px;
+}
+
+.planetary-result-copy strong {
+  display: block;
+  margin: 3px 0 4px;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 38px;
+  font-weight: 500;
+}
+
+.planetary-result-copy p,
+.planetary-result-copy small {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 11px;
+}
+
+.planetary-day-ruler {
+  grid-column: 1 / -1;
+  padding-top: 16px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.planetary-day-ruler strong {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.planetary-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #f1d89e;
+}
+
+.planetary-tables {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1.58fr);
+  gap: 24px;
+}
+
+.planetary-table-card {
+  border: 1px solid var(--line);
+  background: #fffdf8;
+}
+
+.planetary-table-card h3 {
+  margin: 0;
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.day-ruler-grid {
+  display: grid;
+}
+
+.day-ruler-grid > div {
+  min-height: 61px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.day-ruler-grid > div:last-child {
+  border-bottom: 0;
+}
+
+.day-ruler-grid span {
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.day-ruler-grid strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--planet-color);
+  font-size: 11px;
+}
+
+.day-ruler-grid i {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--planet-surface);
+  font-family: Georgia, serif;
+  font-size: 20px;
+  font-style: normal;
+}
+
+.planet-hour-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.planet-hour-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.planet-hour-table th,
+.planet-hour-table td {
+  height: 47px;
+  padding: 5px 7px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+}
+
+.planet-hour-table tr > *:last-child {
+  border-right: 0;
+}
+
+.planet-hour-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.planet-hour-table thead th {
+  height: 52px;
+  color: var(--ink-soft);
+  background: var(--cream);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.planet-hour-table tbody th {
+  width: 80px;
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.planet-hour-table tbody th span {
+  font-size: 8px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.night-hour-row {
+  background: rgba(21, 56, 45, 0.045);
+}
+
+.planet-hour-cell {
+  color: var(--planet-color);
+}
+
+.planet-hour-cell > span {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.planet-hour-cell small {
+  display: block;
+  margin-top: 2px;
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.planetary-notes {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.planetary-notes p {
+  margin: 0;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border-left: 3px solid var(--gold);
+  color: var(--ink-soft);
+  background: rgba(255, 253, 248, 0.7);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.planetary-notes p span {
+  color: var(--gold);
+  font-size: 16px;
+}
+
 .definition-section {
   background: var(--cream);
 }
@@ -1688,6 +2094,23 @@ footer > a {
     grid-template-columns: 1fr;
   }
 
+  .planet-orbit-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .planetary-calculator,
+  .planetary-tables {
+    grid-template-columns: 1fr;
+  }
+
+  .planetary-inputs {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .planetary-inputs button {
+    grid-column: 1 / -1;
+  }
+
   .important-dates-grid {
     grid-template-columns: 1fr;
   }
@@ -1766,8 +2189,60 @@ footer > a {
   .definition-section,
   .cycle-section,
   .important-dates-section,
-  .calendar-section {
+  .calendar-section,
+  .planetary-section {
     padding: 80px 20px;
+  }
+
+  .planet-orbit-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .planet-card {
+    min-height: 122px;
+  }
+
+  .planet-disc {
+    width: 58px;
+    height: 58px;
+    font-size: 32px;
+  }
+
+  .planetary-controls,
+  .planetary-result {
+    padding: 22px 18px;
+  }
+
+  .planetary-calculator-title {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .planetary-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .planetary-inputs button {
+    grid-column: auto;
+  }
+
+  .planetary-result {
+    grid-template-columns: 74px 1fr;
+  }
+
+  .planetary-result-symbol {
+    width: 74px;
+    height: 74px;
+    font-size: 43px;
+  }
+
+  .planetary-result-copy strong {
+    font-size: 30px;
+  }
+
+  .planetary-notes {
+    grid-template-columns: 1fr;
   }
 
   .converter-card {

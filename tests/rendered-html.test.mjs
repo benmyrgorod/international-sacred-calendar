@@ -46,6 +46,15 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /To the 20th anniversary/);
   assert.match(html, /Rotation anniversaries 1–20/);
   assert.match(html, /Five past and five future lunar alignments/);
+  assert.match(html, /Hours and days under seven planets/);
+  assert.match(html, /Planetary hour calculator/);
+  assert.match(html, /Days and their planets/);
+  assert.match(html, /24-hour correspondence/);
+  assert.match(html, /a planetary hour is not usually 60 minutes/);
+  assert.match(html, /not a scientific prediction/);
+  assert.match(html, /class="planetary-result-symbol planet-venus"/);
+  assert.equal((html.match(/class="planet-card planet-/g) ?? []).length, 7);
+  assert.equal((html.match(/class="(?:day|night)-hour-row"/g) ?? []).length, 24);
   assert.match(html, /Quick find/);
   assert.match(html, /Current date/);
   assert.match(html, /calendar-day selected today/);

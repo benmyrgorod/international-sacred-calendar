@@ -39,6 +39,15 @@ import {
   majorHolidaysBetween,
 } from "@/lib/holidays";
 import {
+  PLANETS,
+  PLANETARY_SEQUENCE,
+  WEEKDAY_RULERS,
+  calculatePlanetaryHour,
+  formatClockMinutes,
+  planetForPlanetaryHour,
+} from "@/lib/planetary-hours";
+import { PLANETARY_TRANSLATIONS } from "@/lib/planetary-translations";
+import {
   EXTENDED_CALENDAR_NAMES,
   IMPORTANT_DATE_TRANSLATIONS,
   LANGUAGES,
@@ -428,6 +437,9 @@ export default function Home() {
   const [todayFixed, setTodayFixed] = useState(DEFAULT_FIXED);
   const [from, setFrom] = useState<CalendarKind>("gregorian");
   const [to, setTo] = useState<CalendarKind>("sacred");
+  const [planetarySunrise, setPlanetarySunrise] = useState("06:00");
+  const [planetarySunset, setPlanetarySunset] = useState("18:00");
+  const [planetaryTime, setPlanetaryTime] = useState("12:00");
   const [sourceDate, setSourceDate] = useState<CalendarDate>(() =>
     equivalentFor("gregorian", DEFAULT_FIXED),
   );
@@ -437,6 +449,7 @@ export default function Home() {
   const translations = TRANSLATIONS[language];
   const moonTranslations = MOON_TRANSLATIONS[language];
   const importantDateCopy = IMPORTANT_DATE_TRANSLATIONS[language];
+  const planetaryCopy = PLANETARY_TRANSLATIONS[language];
 
   useEffect(() => {
     const stored = window.localStorage.getItem("isc-language") as LanguageCode | null;
@@ -515,6 +528,23 @@ export default function Home() {
   }
 
   const sourceWeekday = localizedWeekday(calculation.fixed, languageConfig.locale);
+  const selectedWeekdayIndex = ((calculation.fixed - 1) % 7 + 7) % 7;
+  const planetaryCalculation = (() => {
+    try {
+      return {
+        result: calculatePlanetaryHour(
+          selectedWeekdayIndex,
+          planetarySunrise,
+          planetarySunset,
+          planetaryTime,
+        ),
+        error: "",
+      };
+    } catch {
+      return { result: null, error: planetaryCopy.invalidTime };
+    }
+  })();
+  const planetaryTableWeekdays = [5, 6, 0, 1, 2, 3, 4];
   const sacredDayOfYear =
     (calculation.sacred.month - 1) * SACRED_DAYS_PER_MONTH +
     calculation.sacred.day;
@@ -618,6 +648,7 @@ export default function Home() {
           <a href="#cycle">{translations.navCycle}</a>
           <a href="#important-dates">{importantDateCopy.navLabel}</a>
           <a href="#calendar">{moonTranslations.calendarKicker}</a>
+          <a href="#planetary-hours">{planetaryCopy.navLabel}</a>
           <a href="#definition">{translations.navDefinition}</a>
         </div>
         <label className="language-picker">
@@ -1320,9 +1351,192 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="planetary-section" id="planetary-hours">
+        <div className="section-heading planetary-heading">
+          <span>05 — {planetaryCopy.kicker}</span>
+          <h2>{planetaryCopy.title}</h2>
+        </div>
+
+        <div className="planet-orbit-grid" aria-label={planetaryCopy.kicker}>
+          {PLANETARY_SEQUENCE.map((planetId) => {
+            const planet = PLANETS[planetId];
+            return (
+              <article className={`planet-card planet-${planet.id}`} key={planet.id}>
+                <span className="planet-disc" aria-hidden="true">
+                  {planet.symbol}
+                </span>
+                <strong>{planetaryCopy.planetNames[planet.id]}</strong>
+              </article>
+            );
+          })}
+        </div>
+
+        <div className="planetary-calculator">
+          <div className="planetary-controls">
+            <div className="planetary-calculator-title">
+              <span>{planetaryCopy.calculatorTitle}</span>
+              <strong>
+                {planetaryCopy.selectedDate}: {sourceWeekday} ·{" "}
+                {dateCode(from, dateFromFixed(from, calculation.fixed))}
+              </strong>
+            </div>
+            <div className="planetary-inputs">
+              <label>
+                <span>{planetaryCopy.sunrise}</span>
+                <input
+                  type="time"
+                  value={planetarySunrise}
+                  onChange={(event) => setPlanetarySunrise(event.target.value)}
+                />
+              </label>
+              <label>
+                <span>{planetaryCopy.sunset}</span>
+                <input
+                  type="time"
+                  value={planetarySunset}
+                  onChange={(event) => setPlanetarySunset(event.target.value)}
+                />
+              </label>
+              <label>
+                <span>{planetaryCopy.localTime}</span>
+                <input
+                  type="time"
+                  value={planetaryTime}
+                  onChange={(event) => setPlanetaryTime(event.target.value)}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  const now = new Date();
+                  setPlanetaryTime(
+                    `${String(now.getHours()).padStart(2, "0")}:${String(
+                      now.getMinutes(),
+                    ).padStart(2, "0")}`,
+                  );
+                }}
+              >
+                ◷ {planetaryCopy.useCurrentTime}
+              </button>
+            </div>
+          </div>
+
+          <div className="planetary-result" aria-live="polite">
+            {planetaryCalculation.result ? (
+              <>
+                <div
+                  className={`planetary-result-symbol planet-${planetaryCalculation.result.planet.id}`}
+                  aria-hidden="true"
+                >
+                  {planetaryCalculation.result.planet.symbol}
+                </div>
+                <div className="planetary-result-copy">
+                  <span>{planetaryCopy.rulingHour}</span>
+                  <strong>
+                    {planetaryCopy.planetNames[planetaryCalculation.result.planet.id]}
+                  </strong>
+                  <p>
+                    {planetaryCalculation.result.period === "day"
+                      ? planetaryCopy.dayPeriod
+                      : planetaryCopy.nightPeriod}{" "}
+                    {planetaryCalculation.result.hour} ·{" "}
+                    {formatClockMinutes(planetaryCalculation.result.startMinutes)}–
+                    {formatClockMinutes(planetaryCalculation.result.endMinutes)}
+                  </p>
+                  <small>
+                    ≈ {Math.round(planetaryCalculation.result.durationMinutes)} min
+                  </small>
+                </div>
+                <div className="planetary-day-ruler">
+                  <span>{planetaryCopy.dayRuler}</span>
+                  <strong>
+                    {planetaryCalculation.result.dayRuler.symbol}{" "}
+                    {planetaryCopy.planetNames[planetaryCalculation.result.dayRuler.id]}
+                  </strong>
+                </div>
+              </>
+            ) : (
+              <p className="planetary-error">{planetaryCalculation.error}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="planetary-tables">
+          <article className="planetary-table-card day-rulers-card">
+            <h3>{planetaryCopy.daysTitle}</h3>
+            <div className="day-ruler-grid">
+              {Array.from({ length: 7 }, (_, weekdayIndex) => {
+                const planetId = WEEKDAY_RULERS[weekdayIndex];
+                return (
+                  <div key={weekdayIndex}>
+                    <span>{localizedWeekday(weekdayIndex + 1, languageConfig.locale)}</span>
+                    <strong className={`planet-${planetId}`}>
+                      <i aria-hidden="true">{PLANETS[planetId].symbol}</i>
+                      {planetaryCopy.planetNames[planetId]}
+                    </strong>
+                  </div>
+                );
+              })}
+            </div>
+          </article>
+
+          <article className="planetary-table-card hourly-table-card">
+            <h3>{planetaryCopy.hoursTitle}</h3>
+            <div className="planet-hour-table-wrap">
+              <table className="planet-hour-table">
+                <thead>
+                  <tr>
+                    <th>{planetaryCopy.hour}</th>
+                    {planetaryTableWeekdays.map((weekdayIndex) => (
+                      <th key={weekdayIndex}>
+                        {localizedWeekday(weekdayIndex + 1, languageConfig.locale)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.from({ length: 24 }, (_, index) => index + 1).map(
+                    (hour) => (
+                      <tr className={hour <= 12 ? "day-hour-row" : "night-hour-row"} key={hour}>
+                        <th scope="row">
+                          <span>
+                            {hour <= 12
+                              ? planetaryCopy.dayPeriod
+                              : planetaryCopy.nightPeriod}
+                          </span>{" "}
+                          {hour <= 12 ? hour : hour - 12}
+                        </th>
+                        {planetaryTableWeekdays.map((weekdayIndex) => {
+                          const planet = planetForPlanetaryHour(weekdayIndex, hour);
+                          return (
+                            <td
+                              className={`planet-hour-cell planet-${planet.id}`}
+                              title={planetaryCopy.planetNames[planet.id]}
+                              key={weekdayIndex}
+                            >
+                              <span aria-hidden="true">{planet.symbol}</span>
+                              <small>{planetaryCopy.planetNames[planet.id]}</small>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ),
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+
+        <div className="planetary-notes">
+          <p><span aria-hidden="true">◐</span>{planetaryCopy.unequalNote}</p>
+          <p><span aria-hidden="true">※</span>{planetaryCopy.traditionNote}</p>
+        </div>
+      </section>
+
       <section className="definition-section" id="definition">
         <div className="section-heading">
-          <span>05 — {translations.definitionKicker}</span>
+          <span>06 — {translations.definitionKicker}</span>
           <h2>{translations.definitionTitle}</h2>
         </div>
 
