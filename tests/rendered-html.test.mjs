@@ -54,6 +54,8 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Español/);
   assert.match(html, /Français/);
   assert.match(html, /日本語/);
+  assert.match(html, /简体中文/);
+  assert.match(html, /한국어/);
   assert.equal((html.match(/class="milestone-button"/g) ?? []).length, 20);
   assert.equal(
     (html.match(/class="anniversary-tick[^"]*"/g) ?? []).length,
@@ -84,8 +86,9 @@ test("server-renders the International Sacred Calendar converter", async () => {
   );
   assert.match(
     html,
-    /<select aria-label="Language">[\s\S]*?<option value="en" selected="">[\s\S]*?<option value="es">[\s\S]*?<option value="fr">[\s\S]*?<option value="it">[\s\S]*?<option value="el">[\s\S]*?<option value="ru">[\s\S]*?<option value="he">[\s\S]*?<option value="ar">[\s\S]*?<option value="hi">[\s\S]*?<option value="zh">[\s\S]*?<option value="ja">/,
+    /<select aria-label="Language">[\s\S]*?<option value="en" selected="">[\s\S]*?<option value="es">[\s\S]*?<option value="fr">[\s\S]*?<option value="it">[\s\S]*?<option value="el">[\s\S]*?<option value="ru">[\s\S]*?<option value="he">[\s\S]*?<option value="ar">[\s\S]*?<option value="hi">[\s\S]*?<option value="zh">[\s\S]*?<option value="ja">[\s\S]*?<option value="ko">/,
   );
+  assert.doesNotMatch(html, /繁體|繁体|zh-TW/);
   assert.doesNotMatch(html, /Georgian/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Building your site/i);
 });

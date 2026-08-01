@@ -9,7 +9,8 @@ export type LanguageCode =
   | "hi"
   | "es"
   | "fr"
-  | "ja";
+  | "ja"
+  | "ko";
 
 export const EXTENDED_CALENDAR_NAMES: Record<
   LanguageCode,
@@ -69,6 +70,11 @@ export const EXTENDED_CALENDAR_NAMES: Record<
     chinese: "中国伝統暦",
     saka: "インド国定暦（サカ暦）",
     buddhist: "タイ仏暦（B.E.）",
+  },
+  ko: {
+    chinese: "중국 전통력",
+    saka: "인도 국가력(사카력)",
+    buddhist: "태국 불기력(B.E.)",
   },
 };
 
@@ -810,6 +816,72 @@ const japanese: TranslationPack = {
   backToTop: "ページ上部へ",
 };
 
+const korean: TranslationPack = {
+  brandSubtitle: "변환기 및 주기 지도",
+  navConvert: "변환",
+  navCycle: "주기",
+  navDefinition: "정의",
+  eyebrow: "주 단위로 측정하는 성스러운 시간",
+  heroLead: "모든 날짜를,",
+  heroEmphasis: "하나의 리듬으로.",
+  heroCopy: "끊임없는 7일 주기를 유지하면서 지원되는 여덟 달력 사이를 자유롭게 변환하세요.",
+  equalMonths: "동일한 달",
+  daysEach: "일씩",
+  daysPerYear: "일/년",
+  converterKicker: "변환기",
+  converterTitle: "날짜 변환",
+  converterBody: "시작 달력과 변환할 대상 달력을 선택하세요.",
+  from: "원본",
+  to: "대상",
+  useToday: "오늘 사용",
+  convertedDate: "변환된 날짜",
+  month: "월",
+  day: "일",
+  year: "년",
+  era: "연호",
+  fixedDay: "고정일",
+  gregorianNote: "그레고리력과 율리우스력은 역산 민간력을 사용합니다. 이슬람력은 산술식 표준력을 사용하므로 지역 관측과 하루 차이가 날 수 있습니다.",
+  cycleKicker: "회전 주기",
+  cycleTitle: "다시 정렬을 향하는 긴 궤적.",
+  cycleBody: "성력 1년은 정확히 364일입니다. 성력 293년은 평균 히브리력 292년과 약 1시간 44분 차이로 거의 같습니다. 이는 요일이 아니라 연도의 경계를 다시 맞춥니다.",
+  cycle: "주기",
+  ofSacredTime: "성스러운 시간",
+  currentSacredDate: "현재 성력 날짜",
+  yearInRotation: "회전 주기 내 연도",
+  of: "/",
+  dayOfYear: "연중 일수",
+  untilNextCycle: "다음 주기까지",
+  sacredYears: "성력 년",
+  throughRotation: "293년 회전 주기의 진행도",
+  anniversariesKicker: "회전 기념일 1–20",
+  anniversariesTitle: "긴 시간이 돌아오는 때",
+  anniversariesBody: "각 기념일은 창조 주간 기준점에서 성력 293년이 한 차례 더 완성되었음을 나타냅니다.",
+  toTwentieth: "20번째 기념일까지",
+  daysRemain: "해당 연수 이후 남은 일수",
+  daysAgo: "해당 연수를 지난 일수",
+  milestone: "이정표",
+  sacred: "국제 성력",
+  hebrew: "히브리력",
+  gregorian: "그레고리력",
+  julian: "율리우스력",
+  muslim: "이슬람력",
+  weekday: "요일",
+  definitionKicker: "정의",
+  definitionTitle: "단순한 구조. 이어지는 주간.",
+  equalMonthsTitle: "동일한 열세 달",
+  equalMonthsBody: "각 달은 완전한 4주입니다. 같은 날짜는 언제나 같은 요일에 놓입니다.",
+  fullWeeksTitle: "완전한 쉰두 주",
+  fullWeeksBody: "윤일이나 추가일이 7일 주기 밖에 놓이지 않습니다.",
+  creationAnchorTitle: "창조 주간 기준점",
+  creationAnchorBody: "성력 1 · 1 · 1은 히브리력 AM 1년 엘룰 25일에 고정됩니다. 일요일로 강제하지 않고 계산된 요일을 유지합니다.",
+  creationAnchorNote: "전통적으로 창조의 첫날은 일요일입니다. 월요일은 현대 고정 히브리력의 산술 규칙을 AM 1년 엘룰 25일까지 역산한 결과입니다. ISC는 변환의 일관성을 위해 월요일을 사용하지만, 유대 전통이 창조를 월요일로 정한다는 뜻은 아닙니다.",
+  quote: "“시간은 하늘뿐 아니라 의미를 따를 수도 있다.”",
+  quoteBody: "태양력도, 태음력도, 태음태양력도 아닌 주간 기반의 네 번째 달력.",
+  footerTagline: "열세 달 · 하나의 리듬",
+  footerBody: "13 × 28 정의를 바탕으로 합니다. 히브리력 변환은 산술 히브리력을, 이슬람력 변환은 표준 산술력을 따릅니다.",
+  backToTop: "맨 위로",
+};
+
 export const TRANSLATIONS: Record<LanguageCode, TranslationPack> = {
   en: english,
   he: hebrew,
@@ -822,6 +894,7 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationPack> = {
   es: spanish,
   fr: french,
   ja: japanese,
+  ko: korean,
 };
 
 export const LANGUAGES: Array<{
@@ -839,8 +912,9 @@ export const LANGUAGES: Array<{
   { code: "he", label: "עברית", locale: "he-IL", direction: "rtl" },
   { code: "ar", label: "العربية", locale: "ar", direction: "rtl" },
   { code: "hi", label: "हिन्दी", locale: "hi-IN", direction: "ltr" },
-  { code: "zh", label: "中文（简体）", locale: "zh-CN", direction: "ltr" },
+  { code: "zh", label: "简体中文", locale: "zh-CN", direction: "ltr" },
   { code: "ja", label: "日本語", locale: "ja-JP", direction: "ltr" },
+  { code: "ko", label: "한국어", locale: "ko-KR", direction: "ltr" },
 ];
 
 export interface MoonTranslationPack {
@@ -1169,6 +1243,33 @@ export const MOON_TRANSLATIONS: Record<LanguageCode, MoonTranslationPack> = {
     meanOffset: "平均新月との差",
     approximation: "平均位相による推定です。実際の天文学的新月は数時間ずれることがあります。",
   },
+  ko: {
+    calendarKicker: "달력 격자",
+    calendarTitle: "한눈에 보는 한 달",
+    calendarBody: "국제 성력의 달을 탐색하고 293년 기념일과 근사 달 정렬을 격자에서 확인하세요.",
+    previousMonth: "이전 달",
+    nextMonth: "다음 달",
+    lunarAlignment: "달 정렬",
+    newMoon: "삭",
+    majorHoliday: "주요 명절",
+    internationalHoliday: "국제 기념일",
+    rotationAnniversary: "293년 기념일",
+    selectedDate: "선택한 날짜",
+    today: "오늘",
+    quickFind: "빠른 찾기",
+    findSelectedDate: "선택한 날짜",
+    findToday: "현재 날짜",
+    weekStartsOn: "주 시작 요일",
+    sunday: "일요일",
+    monday: "월요일",
+    gridCalendar: "격자 날짜",
+    alignmentsTitle: "과거 다섯 번과 미래 다섯 번의 달 정렬",
+    alignmentsBody: "28일 달의 경계와 평균 삭은 약 540일, 즉 1.48년마다 다시 가까워집니다.",
+    past: "과거",
+    future: "미래",
+    meanOffset: "평균 삭 오차",
+    approximation: "평균 위상 추정치이며 실제 천문학적 삭은 이 모델과 몇 시간 차이가 날 수 있습니다.",
+  },
 };
 
 export interface ImportantDateTranslationPack {
@@ -1343,5 +1444,19 @@ export const IMPORTANT_DATE_TRANSLATIONS: Record<
     viewInCalendar: "カレンダーで表示",
     anniversary: "発見記念日",
     birthdayLabel: "誕生日",
+  },
+  ko: {
+    navLabel: "중요한 날짜",
+    kicker: "중요한 날짜",
+    title: "성스러운 시간에 이어지는 날짜",
+    body: "이 이정표들은 국제 성력의 월과 일을 유지하며 누적 횟수와 함께 364일마다 돌아옵니다.",
+    discovery: "국제 성력의 발견",
+    birthday: "성력 발견자 Ovadia Binyamin의 40번째 생일",
+    originalDate: "원래 날짜",
+    annualRecurrence: "ISC 연간 반복",
+    firstRepeat: "첫 번째 반복",
+    viewInCalendar: "달력에서 보기",
+    anniversary: "발견 기념일",
+    birthdayLabel: "생일",
   },
 };

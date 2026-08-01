@@ -19,9 +19,9 @@ its destination. It also shows the uninterrupted weekday and the current
 position in the International Sacred Calendar's long rotation.
 
 The page includes English, Hebrew, Arabic, Italian, Greek, Russian, Simplified
-Chinese (Mandarin), Hindi, Spanish, French, and Japanese. Hebrew and Arabic
-switch the complete interface to right-to-left layout. The selected language
-is stored as a device-local preference.
+Chinese, Hindi, Spanish, French, Japanese, and Korean. Only Simplified Chinese
+is offered. Hebrew and Arabic switch the complete interface to right-to-left
+layout. The selected language is stored as a device-local preference.
 
 ## International Sacred Calendar definition
 
