@@ -186,7 +186,7 @@ test("dates Abraham's circumcision covenant precisely in AM 2048", () => {
   });
 });
 
-test("maps the infographic events to their nearest 293-year alignments", () => {
+test("maps the featured historical events to their nearest 293-year alignments", () => {
   const expectedAlignments = new Map([
     ["great-pyramid", 4],
     ["covenant-circumcision", 7],
@@ -196,6 +196,7 @@ test("maps the infographic events to their nearest 293-year alignments", () => {
     ["hijra", 15],
     ["magna-carta", 17],
     ["columbus-americas", 18],
+    ["us-declaration", 19],
     ["french-revolution", 19],
   ]);
 

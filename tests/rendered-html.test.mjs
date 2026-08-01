@@ -23,13 +23,16 @@ async function render() {
   );
 }
 
-test("long localized chronology headings can wrap", async () => {
+test("major headings stay on one line at desktop widths and wrap on small screens", async () => {
   const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
   assert.match(
     css,
-    /\.history-heading h2\s*\{[^}]*white-space:\s*normal;[^}]*text-wrap:\s*balance;/s,
+    /@media \(min-width: 1101px\)\s*\{[^}]*\.history-heading h2\s*\{[^}]*white-space:\s*nowrap;/s,
   );
-  assert.match(css, /\.history-event\.near-rotation-alignment/);
+  assert.match(
+    css,
+    /\.history-event\.near-rotation-alignment\s*>\s*summary\s*\{[^}]*background:\s*#23483b;/s,
+  );
   assert.match(css, /\.history-event-pill\.near-alignment-pill/);
 });
 
@@ -57,8 +60,29 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /To the 20th anniversary/);
   assert.match(html, /Rotation anniversaries 1–20/);
   assert.match(html, /History near the 293-year marks/);
-  assert.match(html, /rotation-history-panorama\.webp/);
-  assert.equal((html.match(/class="rotation-history-card/g) ?? []).length, 11);
+  assert.doesNotMatch(html, /rotation-history-panorama\.webp/);
+  for (const image of [
+    "great-pyramid.webp",
+    "abraham-covenant.webp",
+    "isaac.webp",
+    "egypt-midpoint.webp",
+    "first-temple.webp",
+    "babylonian-exile.webp",
+    "second-temple.webp",
+    "hijra.webp",
+    "magna-carta.webp",
+    "columbus.webp",
+    "us-independence.webp",
+    "bastille.webp",
+  ]) {
+    assert.match(html, new RegExp(image.replace(".", "\\.")));
+  }
+  assert.equal(
+    (html.match(/class="rotation-history-card(?:\s|\")/g) ?? []).length,
+    12,
+  );
+  assert.match(html, /href="#rotation-history"/);
+  assert.match(html, /United States Declaration of Independence adopted/);
   assert.match(html, /class="history-event history-civilization near-rotation-alignment"/);
   assert.match(html, /Five past and five future lunar alignments/);
   assert.match(html, /Eighty dates from Creation to today/);

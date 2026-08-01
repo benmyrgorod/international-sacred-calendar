@@ -24,6 +24,7 @@ export const FEATURED_ALIGNMENT_EVENT_IDS = [
   "hijra",
   "magna-carta",
   "columbus-americas",
+  "us-declaration",
   "french-revolution",
 ] as const;
 

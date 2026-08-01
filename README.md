@@ -109,8 +109,8 @@ from the 80-event chronology. A signed offset is calculated from the event's
 fixed-day midpoint: negative values are before the boundary and positive
 values are after it. Events within 33 International Sacred years of their
 nearest boundary receive a highlighted marker in the chronology and calendar
-grid. This threshold includes the approximately 32-year comparisons in the
-supplied historical infographic.
+grid. Twelve illustrated event cards connect the featured comparisons directly
+to their matching chronology entries.
 
 Two interval annotations are kept separate from the 80 dated events. The
 Egypt card is a calculated midpoint between Jacob's family entering Egypt and
@@ -248,7 +248,7 @@ the Beijing opening ceremony at 8:08 p.m. on 8/8/08.
 
 Chronology data and fixed-day ranges are provided by
 [`lib/historical-events.ts`](./lib/historical-events.ts).
-Rotation proximity calculations and the featured infographic comparisons are
+Rotation proximity calculations and the featured illustrated comparisons are
 provided by
 [`lib/rotation-event-alignments.ts`](./lib/rotation-event-alignments.ts).
 

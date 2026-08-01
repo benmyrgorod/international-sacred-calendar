@@ -119,6 +119,24 @@ const IMPORTANT_DATES: ImportantDateDefinition[] = [
   },
 ];
 
+const ALIGNMENT_STORY_IMAGES: Record<
+  FeaturedAlignmentEventId | "egypt-midpoint" | "babylonian-exile",
+  string
+> = {
+  "great-pyramid": "/rotation-history/great-pyramid.webp",
+  "covenant-circumcision": "/rotation-history/abraham-covenant.webp",
+  "isaac-born": "/rotation-history/isaac.webp",
+  "egypt-midpoint": "/rotation-history/egypt-midpoint.webp",
+  "first-temple-work": "/rotation-history/first-temple.webp",
+  "babylonian-exile": "/rotation-history/babylonian-exile.webp",
+  "second-temple-destroyed": "/rotation-history/second-temple.webp",
+  hijra: "/rotation-history/hijra.webp",
+  "magna-carta": "/rotation-history/magna-carta.webp",
+  "columbus-americas": "/rotation-history/columbus.webp",
+  "us-declaration": "/rotation-history/us-independence.webp",
+  "french-revolution": "/rotation-history/bastille.webp",
+};
+
 function currentLocalFixed(): number {
   const today = new Date();
   return fixedFromGregorian({
@@ -760,6 +778,7 @@ export default function Home() {
     if (!entry) throw new RangeError(`Missing alignment event: ${id}`);
     return {
       key: id,
+      image: ALIGNMENT_STORY_IMAGES[id],
       title: entry.localizedTitle,
       detail: historicalCalendarSpan(
         "sacred",
@@ -779,6 +798,7 @@ export default function Home() {
     eventAlignmentStory(FEATURED_ALIGNMENT_EVENT_IDS[2]),
     {
       key: "egypt-midpoint",
+      image: ALIGNMENT_STORY_IMAGES["egypt-midpoint"],
       title: alignmentHistoryCopy.midpointTitle,
       detail: alignmentHistoryCopy.midpointDetail,
       proximity: EGYPT_SOJOURN_MIDPOINT.proximity,
@@ -788,6 +808,7 @@ export default function Home() {
     eventAlignmentStory(FEATURED_ALIGNMENT_EVENT_IDS[3]),
     {
       key: "babylonian-exile",
+      image: ALIGNMENT_STORY_IMAGES["babylonian-exile"],
       title: alignmentHistoryCopy.exileTitle,
       detail: alignmentHistoryCopy.exileDetail,
       proximity: nearestRotationAlignment(
@@ -877,6 +898,7 @@ export default function Home() {
             <div className="menu-group">
               <strong>{historyCopy.menuHistory}</strong>
               <a href="#important-dates">{importantDateCopy.navLabel}</a>
+              <a href="#rotation-history">{alignmentHistoryCopy.title}</a>
               <a href="#major-events">{historyCopy.navLabel}</a>
             </div>
             <div className="menu-group">
@@ -1135,7 +1157,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="rotation-history-panel">
+          <div className="rotation-history-panel" id="rotation-history">
             <div className="rotation-history-heading">
               <div>
                 <span className="section-number">✦ {alignmentHistoryCopy.nearBadge}</span>
@@ -1145,16 +1167,6 @@ export default function Home() {
               <small>{alignmentHistoryCopy.methodNote}</small>
             </div>
 
-            <figure className="rotation-history-figure">
-              <Image
-                src="/rotation-history-panorama.webp"
-                alt={alignmentHistoryCopy.imageAlt}
-                width={1672}
-                height={941}
-                sizes="(max-width: 620px) 100vw, 88vw"
-              />
-            </figure>
-
             <div className="rotation-history-grid">
               {alignmentStories.map((story) => (
                 <a
@@ -1162,6 +1174,15 @@ export default function Home() {
                   href={story.href}
                   key={story.key}
                 >
+                  <span className="rotation-history-card-image">
+                    <Image
+                      src={story.image}
+                      alt=""
+                      width={369}
+                      height={346}
+                      sizes="(max-width: 620px) 100vw, (max-width: 1080px) 50vw, 25vw"
+                    />
+                  </span>
                   <span>
                     {moonTranslations.rotationAnniversary} #{story.proximity.alignmentNumber}
                   </span>

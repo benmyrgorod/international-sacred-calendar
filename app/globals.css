@@ -356,7 +356,7 @@ h1 em {
 .section-heading h2,
 .cycle-intro h2 {
   margin: 12px 0;
-  font-size: clamp(48px, 5vw, 74px);
+  font-size: clamp(42px, 4vw, 68px);
   line-height: 0.95;
   font-weight: 500;
   letter-spacing: -0.035em;
@@ -909,16 +909,16 @@ h1 em {
 .rotation-history-heading {
   margin-bottom: 26px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.55fr);
+  grid-template-columns: minmax(0, 1.65fr) minmax(240px, 0.35fr);
   gap: 44px;
   align-items: end;
 }
 
 .rotation-history-heading h3 {
   margin: 10px 0 8px;
-  max-width: 900px;
+  max-width: none;
   color: #f7f0e2;
-  font-size: clamp(38px, 4.5vw, 58px);
+  font-size: clamp(34px, 3.6vw, 54px);
   font-weight: 500;
   line-height: 0.98;
 }
@@ -937,22 +937,8 @@ h1 em {
   color: rgba(255, 255, 255, 0.52);
 }
 
-.rotation-history-figure {
-  margin: 0;
-  overflow: hidden;
-  border: 1px solid rgba(217, 199, 158, 0.34);
-  border-radius: 18px;
-  background: #e9dcc2;
-}
-
-.rotation-history-figure img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
 .rotation-history-grid {
-  margin-top: 18px;
+  margin-top: 28px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
@@ -960,14 +946,35 @@ h1 em {
 
 .rotation-history-card {
   min-height: 170px;
-  padding: 18px;
+  padding: 0 18px 18px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   border: 1px solid rgba(217, 199, 158, 0.22);
   color: inherit;
   background: rgba(255, 255, 255, 0.045);
   text-decoration: none;
   transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.rotation-history-card-image {
+  margin: 0 -18px 16px;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #e9dcc2;
+}
+
+.rotation-history-card-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 240ms ease;
+}
+
+.rotation-history-card:hover .rotation-history-card-image img {
+  transform: scale(1.025);
 }
 
 .rotation-history-card:hover {
@@ -1116,8 +1123,22 @@ h1 em {
 
 @media (min-width: 1101px) {
   .section-heading h2,
-  .cycle-intro h2 {
+  .cycle-intro h2,
+  .anniversary-heading h3,
+  .rotation-history-heading h3,
+  .history-heading h2 {
     white-space: nowrap;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1500px) {
+  .rotation-history-heading {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .rotation-history-heading > small {
+    max-width: 760px;
   }
 }
 
@@ -1345,10 +1366,37 @@ h1 em {
 
 .history-event.near-rotation-alignment {
   border-inline-start-color: var(--gold-light);
-  background:
-    linear-gradient(90deg, rgba(217, 199, 158, 0.2), transparent 20%),
-    #fffdf8;
+  background: #fffdf8;
   box-shadow: inset 0 0 0 1px rgba(182, 144, 78, 0.16);
+}
+
+.history-event.near-rotation-alignment > summary {
+  color: #f7f0e2;
+  background: #23483b;
+}
+
+.history-event.near-rotation-alignment > summary:hover {
+  background: #2b5647;
+}
+
+.history-event.near-rotation-alignment .history-number,
+.history-event.near-rotation-alignment .history-expand,
+.history-event.near-rotation-alignment .history-sacred-date span {
+  color: var(--gold-light);
+}
+
+.history-event.near-rotation-alignment .history-event-title small,
+.history-event.near-rotation-alignment .history-sacred-date strong {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.history-event.near-rotation-alignment .history-sacred-date {
+  border-inline-start-color: rgba(255, 255, 255, 0.24);
+}
+
+.history-event.near-rotation-alignment .history-event-title i:not(.alignment-proximity-tag) {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .history-event summary {
@@ -2712,6 +2760,13 @@ footer > a {
     gap: 18px;
   }
 
+  .section-heading h2,
+  .anniversary-heading h3,
+  .rotation-history-heading h3,
+  .history-heading h2 {
+    white-space: normal;
+  }
+
   .rotation-history-heading > small {
     padding-inline-start: 14px;
   }
@@ -3019,14 +3074,6 @@ footer > a {
   .rotation-history-panel {
     margin-top: 56px;
     padding-top: 44px;
-  }
-
-  .rotation-history-figure {
-    overflow-x: auto;
-  }
-
-  .rotation-history-figure img {
-    min-width: 760px;
   }
 
   .rotation-history-grid {
