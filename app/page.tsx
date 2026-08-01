@@ -48,6 +48,12 @@ import {
 } from "@/lib/historical-events";
 import { HISTORY_TRANSLATIONS } from "@/lib/history-translations";
 import {
+  isValidTimePreference,
+  normalizeTimePreference,
+  PLANETARY_SUNRISE_STORAGE_KEY,
+  PLANETARY_SUNSET_STORAGE_KEY,
+} from "@/lib/local-preferences";
+import {
   PLANETS,
   PLANETARY_SEQUENCE,
   WEEKDAY_RULERS,
@@ -525,6 +531,18 @@ export default function Home() {
     const frame = window.requestAnimationFrame(() => {
       setLanguage(next);
       setTodayFixed(currentLocalFixed());
+      setPlanetarySunrise(
+        normalizeTimePreference(
+          window.localStorage.getItem(PLANETARY_SUNRISE_STORAGE_KEY),
+          "06:00",
+        ),
+      );
+      setPlanetarySunset(
+        normalizeTimePreference(
+          window.localStorage.getItem(PLANETARY_SUNSET_STORAGE_KEY),
+          "18:00",
+        ),
+      );
     });
     return () => window.cancelAnimationFrame(frame);
   }, []);
@@ -586,6 +604,19 @@ export default function Home() {
       DEFAULT_LANGUAGE_CONFIG;
     document.documentElement.lang = config.locale;
     document.documentElement.dir = config.direction;
+  }
+
+  function changePlanetaryTimePreference(
+    storageKey: string,
+    next: string,
+    update: (value: string) => void,
+  ) {
+    update(next);
+    if (isValidTimePreference(next)) {
+      window.localStorage.setItem(storageKey, next);
+    } else {
+      window.localStorage.removeItem(storageKey);
+    }
   }
 
   const sourceWeekday = localizedWeekday(calculation.fixed, languageConfig.locale);
@@ -1687,7 +1718,13 @@ export default function Home() {
                 <input
                   type="time"
                   value={planetarySunrise}
-                  onChange={(event) => setPlanetarySunrise(event.target.value)}
+                  onChange={(event) =>
+                    changePlanetaryTimePreference(
+                      PLANETARY_SUNRISE_STORAGE_KEY,
+                      event.target.value,
+                      setPlanetarySunrise,
+                    )
+                  }
                 />
               </label>
               <label>
@@ -1695,7 +1732,13 @@ export default function Home() {
                 <input
                   type="time"
                   value={planetarySunset}
-                  onChange={(event) => setPlanetarySunset(event.target.value)}
+                  onChange={(event) =>
+                    changePlanetaryTimePreference(
+                      PLANETARY_SUNSET_STORAGE_KEY,
+                      event.target.value,
+                      setPlanetarySunset,
+                    )
+                  }
                 />
               </label>
               <label>

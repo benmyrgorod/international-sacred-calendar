@@ -11,6 +11,10 @@ import {
   historicalEventRange,
 } from "../lib/historical-events.ts";
 import {
+  isValidTimePreference,
+  normalizeTimePreference,
+} from "../lib/local-preferences.ts";
+import {
   calculatePlanetaryHour,
   planetForPlanetaryHour,
 } from "../lib/planetary-hours.ts";
@@ -423,6 +427,16 @@ test("uses a distinct major-holiday symbol for every calendar", () => {
   assert.equal(majorHolidaySymbol("chinese"), "🏮");
   assert.equal(majorHolidaySymbol("saka"), "ॐ");
   assert.equal(majorHolidaySymbol("buddhist"), "☸");
+});
+
+test("accepts valid saved sunrise and sunset times and rejects invalid values", () => {
+  assert.equal(normalizeTimePreference("05:42", "06:00"), "05:42");
+  assert.equal(normalizeTimePreference("19:18", "18:00"), "19:18");
+  assert.equal(normalizeTimePreference("25:00", "06:00"), "06:00");
+  assert.equal(normalizeTimePreference(null, "18:00"), "18:00");
+  assert.equal(isValidTimePreference("00:00"), true);
+  assert.equal(isValidTimePreference("23:59"), true);
+  assert.equal(isValidTimePreference("24:00"), false);
 });
 
 test("lists international holidays independently of the selected calendar", () => {
