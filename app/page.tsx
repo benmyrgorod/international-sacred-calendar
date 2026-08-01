@@ -32,6 +32,10 @@ import {
   type CalendarKind,
 } from "@/lib/sacred-calendar";
 import {
+  internationalHolidaysBetween,
+  majorHolidaysBetween,
+} from "@/lib/holidays";
+import {
   IMPORTANT_DATE_TRANSLATIONS,
   LANGUAGES,
   MOON_TRANSLATIONS,
@@ -456,6 +460,15 @@ export default function Home() {
   };
   const gridStartFixed = fixedFromSacred(gridSacred);
   const gridNewMoons = meanNewMoonsBetween(
+    gridStartFixed,
+    gridStartFixed + SACRED_DAYS_PER_MONTH - 1,
+  );
+  const gridHolidays = majorHolidaysBetween(
+    from,
+    gridStartFixed,
+    gridStartFixed + SACRED_DAYS_PER_MONTH - 1,
+  );
+  const gridInternationalHolidays = internationalHolidaysBetween(
     gridStartFixed,
     gridStartFixed + SACRED_DAYS_PER_MONTH - 1,
   );
@@ -944,6 +957,16 @@ export default function Home() {
 
         <div className="calendar-legend" aria-label="Calendar event legend">
           <span>
+            <i className="international-marker" aria-hidden="true">◎</i>
+            {moonTranslations.internationalHoliday}
+          </span>
+          {from !== "sacred" ? (
+            <span>
+              <i className="holiday-marker" aria-hidden="true">✣</i>
+              {moonTranslations.majorHoliday}
+            </span>
+          ) : null}
+          <span>
             <i className="new-moon-marker" aria-hidden="true">●</i>
             {moonTranslations.newMoon}
           </span>
@@ -983,6 +1006,12 @@ export default function Home() {
               const hasNewMoon = gridNewMoons.some(
                 (event) => event.fixed === cellFixed,
               );
+              const holidays = gridHolidays.filter(
+                (event) => event.fixed === cellFixed,
+              );
+              const internationalHolidays = gridInternationalHolidays.filter(
+                (event) => event.fixed === cellFixed,
+              );
               const hasMoonAlignment = day === 1 && Boolean(gridMoonAlignment);
               const hasRotationAnniversary =
                 day === 1 && gridRotationAnniversary !== null;
@@ -1004,6 +1033,8 @@ export default function Home() {
                     "calendar-day",
                     selected ? "selected" : "",
                     isToday ? "today" : "",
+                    internationalHolidays.length > 0 ||
+                    holidays.length > 0 ||
                     hasNewMoon ||
                     hasMoonAlignment ||
                     hasRotationAnniversary ||
@@ -1044,6 +1075,19 @@ export default function Home() {
                         ● {moonTranslations.newMoon}
                       </span>
                     ) : null}
+                    {holidays.map((holiday) => (
+                      <span className="event-pill holiday-pill" key={holiday.id}>
+                        ✣ {holiday.name}
+                      </span>
+                    ))}
+                    {internationalHolidays.map((holiday) => (
+                      <span
+                        className="event-pill international-pill"
+                        key={holiday.id}
+                      >
+                        ◎ {holiday.name}
+                      </span>
+                    ))}
                     {hasMoonAlignment ? (
                       <span className="event-pill moon-pill">
                         ◐ {moonTranslations.lunarAlignment}

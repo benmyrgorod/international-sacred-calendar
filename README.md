@@ -132,6 +132,8 @@ The 28-day grid displays one International Sacred month at a time. It marks:
   cell (Gregorian by default);
 - approximate mean new-moon dates;
 - approximate moon/month-start alignments;
+- major holidays from the selected grid calendar;
+- international holidays and observances on their Gregorian anniversaries;
 - 293-year rotation anniversaries.
 
 The week-start selector supports Monday or Sunday. Monday is selected by
@@ -140,6 +142,13 @@ default, matching the calculated weekday of International Sacred Month 1 Day
 The grid-calendar selector stays synchronized with the converter’s **From**
 calendar, so changing either control updates both while preserving the selected
 fixed date.
+
+Holiday markers follow the selected calendar: Jewish holidays for Hebrew,
+Western Christian holidays for Gregorian, Russian Orthodox holidays calculated
+on the Julian calendar, and major Muslim holidays for the tabular Islamic
+calendar. The grid marks the principal day of multi-day observances. Islamic
+observational dates and local practices can differ from the arithmetic dates
+shown here.
 
 The prefix for International Sacred dates is **ISC**, for example
 `ISC 5805 · 04 · 12`.
@@ -213,6 +222,8 @@ Public conversion helpers include:
 - `moonAlignmentAtSacredMonth`
 - `moonAlignmentsAround`
 - `meanNewMoonsBetween`
+- `majorHolidaysBetween`
+- `internationalHolidaysBetween`
 - `weekdayFromFixed`
 - date validation and month-length helpers
 

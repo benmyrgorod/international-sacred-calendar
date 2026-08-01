@@ -64,6 +64,10 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Discovery anniversary/);
   assert.match(html, /class="new-moon-marker"/);
   assert.match(html, /New moon/);
+  assert.match(html, /class="holiday-marker"/);
+  assert.match(html, /Major holiday/);
+  assert.match(html, /class="international-marker"/);
+  assert.match(html, /International holiday/);
   assert.match(html, /Moon alignment/);
   assert.match(html, /293-year anniversary/);
   assert.match(html, /<span class="grid-calendar-date">Jul 27, 2026<\/span>/);

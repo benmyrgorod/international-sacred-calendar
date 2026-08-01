@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  internationalHolidaysBetween,
+  majorHolidaysBetween,
+} from "../lib/holidays.ts";
+import {
   HEBREW_YEARS_PER_ROTATION,
   SACRED_LUNAR_BEAT_DAYS,
   SACRED_DAYS_PER_YEAR,
@@ -192,4 +196,60 @@ test("lists mean new moons by their UTC calendar day", () => {
   );
   assert.ok(events[0].meanNewMoonFixed > events[0].fixed);
   assert.ok(events[0].meanNewMoonFixed < events[0].fixed + 1);
+});
+
+test("lists major holidays for each selected calendar", () => {
+  const roshHashanah = fixedFromDate("hebrew", {
+    year: 5787,
+    month: 7,
+    day: 1,
+  });
+  const easter = fixedFromDate("gregorian", {
+    year: 2026,
+    month: 4,
+    day: 5,
+  });
+  const orthodoxPascha = fixedFromDate("julian", {
+    year: 2026,
+    month: 3,
+    day: 30,
+  });
+  const eidAlFitr = fixedFromDate("islamic", {
+    year: 1448,
+    month: 10,
+    day: 1,
+  });
+
+  assert.equal(
+    majorHolidaysBetween("hebrew", roshHashanah, roshHashanah)[0].name,
+    "Rosh Hashanah",
+  );
+  assert.equal(
+    majorHolidaysBetween("gregorian", easter, easter)[0].name,
+    "Easter Sunday",
+  );
+  assert.equal(
+    majorHolidaysBetween("julian", orthodoxPascha, orthodoxPascha)[0].name,
+    "Pascha",
+  );
+  assert.equal(
+    majorHolidaysBetween("islamic", eidAlFitr, eidAlFitr)[0].name,
+    "Eid al-Fitr",
+  );
+  assert.deepEqual(
+    majorHolidaysBetween("sacred", roshHashanah, roshHashanah),
+    [],
+  );
+});
+
+test("lists international holidays independently of the selected calendar", () => {
+  const newYear = fixedFromDate("gregorian", {
+    year: 2027,
+    month: 1,
+    day: 1,
+  });
+  assert.equal(
+    internationalHolidaysBetween(newYear, newYear)[0].name,
+    "New Year’s Day",
+  );
 });
