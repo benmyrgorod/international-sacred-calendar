@@ -24,6 +24,14 @@ import {
   normalizeTimePreference,
 } from "../lib/local-preferences.ts";
 import {
+  COSMIC_DAY_CIVIL_DAYS,
+  COSMIC_HOUR_DURATION,
+  COSMIC_MINUTE_DURATION,
+  COSMIC_SECOND_DURATION,
+  cosmicDateFromFixed,
+  fixedFromCosmicDate,
+} from "../lib/cosmic-time.ts";
+import {
   calculatePlanetaryHour,
   planetForPlanetaryHour,
 } from "../lib/planetary-hours.ts";
@@ -493,6 +501,54 @@ test("lists rotation anniversaries at completed 293-year boundaries", () => {
     fixedFromSacred(sacredRotationAnniversary(22)) - SACRED_EPOCH_FIXED,
     22 * SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR,
   );
+});
+
+test("divides a 293-year Cosmic Day into clock units", () => {
+  assert.equal(
+    COSMIC_DAY_CIVIL_DAYS,
+    SACRED_ROTATION_YEARS * SACRED_DAYS_PER_YEAR,
+  );
+  assert.deepEqual(COSMIC_HOUR_DURATION, {
+    totalSeconds: 383947200,
+    days: 4443,
+    hours: 20,
+    minutes: 0,
+    seconds: 0,
+  });
+  assert.deepEqual(COSMIC_MINUTE_DURATION, {
+    totalSeconds: 6399120,
+    days: 74,
+    hours: 1,
+    minutes: 32,
+    seconds: 0,
+  });
+  assert.deepEqual(COSMIC_SECOND_DURATION, {
+    totalSeconds: 106652,
+    days: 1,
+    hours: 5,
+    minutes: 37,
+    seconds: 32,
+  });
+});
+
+test("round-trips selected dates through editable Cosmic Dates", () => {
+  const firstAlignmentFixed = fixedFromSacred(sacredRotationAnniversary(1));
+  assert.deepEqual(cosmicDateFromFixed(firstAlignmentFixed), {
+    week: 1,
+    weekdayIndex: 0,
+    hour: 0,
+    minute: 0,
+    second: 0,
+  });
+
+  const selectedFixed = fixedFromDate("gregorian", {
+    year: 2026,
+    month: 7,
+    day: 29,
+  });
+  for (const fixed of [SACRED_EPOCH_FIXED, selectedFixed, firstAlignmentFixed]) {
+    assert.equal(fixedFromCosmicDate(cosmicDateFromFixed(fixed)), fixed);
+  }
 });
 
 test("finds five past and five future mean-moon alignments", () => {

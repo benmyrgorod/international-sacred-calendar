@@ -52,6 +52,17 @@ import { historicalEventName } from "@/lib/event-name-translations";
 import { holidayName } from "@/lib/holiday-name-translations";
 import { ALIGNMENT_HISTORY_TRANSLATIONS } from "@/lib/alignment-history-translations";
 import {
+  COSMIC_DAY_CIVIL_DAYS,
+  COSMIC_HOUR_DURATION,
+  COSMIC_MINUTE_DURATION,
+  COSMIC_SECOND_DURATION,
+  cosmicDateFromFixed,
+  cosmicWeekdayIndex,
+  fixedFromCosmicDate,
+  type CivilDuration,
+} from "@/lib/cosmic-time";
+import { COSMIC_TIME_TRANSLATIONS } from "@/lib/cosmic-time-translations";
+import {
   formatLocalTime,
   isValidTimePreference,
   normalizeTimePreference,
@@ -105,6 +116,14 @@ interface ImportantDateDefinition {
   baseBirthday?: number;
 }
 
+interface CosmicDateDraft {
+  fixed: number;
+  week: string;
+  hour: string;
+  minute: string;
+  second: string;
+}
+
 const DEFAULT_FIXED = fixedFromGregorian({ year: 2026, month: 7, day: 29 });
 const DEFAULT_LANGUAGE_CONFIG =
   LANGUAGES.find((candidate) => candidate.code === "en") ?? LANGUAGES[0];
@@ -145,6 +164,31 @@ function currentLocalFixed(): number {
     month: today.getMonth() + 1,
     day: today.getDate(),
   });
+}
+
+function cosmicDateDraftFromFixed(fixed: number): CosmicDateDraft {
+  const cosmic = cosmicDateFromFixed(fixed);
+  return {
+    fixed,
+    week: String(cosmic.week),
+    hour: String(cosmic.hour),
+    minute: String(cosmic.minute),
+    second: cosmic.second.toFixed(3),
+  };
+}
+
+function formatCivilDuration(
+  duration: CivilDuration,
+  locale: string,
+): string {
+  return [
+    duration.days ? `${duration.days.toLocaleString(locale)} d` : "",
+    duration.hours ? `${duration.hours.toLocaleString(locale)} h` : "",
+    duration.minutes ? `${duration.minutes.toLocaleString(locale)} min` : "",
+    duration.seconds ? `${duration.seconds.toLocaleString(locale)} s` : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
 }
 
 function calendarLabel(
@@ -560,6 +604,13 @@ export default function Home() {
   const [sourceDate, setSourceDate] = useState<CalendarDate>(() =>
     equivalentFor("gregorian", DEFAULT_FIXED),
   );
+  const [cosmicDateDraft, setCosmicDateDraft] = useState<CosmicDateDraft>(() =>
+    cosmicDateDraftFromFixed(DEFAULT_FIXED),
+  );
+  const [cosmicDateError, setCosmicDateError] = useState<{
+    fixed: number;
+    message: string;
+  } | null>(null);
   const languageConfig =
     LANGUAGES.find((candidate) => candidate.code === language) ??
     DEFAULT_LANGUAGE_CONFIG;
@@ -569,6 +620,7 @@ export default function Home() {
   const planetaryCopy = PLANETARY_TRANSLATIONS[language];
   const historyCopy = HISTORY_TRANSLATIONS[language];
   const alignmentHistoryCopy = ALIGNMENT_HISTORY_TRANSLATIONS[language];
+  const cosmicTimeCopy = COSMIC_TIME_TRANSLATIONS[language];
 
   useEffect(() => {
     const stored = window.localStorage.getItem("isc-language") as LanguageCode | null;
@@ -631,6 +683,16 @@ export default function Home() {
     }
   }, [from, sourceDate, to]);
 
+  const selectedCosmicDate = cosmicDateFromFixed(calculation.fixed);
+  const activeCosmicDateDraft =
+    cosmicDateDraft.fixed === calculation.fixed
+      ? cosmicDateDraft
+      : cosmicDateDraftFromFixed(calculation.fixed);
+  const enteredCosmicWeek = Number(activeCosmicDateDraft.week);
+  const enteredCosmicWeekdayIndex = Number.isInteger(enteredCosmicWeek)
+    ? cosmicWeekdayIndex(enteredCosmicWeek)
+    : selectedCosmicDate.weekdayIndex;
+
   function changeFrom(next: CalendarKind, resetGrid = true) {
     let fixed = DEFAULT_FIXED;
     try {
@@ -655,6 +717,25 @@ export default function Home() {
     setTodayFixed(fixed);
     setSourceDate(equivalentFor(from, fixed));
     setGridOffset(0);
+  }
+
+  function applyCosmicDate() {
+    try {
+      const fixed = fixedFromCosmicDate({
+        week: Number(activeCosmicDateDraft.week),
+        hour: Number(activeCosmicDateDraft.hour),
+        minute: Number(activeCosmicDateDraft.minute),
+        second: Number(activeCosmicDateDraft.second),
+      });
+      setSourceDate(equivalentFor(from, fixed));
+      setGridOffset(0);
+      setCosmicDateError(null);
+    } catch {
+      setCosmicDateError({
+        fixed: calculation.fixed,
+        message: cosmicTimeCopy.invalid,
+      });
+    }
   }
 
   function changeLanguage(next: LanguageCode) {
@@ -899,6 +980,7 @@ export default function Home() {
             <div className="menu-group">
               <strong>{historyCopy.menuCycles}</strong>
               <a href="#cycle">{historyCopy.menuCalendarCycle}</a>
+              <a href="#cosmic-time">{cosmicTimeCopy.navLabel}</a>
               <a href="#lunar-alignments">{historyCopy.menuMoonAlignmentCycle}</a>
             </div>
             <div className="menu-group">
@@ -1203,6 +1285,172 @@ export default function Home() {
                   <small>{story.detail}</small>
                 </a>
               ))}
+            </div>
+          </div>
+
+          <div className="cosmic-time-panel" id="cosmic-time">
+            <div className="cosmic-time-heading">
+              <div>
+                <span className="section-number">◉ {cosmicTimeCopy.kicker}</span>
+                <h3>{cosmicTimeCopy.title}</h3>
+                <p>{cosmicTimeCopy.body}</p>
+              </div>
+              <small>{cosmicTimeCopy.scaleNote}</small>
+            </div>
+
+            <div className="cosmic-time-scale" aria-label={cosmicTimeCopy.title}>
+              <article className="cosmic-unit cosmic-unit-day">
+                <span>01</span>
+                <small>{cosmicTimeCopy.cosmicDay}</small>
+                <strong>
+                  {SACRED_ROTATION_YEARS.toLocaleString(languageConfig.locale)} ISC y
+                </strong>
+                <em>
+                  {COSMIC_DAY_CIVIL_DAYS.toLocaleString(languageConfig.locale)} d
+                </em>
+              </article>
+              <i aria-hidden="true">÷ 24</i>
+              <article className="cosmic-unit">
+                <span>02</span>
+                <small>{cosmicTimeCopy.cosmicHour}</small>
+                <strong>
+                  {(SACRED_ROTATION_YEARS / 24).toLocaleString(
+                    languageConfig.locale,
+                    { minimumFractionDigits: 4, maximumFractionDigits: 4 },
+                  )} ISC y
+                </strong>
+                <em>{formatCivilDuration(COSMIC_HOUR_DURATION, languageConfig.locale)}</em>
+              </article>
+              <i aria-hidden="true">÷ 60</i>
+              <article className="cosmic-unit">
+                <span>03</span>
+                <small>{cosmicTimeCopy.cosmicMinute}</small>
+                <strong>
+                  {(SACRED_ROTATION_YEARS / (24 * 60)).toLocaleString(
+                    languageConfig.locale,
+                    { minimumFractionDigits: 6, maximumFractionDigits: 6 },
+                  )} ISC y
+                </strong>
+                <em>{formatCivilDuration(COSMIC_MINUTE_DURATION, languageConfig.locale)}</em>
+              </article>
+              <i aria-hidden="true">÷ 60</i>
+              <article className="cosmic-unit cosmic-unit-second">
+                <span>04</span>
+                <small>{cosmicTimeCopy.cosmicSecond}</small>
+                <strong>
+                  {(SACRED_ROTATION_YEARS / (24 * 60 * 60)).toLocaleString(
+                    languageConfig.locale,
+                    { minimumFractionDigits: 6, maximumFractionDigits: 6 },
+                  )} ISC y
+                </strong>
+                <em>{formatCivilDuration(COSMIC_SECOND_DURATION, languageConfig.locale)}</em>
+              </article>
+            </div>
+
+            <div className="cosmic-date-card">
+              <div className="cosmic-date-title">
+                <div>
+                  <span>{cosmicTimeCopy.currentSelectedTitle}</span>
+                  <strong>
+                    {formatDate(
+                      "gregorian",
+                      dateFromFixed("gregorian", calculation.fixed),
+                      translations,
+                      languageConfig.locale,
+                    )}
+                  </strong>
+                </div>
+                <p>{cosmicTimeCopy.weekHelp}</p>
+              </div>
+
+              <form
+                className="cosmic-date-fields"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  applyCosmicDate();
+                }}
+              >
+                <label>
+                  <span>{cosmicTimeCopy.cosmicWeek}</span>
+                  <input
+                    aria-label={cosmicTimeCopy.cosmicWeek}
+                    type="number"
+                    step="1"
+                    value={activeCosmicDateDraft.week}
+                    onChange={(event) =>
+                      setCosmicDateDraft({
+                        ...activeCosmicDateDraft,
+                        week: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  <span>{cosmicTimeCopy.cosmicDay}</span>
+                  <output>
+                    {localizedWeekday(
+                      enteredCosmicWeekdayIndex + 1,
+                      languageConfig.locale,
+                    )}
+                  </output>
+                </label>
+                <label>
+                  <span>{cosmicTimeCopy.cosmicHour}</span>
+                  <input
+                    aria-label={cosmicTimeCopy.cosmicHour}
+                    type="number"
+                    min="0"
+                    max="23"
+                    step="1"
+                    value={activeCosmicDateDraft.hour}
+                    onChange={(event) =>
+                      setCosmicDateDraft({
+                        ...activeCosmicDateDraft,
+                        hour: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  <span>{cosmicTimeCopy.cosmicMinute}</span>
+                  <input
+                    aria-label={cosmicTimeCopy.cosmicMinute}
+                    type="number"
+                    min="0"
+                    max="59"
+                    step="1"
+                    value={activeCosmicDateDraft.minute}
+                    onChange={(event) =>
+                      setCosmicDateDraft({
+                        ...activeCosmicDateDraft,
+                        minute: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  <span>{cosmicTimeCopy.cosmicSecond}</span>
+                  <input
+                    aria-label={cosmicTimeCopy.cosmicSecond}
+                    type="number"
+                    min="0"
+                    max="59.999"
+                    step="0.001"
+                    value={activeCosmicDateDraft.second}
+                    onChange={(event) =>
+                      setCosmicDateDraft({
+                        ...activeCosmicDateDraft,
+                        second: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <button type="submit">{cosmicTimeCopy.apply}</button>
+              </form>
+              {cosmicDateError?.fixed === calculation.fixed ? (
+                <p className="cosmic-date-error">{cosmicDateError.message}</p>
+              ) : null}
+              <small>{cosmicTimeCopy.nearestDayNote}</small>
             </div>
           </div>
 

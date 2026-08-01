@@ -102,10 +102,20 @@ test("server-renders the International Sacred Calendar converter", async () => {
     12,
   );
   assert.match(html, /href="#rotation-history"/);
+  assert.match(html, /href="#cosmic-time">Cosmic time<\/a>/);
   assert.match(html, /United States Declaration of Independence adopted/);
   assert.match(html, /class="history-event history-civilization near-rotation-alignment"/);
   assert.match(html, /class="history-event history-civilization near-half-rotation-alignment"/);
   assert.match(html, /Near a 293-year half-cycle/);
+  assert.match(html, /Current \/ selected Cosmic Date/);
+  assert.match(html, /A 293-year day, divided like a clock/);
+  assert.match(html, /106,652<!-- --> d/);
+  assert.match(html, /4,443 d · 20 h/);
+  assert.match(html, /74 d · 1 h · 32 min/);
+  assert.match(html, /1 d · 5 h · 37 min · 32 s/);
+  assert.match(html, /aria-label="Cosmic Week"/);
+  assert.match(html, /aria-label="Cosmic Second"/);
+  assert.match(html, /Apply Cosmic Date/);
   assert.match(html, /Five past and five future lunar alignments/);
   assert.match(html, /Eighty dates from Creation to today/);
   assert.match(html, /80 major events/);
@@ -132,6 +142,7 @@ test("server-renders the International Sacred Calendar converter", async () => {
     "calendar",
     "planetary-hours",
     "cycle",
+    "cosmic-time",
     "lunar-alignments",
     "important-dates",
     "major-events",

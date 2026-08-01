@@ -134,6 +134,26 @@ that period, while the main chronology continues to use traditional Hebrew
 dating. Calendar proximity is presented as a pattern for exploration, not as
 evidence that the rotation caused an event.
 
+### Cosmic time scale
+
+The Cosmic time infographic treats one complete 293-ISC-year rotation as one
+Cosmic Day. Since each ISC year has 364 days, one Cosmic Day contains 106,652
+civil days. Dividing it like a 24-hour clock gives:
+
+- 1 Cosmic Hour = 293 / 24 ISC years = 4,443 days and 20 hours;
+- 1 Cosmic Minute = 293 / 1,440 ISC years = 74 days, 1 hour, and 32 minutes;
+- 1 Cosmic Second = 293 / 86,400 ISC years = 1 day, 5 hours, 37 minutes, and
+  32 seconds.
+
+The selected Cosmic Date is measured from the ISC epoch. Its Cosmic Week is
+the completed 293-year interval number, matching the anniversary table; Week 1
+is Monday and subsequent week labels cycle through Sunday. Hour, minute, and
+second locate the selected date proportionally within that 293-year span.
+Editing those values and applying them updates the main source date to the
+nearest civil day. Three decimal places on Cosmic Seconds preserve civil-day
+round trips. This is a proportional calendar model, not an astronomical time
+standard.
+
 ## Approximate 1.48-year moon alignment
 
 International Sacred months begin every 28 days. NASA gives the mean synodic
