@@ -725,8 +725,9 @@ export default function Home() {
           </span>
         </a>
         <details className="site-menu">
-          <summary>
-            <span aria-hidden="true">☰</span> {historyCopy.menuLabel}
+          <summary aria-label={historyCopy.menuLabel}>
+            <span className="menu-icon" aria-hidden="true">☰</span>
+            <span className="menu-label">{historyCopy.menuLabel}</span>
           </summary>
           <div className="site-menu-panel" aria-label="Site sections">
             <div className="menu-group">
@@ -737,8 +738,8 @@ export default function Home() {
             </div>
             <div className="menu-group">
               <strong>{historyCopy.menuCycles}</strong>
-              <a href="#cycle">{translations.navCycle}</a>
-              <a href="#lunar-alignments">{moonTranslations.alignmentsTitle}</a>
+              <a href="#cycle">{historyCopy.menuCalendarCycle}</a>
+              <a href="#lunar-alignments">{historyCopy.menuMoonAlignmentCycle}</a>
             </div>
             <div className="menu-group">
               <strong>{historyCopy.menuHistory}</strong>

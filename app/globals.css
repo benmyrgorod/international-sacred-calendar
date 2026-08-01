@@ -145,6 +145,11 @@ a {
   display: none;
 }
 
+.menu-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
 .site-menu[open] > summary,
 .site-menu > summary:hover {
   border-color: var(--gold);
@@ -2572,6 +2577,7 @@ footer > a {
   .topbar {
     min-height: 80px;
     padding: 0 20px;
+    gap: 9px;
   }
 
   .topbar .brand-logo {
@@ -2589,16 +2595,23 @@ footer > a {
   }
 
   .site-menu > summary {
-    width: 42px;
-    padding: 9px;
+    width: 44px;
+    min-width: 44px;
+    max-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    flex: 0 0 44px;
     justify-content: center;
-    overflow: hidden;
-    white-space: nowrap;
+    border-radius: 50%;
   }
 
-  .site-menu > summary span {
-    flex: 0 0 auto;
-    font-size: 15px;
+  .site-menu > summary .menu-icon {
+    font-size: 17px;
+  }
+
+  .site-menu > summary .menu-label {
+    display: none;
   }
 
   .site-menu-panel {
