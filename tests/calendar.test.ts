@@ -44,6 +44,34 @@ test("matches the Gregorian reform Julian date", () => {
   );
 });
 
+test("anchors important dates and repeats them by Sacred year", () => {
+  const discoveryFixed = fixedFromDate("gregorian", {
+    year: 2026,
+    month: 7,
+    day: 27,
+  });
+  const birthdayFixed = fixedFromDate("gregorian", {
+    year: 2026,
+    month: 7,
+    day: 28,
+  });
+  const discoverySacred = dateFromFixed("sacred", discoveryFixed);
+
+  assert.deepEqual(discoverySacred, { year: 5805, month: 9, day: 22 });
+  assert.deepEqual(dateFromFixed("sacred", birthdayFixed), {
+    year: 5805,
+    month: 9,
+    day: 23,
+  });
+  assert.equal(
+    fixedFromDate("sacred", {
+      ...discoverySacred,
+      year: discoverySacred.year + 1,
+    }) - discoveryFixed,
+    SACRED_DAYS_PER_YEAR,
+  );
+});
+
 test("supports proleptic tabular Islamic dates before the Hijra", () => {
   const beforeHijra = { year: -200, month: 3, day: 5 };
   assert.deepEqual(

@@ -872,6 +872,147 @@ h1 em {
   border-right: 0;
 }
 
+.important-dates-section {
+  padding: 112px 6vw;
+  background: var(--cream);
+}
+
+.important-dates-heading {
+  max-width: 760px;
+}
+
+.important-dates-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.important-date-card {
+  padding: 30px;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+  position: relative;
+  overflow: hidden;
+}
+
+.important-date-card::before {
+  content: "";
+  width: 5px;
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  background: var(--gold);
+}
+
+.important-date-card.birthday::before {
+  background: var(--forest);
+}
+
+.important-date-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.important-date-card-heading time {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.important-date-card-heading time strong {
+  color: var(--gold);
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 52px;
+  font-weight: 500;
+  line-height: 0.8;
+}
+
+.important-date-card-heading time span,
+.important-date-card-heading > span,
+.important-date-calendars dt,
+.important-date-recurrence span {
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.important-date-card h3 {
+  max-width: 560px;
+  margin: 28px 0;
+  font-size: clamp(30px, 3vw, 42px);
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.important-date-calendars {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.important-date-calendars div {
+  min-width: 0;
+  padding: 13px;
+  background: var(--paper);
+}
+
+.important-date-calendars dd {
+  margin: 5px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.important-date-recurrence {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid var(--gold-light);
+  background: rgba(217, 199, 158, 0.12);
+}
+
+.important-date-recurrence strong,
+.important-date-recurrence small {
+  display: block;
+}
+
+.important-date-recurrence strong {
+  margin-top: 5px;
+  color: var(--forest);
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.important-date-recurrence small {
+  margin-top: 5px;
+  color: var(--ink-soft);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.important-date-card > button {
+  margin-top: 18px;
+  padding: 9px 0;
+  border: 0;
+  background: transparent;
+  color: var(--forest);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.important-date-card > button:hover {
+  color: var(--gold);
+}
+
 .calendar-section {
   padding: 112px 6vw;
   background: var(--paper);
@@ -999,6 +1140,52 @@ h1 em {
   letter-spacing: 0.04em;
 }
 
+.calendar-legend {
+  min-height: 42px;
+  padding: 8px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  background: rgba(217, 199, 158, 0.12);
+}
+
+.calendar-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-soft);
+  font-size: 9px;
+}
+
+.calendar-legend i {
+  display: inline-grid;
+  width: 19px;
+  height: 19px;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 10px;
+  font-style: normal;
+}
+
+.moon-marker {
+  color: #604b22;
+  background: rgba(217, 199, 158, 0.6);
+}
+
+.rotation-marker {
+  color: #f7f0e2;
+  background: var(--forest);
+}
+
+.important-marker {
+  color: #fffdf8;
+  background: #7d622e;
+}
+
 .jump-symbol {
   color: var(--forest);
   font-size: 13px;
@@ -1111,6 +1298,15 @@ h1 em {
 
 .rotation-pill {
   color: #f7f0e2;
+  background: var(--forest);
+}
+
+.important-pill {
+  color: #fffdf8;
+  background: #7d622e;
+}
+
+.birthday-pill {
   background: var(--forest);
 }
 
@@ -1398,6 +1594,10 @@ footer > a {
     grid-template-columns: 1fr;
   }
 
+  .important-dates-grid {
+    grid-template-columns: 1fr;
+  }
+
   .lunar-copy {
     position: static;
   }
@@ -1471,6 +1671,7 @@ footer > a {
   .converter-section,
   .definition-section,
   .cycle-section,
+  .important-dates-section,
   .calendar-section {
     padding: 80px 20px;
   }

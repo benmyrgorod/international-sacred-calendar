@@ -31,6 +31,7 @@ import {
   type CalendarKind,
 } from "@/lib/sacred-calendar";
 import {
+  IMPORTANT_DATE_TRANSLATIONS,
   LANGUAGES,
   MOON_TRANSLATIONS,
   TRANSLATIONS,
@@ -48,7 +49,24 @@ const CALENDARS: CalendarKind[] = [
 
 type WeekStart = "sunday" | "monday";
 
+interface ImportantDateDefinition {
+  id: "discovery" | "birthday";
+  fixed: number;
+  baseBirthday?: number;
+}
+
 const DEFAULT_FIXED = fixedFromGregorian({ year: 2026, month: 7, day: 29 });
+const IMPORTANT_DATES: ImportantDateDefinition[] = [
+  {
+    id: "discovery",
+    fixed: fixedFromGregorian({ year: 2026, month: 7, day: 27 }),
+  },
+  {
+    id: "birthday",
+    fixed: fixedFromGregorian({ year: 2026, month: 7, day: 28 }),
+    baseBirthday: 40,
+  },
+];
 
 function currentLocalFixed(): number {
   const today = new Date();
@@ -282,6 +300,7 @@ export default function Home() {
     LANGUAGES.find((candidate) => candidate.code === language) ?? LANGUAGES[0];
   const translations = TRANSLATIONS[language];
   const moonTranslations = MOON_TRANSLATIONS[language];
+  const importantDateCopy = IMPORTANT_DATE_TRANSLATIONS[language];
 
   useEffect(() => {
     const stored = window.localStorage.getItem("isc-language") as LanguageCode | null;
@@ -407,6 +426,14 @@ export default function Home() {
       ? (gridSacred.year - 1) / SACRED_ROTATION_YEARS
       : null;
   const moonAlignments = moonAlignmentsAround(calculation.fixed, 5, 5);
+  const importantDates = IMPORTANT_DATES.map((event) => ({
+    ...event,
+    sacred: dateFromFixed("sacred", event.fixed),
+    hebrew: dateFromFixed("hebrew", event.fixed),
+    gregorian: dateFromFixed("gregorian", event.fixed),
+    julian: dateFromFixed("julian", event.fixed),
+    islamic: dateFromFixed("islamic", event.fixed),
+  }));
   const weekStartFixed = weekStart === "sunday" ? 0 : 1;
   const leadingGridDays =
     ((gridStartFixed - weekStartFixed) % 7 + 7) % 7;
@@ -436,6 +463,7 @@ export default function Home() {
         <div className="nav-links">
           <a href="#converter">{translations.navConvert}</a>
           <a href="#cycle">{translations.navCycle}</a>
+          <a href="#important-dates">{importantDateCopy.navLabel}</a>
           <a href="#calendar">{moonTranslations.calendarKicker}</a>
           <a href="#definition">{translations.navDefinition}</a>
         </div>
@@ -731,9 +759,99 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="important-dates-section" id="important-dates">
+        <div className="section-heading important-dates-heading">
+          <span>03 — {importantDateCopy.kicker}</span>
+          <h2>{importantDateCopy.title}</h2>
+          <p>{importantDateCopy.body}</p>
+        </div>
+
+        <div className="important-dates-grid">
+          {importantDates.map((event) => {
+            const title =
+              event.id === "discovery"
+                ? importantDateCopy.discovery
+                : importantDateCopy.birthday;
+            const firstRepeatLabel =
+              event.id === "discovery"
+                ? `${importantDateCopy.anniversary} #1`
+                : `${(event.baseBirthday ?? 0) + 1} ${importantDateCopy.birthdayLabel}`;
+
+            return (
+              <article className={`important-date-card ${event.id}`} key={event.id}>
+                <div className="important-date-card-heading">
+                  <time dateTime={
+                    event.id === "discovery" ? "2026-07-27" : "2026-07-28"
+                  }>
+                    <strong>{event.gregorian.day}</strong>
+                    <span>
+                      {monthLabel(
+                        "gregorian",
+                        event.gregorian.year,
+                        event.gregorian.month,
+                        translations,
+                        languageConfig.locale,
+                      )} {event.gregorian.year}
+                    </span>
+                  </time>
+                  <span>{importantDateCopy.originalDate}</span>
+                </div>
+                <h3>{title}</h3>
+                <dl className="important-date-calendars">
+                  <div>
+                    <dt>{translations.sacred}</dt>
+                    <dd>{formatDate("sacred", event.sacred, translations, languageConfig.locale)}</dd>
+                  </div>
+                  <div>
+                    <dt>{translations.hebrew}</dt>
+                    <dd>{formatDate("hebrew", event.hebrew, translations, languageConfig.locale)}</dd>
+                  </div>
+                  <div>
+                    <dt>{translations.gregorian}</dt>
+                    <dd>{formatDate("gregorian", event.gregorian, translations, languageConfig.locale)}</dd>
+                  </div>
+                  <div>
+                    <dt>{translations.julian}</dt>
+                    <dd>{formatDate("julian", event.julian, translations, languageConfig.locale)}</dd>
+                  </div>
+                  <div>
+                    <dt>{translations.muslim}</dt>
+                    <dd>{formatDate("islamic", event.islamic, translations, languageConfig.locale)}</dd>
+                  </div>
+                </dl>
+                <div className="important-date-recurrence">
+                  <span>{importantDateCopy.annualRecurrence}</span>
+                  <strong>
+                    ISC {event.sacred.month} · {event.sacred.day}
+                  </strong>
+                  <small>
+                    {importantDateCopy.firstRepeat}: ISC {event.sacred.year + 1} · {event.sacred.month} · {event.sacred.day} · {firstRepeatLabel}
+                  </small>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const targetMonth =
+                      (event.sacred.year - 1) * SACRED_MONTHS_PER_YEAR +
+                      event.sacred.month -
+                      1;
+                    setGridOffset(targetMonth - baseGridMonth);
+                    document
+                      .getElementById("calendar")
+                      ?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  {importantDateCopy.viewInCalendar} →
+                </button>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
       <section className="calendar-section" id="calendar">
         <div className="section-heading calendar-heading">
-          <span>03 — {moonTranslations.calendarKicker}</span>
+          <span>04 — {moonTranslations.calendarKicker}</span>
           <h2>{moonTranslations.calendarTitle}</h2>
           <p>{moonTranslations.calendarBody}</p>
         </div>
@@ -794,6 +912,21 @@ export default function Home() {
           </label>
         </div>
 
+        <div className="calendar-legend" aria-label="Calendar event legend">
+          <span>
+            <i className="moon-marker" aria-hidden="true">◐</i>
+            {moonTranslations.lunarAlignment}
+          </span>
+          <span>
+            <i className="rotation-marker" aria-hidden="true">✦</i>
+            {moonTranslations.rotationAnniversary}
+          </span>
+          <span>
+            <i className="important-marker" aria-hidden="true">◆</i>
+            {importantDateCopy.kicker}
+          </span>
+        </div>
+
         <div className="calendar-grid" role="grid">
           {gridWeekdays.map((weekday) => (
             <div className="calendar-weekday" role="columnheader" key={weekday}>
@@ -816,6 +949,17 @@ export default function Home() {
               const hasMoonAlignment = day === 1 && Boolean(gridMoonAlignment);
               const hasRotationAnniversary =
                 day === 1 && gridRotationAnniversary !== null;
+              const importantEvents = importantDates
+                .filter(
+                  (event) =>
+                    gridSacred.year >= event.sacred.year &&
+                    gridSacred.month === event.sacred.month &&
+                    day === event.sacred.day,
+                )
+                .map((event) => ({
+                  ...event,
+                  anniversaryNumber: gridSacred.year - event.sacred.year,
+                }));
 
               return (
                 <div
@@ -823,7 +967,11 @@ export default function Home() {
                     "calendar-day",
                     selected ? "selected" : "",
                     isToday ? "today" : "",
-                    hasMoonAlignment || hasRotationAnniversary ? "has-event" : "",
+                    hasMoonAlignment ||
+                    hasRotationAnniversary ||
+                    importantEvents.length > 0
+                      ? "has-event"
+                      : "",
                   ]
                     .filter(Boolean)
                     .join(" ")}
@@ -854,6 +1002,18 @@ export default function Home() {
                         ✦ {moonTranslations.rotationAnniversary} #{gridRotationAnniversary}
                       </span>
                     ) : null}
+                    {importantEvents.map((event) => (
+                      <span
+                        className={`event-pill important-pill ${event.id}-pill`}
+                        key={event.id}
+                      >
+                        {event.id === "discovery"
+                          ? event.anniversaryNumber === 0
+                            ? importantDateCopy.discovery
+                            : `${importantDateCopy.anniversary} #${event.anniversaryNumber}`
+                          : `Ovadia Binyamin · ${(event.baseBirthday ?? 0) + event.anniversaryNumber} ${importantDateCopy.birthdayLabel}`}
+                      </span>
+                    ))}
                   </div>
                 </div>
               );
@@ -929,7 +1089,7 @@ export default function Home() {
 
       <section className="definition-section" id="definition">
         <div className="section-heading">
-          <span>04 — {translations.definitionKicker}</span>
+          <span>05 — {translations.definitionKicker}</span>
           <h2>{translations.definitionTitle}</h2>
         </div>
 

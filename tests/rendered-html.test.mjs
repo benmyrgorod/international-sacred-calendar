@@ -59,6 +59,11 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Gregorian/);
   assert.match(html, /Julian/);
   assert.match(html, /<option value="sunday" selected="">Sunday<\/option>/);
+  assert.match(html, /Discovery of the International Sacred Calendar/);
+  assert.match(html, /40th birthday of Ovadia Binyamin/);
+  assert.match(html, /Discovery anniversary/);
+  assert.match(html, /Moon alignment/);
+  assert.match(html, /293-year anniversary/);
   assert.doesNotMatch(html, /Georgian/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Building your site/i);
 });
