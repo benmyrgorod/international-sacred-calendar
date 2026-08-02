@@ -1287,7 +1287,13 @@ export default function Home() {
                 </span>
               ))}
               <span
-                className="current-position"
+                className={`current-position${
+                  anniversaryTimelineProgress > 0.75
+                    ? " label-toward-start"
+                    : anniversaryTimelineProgress < 0.25
+                      ? " label-toward-end"
+                      : ""
+                }`}
                 style={{ insetInlineStart: `${anniversaryTimelineProgress * 100}%` }}
               >
                 <i />

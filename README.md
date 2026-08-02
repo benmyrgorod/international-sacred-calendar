@@ -406,6 +406,33 @@ provided by
 - **Weekday:** all calendars pass through one integer fixed-day count, where
   Gregorian 1 January 1 CE is fixed day 1, a Monday.
 
+## Install and offline use
+
+The site is a progressive web app. It can be installed from the browser and then
+runs from the home screen or the desktop in its own standalone window. Every
+conversion, the calendar grid, the chronology, the lunar approximations, and the
+planetary-hour calculator are computed in the browser, so the installed app keeps
+working without a network connection.
+
+- [`public/site.webmanifest`](./public/site.webmanifest) declares the app
+  identity, `standalone` display, brand colours, the 192 px and 512 px icons, a
+  512 px maskable icon, and shortcuts to the converter, the calendar grid, the
+  planetary hours, and the chronology.
+- [`public/sw.js`](./public/sw.js) is the service worker. It precaches the app
+  shell and icons, serves hashed build output from the cache, revalidates other
+  assets in the background, and answers navigations from the network first and
+  from the cached shell when offline. Every cache name carries `CACHE_VERSION`;
+  bump it whenever the caching rules or the precache list change, and the
+  previous version's caches are deleted on activation.
+- [`app/service-worker.tsx`](./app/service-worker.tsx) registers the worker in
+  production builds only, so local development never serves cached output. On a
+  first visit it also hands the new worker the assets the page already loaded,
+  which makes the site usable offline immediately rather than one visit later.
+
+To retire the worker on a deployed site, replace `public/sw.js` with one that
+calls `self.registration.unregister()` and clears `caches`; browsers keep the
+last worker they saw until a new script replaces it.
+
 ## Library usage
 
 The reusable module is [`lib/sacred-calendar.ts`](./lib/sacred-calendar.ts).

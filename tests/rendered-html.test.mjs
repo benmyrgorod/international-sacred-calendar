@@ -40,6 +40,61 @@ test("major headings stay on one line at desktop widths and wrap on small screen
   assert.match(css, /\.history-event-pill\.near-alignment-pill/);
 });
 
+test("ships an installable web app manifest", async () => {
+  const manifest = JSON.parse(
+    await readFile(new URL("../public/site.webmanifest", import.meta.url), "utf8"),
+  );
+
+  assert.equal(manifest.name, "International Sacred Calendar");
+  assert.equal(manifest.short_name, "ISC");
+  assert.equal(manifest.start_url, "/");
+  assert.equal(manifest.scope, "/");
+  assert.equal(manifest.display, "standalone");
+  assert.equal(manifest.theme_color, "#15382d");
+  assert.equal(manifest.background_color, "#f4f0e7");
+
+  const sizes = manifest.icons.map((icon) => icon.sizes);
+  assert.ok(sizes.includes("192x192"));
+  assert.ok(sizes.includes("512x512"));
+  const maskable = manifest.icons.filter((icon) => icon.purpose === "maskable");
+  assert.ok(maskable.length >= 1);
+  assert.equal(maskable[0].sizes, "512x512");
+
+  const shortcutUrls = manifest.shortcuts.map((shortcut) => shortcut.url);
+  for (const url of [
+    "/#converter",
+    "/#calendar",
+    "/#planetary-hours",
+    "/#major-events",
+  ]) {
+    assert.ok(shortcutUrls.includes(url), `missing shortcut for ${url}`);
+  }
+});
+
+test("registers an offline service worker that caches the app shell", async () => {
+  const worker = await readFile(new URL("../public/sw.js", import.meta.url), "utf8");
+
+  for (const listener of ["install", "activate", "fetch", "message"]) {
+    assert.match(
+      worker,
+      new RegExp(`addEventListener\\("${listener}"`),
+      `service worker is missing its ${listener} listener`,
+    );
+  }
+  assert.match(worker, /const CACHE_VERSION = "isc-v\d+";/);
+  assert.match(worker, /"\/site\.webmanifest"/);
+  assert.match(worker, /request\.mode === "navigate"/);
+  assert.match(worker, /\/_next\/static\//);
+
+  const registration = await readFile(
+    new URL("../app/service-worker.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(registration, /navigator\.serviceWorker\.register\(/);
+  assert.match(registration, /updateViaCache: "none"/);
+  assert.match(registration, /process\.env\.NODE_ENV !== "production"/);
+});
+
 test("server-renders the International Sacred Calendar converter", async () => {
   const response = await render();
   assert.equal(response.status, 200);
@@ -50,6 +105,13 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /isc-logo-web\.png/);
   assert.match(html, /favicon-32x32\.png/);
   assert.match(html, /site\.webmanifest/);
+  assert.match(html, /<meta name="theme-color" content="#15382d"\/?>/);
+  assert.match(html, /<meta name="mobile-web-app-capable" content="yes"\/?>/);
+  assert.match(
+    html,
+    /<meta name="apple-mobile-web-app-capable" content="yes"\/?>/,
+  );
+  assert.match(html, /apple-mobile-web-app-title/);
   assert.match(html, /International Sacred Calendar/);
   assert.match(html, /all eight supported calendars/);
   assert.match(html, /Chinese Traditional Calendar/);

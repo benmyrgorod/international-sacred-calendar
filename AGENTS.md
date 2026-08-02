@@ -79,6 +79,25 @@ correct calendar name; never change it to “Georgian.”
 - Prefer compact tables, visual symbols, and short explanatory notes. Do not
   shrink normal-screen text to solve layout problems; make containers wider or
   allow purposeful horizontal table scrolling.
+- The document must never scroll sideways. Wide tables scroll inside their own
+  wrapper, which needs a zero min-width floor on the enclosing grid item, and
+  their first column stays pinned with `position: sticky` and an opaque
+  background.
+- The converter date and the planetary sunrise and sunset times are device-local
+  preferences in `lib/local-preferences.ts`. Read them once on mount and only
+  persist after that first read, so a fresh render cannot overwrite a saved
+  value.
+
+## Progressive web app
+
+- `public/site.webmanifest`, `public/sw.js`, and `app/service-worker.tsx` make
+  the site installable and usable offline. Keep the manifest's `standalone`
+  display, the 192 px and 512 px icons, and the 512 px maskable icon.
+- Bump `CACHE_VERSION` in `public/sw.js` whenever the caching rules or the
+  precache list change. Navigations stay network-first so a deploy is never
+  masked by the cache; hashed build output under `/_next/static/` is cache-first.
+- The worker registers in production builds only. Never register it in
+  development, and never commit a worker that caches HTML cache-first.
 
 ## Build and validation
 

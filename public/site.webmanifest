@@ -1,21 +1,64 @@
 {
+  "id": "/",
   "name": "International Sacred Calendar",
   "short_name": "ISC",
-  "description": "Convert Sacred, Hebrew, Gregorian, Julian, and Muslim calendar dates.",
+  "description": "Convert dates across the International Sacred Calendar, Hebrew, Gregorian, Julian, Muslim, Chinese Traditional, Indian National, and Thai Buddhist calendars.",
+  "lang": "en",
+  "dir": "auto",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
   "background_color": "#f4f0e7",
   "theme_color": "#15382d",
+  "categories": ["education", "productivity", "utilities"],
   "icons": [
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Date conversion",
+      "url": "/#converter",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Calendar grid",
+      "url": "/#calendar",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Planetary hours",
+      "url": "/#planetary-hours",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "World chronology",
+      "url": "/#major-events",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

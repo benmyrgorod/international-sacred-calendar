@@ -83,7 +83,17 @@ a {
 }
 
 .topbar .brand {
+  /* Let the wordmark wrap instead of pushing the menu past the viewport. */
+  min-width: 0;
   gap: 16px;
+}
+
+.topbar .brand > div {
+  min-width: 0;
+}
+
+.topbar .brand strong {
+  overflow-wrap: break-word;
 }
 
 .topbar .brand-logo {
@@ -884,6 +894,31 @@ h1 em {
   left: 50%;
   transform: translateX(-50%);
   text-transform: uppercase;
+}
+
+/* Near either end of the rail a centred label would run past the page edge and
+   make the whole document scroll sideways, so it hangs from the marker inward. */
+.current-position.label-toward-start em {
+  inset-inline-end: 0;
+  left: auto;
+  transform: none;
+}
+
+.current-position.label-toward-end em {
+  inset-inline-start: 0;
+  left: auto;
+  transform: none;
+}
+
+[dir="rtl"] .current-position em {
+  left: auto;
+  inset-inline-start: 50%;
+  transform: translateX(50%);
+}
+
+[dir="rtl"] .current-position.label-toward-start em,
+[dir="rtl"] .current-position.label-toward-end em {
+  transform: none;
 }
 
 .anniversary-visual-labels {
@@ -3303,6 +3338,17 @@ footer > a {
     width: 52px;
     height: 52px;
     flex-basis: 52px;
+  }
+
+  /* Narrow phones cannot fit the wordmark on two lines beside the controls, so
+     keep it compact instead of letting the header push the page sideways. */
+  .topbar .brand strong {
+    font-size: 16px;
+    line-height: 1.15;
+  }
+
+  .topbar .brand small {
+    display: none;
   }
 
   .language-picker select {
