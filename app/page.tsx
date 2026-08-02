@@ -67,9 +67,11 @@ import { COSMIC_TIME_TRANSLATIONS } from "@/lib/cosmic-time-translations";
 import {
   formatLocalTime,
   isValidTimePreference,
+  normalizeFixedDayPreference,
   normalizeTimePreference,
   PLANETARY_SUNRISE_STORAGE_KEY,
   PLANETARY_SUNSET_STORAGE_KEY,
+  SELECTED_DATE_STORAGE_KEY,
 } from "@/lib/local-preferences";
 import {
   PLANETS,
@@ -111,6 +113,7 @@ const CALENDARS: CalendarKind[] = [
 ];
 type WeekStart = "sunday" | "monday";
 type HistoryFilter = "all" | HistoryCategory;
+type PlanetaryDateSource = "selected" | "current";
 
 interface ImportantDateDefinition {
   id: "discovery" | "birthday";
@@ -128,6 +131,7 @@ interface CosmicDateDraft {
 }
 
 const DEFAULT_FIXED = fixedFromGregorian({ year: 2026, month: 7, day: 29 });
+const DEFAULT_SOURCE_CALENDAR: CalendarKind = "gregorian";
 const DEFAULT_LANGUAGE_CONFIG =
   LANGUAGES.find((candidate) => candidate.code === "en") ?? LANGUAGES[0];
 const IMPORTANT_DATES: ImportantDateDefinition[] = [
@@ -607,12 +611,15 @@ export default function Home() {
   const [gridOffset, setGridOffset] = useState(0);
   const [weekStart, setWeekStart] = useState<WeekStart>("monday");
   const [todayFixed, setTodayFixed] = useState(DEFAULT_FIXED);
-  const [from, setFrom] = useState<CalendarKind>("gregorian");
+  const [from, setFrom] = useState<CalendarKind>(DEFAULT_SOURCE_CALENDAR);
   const [to, setTo] = useState<CalendarKind>("sacred");
+  const [storedDateLoaded, setStoredDateLoaded] = useState(false);
   const [planetarySunrise, setPlanetarySunrise] = useState("06:00");
   const [planetarySunset, setPlanetarySunset] = useState("18:00");
   const [planetaryTime, setPlanetaryTime] = useState("12:00");
   const [planetaryTimeIsLive, setPlanetaryTimeIsLive] = useState(true);
+  const [planetaryDateSource, setPlanetaryDateSource] =
+    useState<PlanetaryDateSource>("selected");
   const [historyFilter, setHistoryFilter] = useState<HistoryFilter>("all");
   const [historyQuery, setHistoryQuery] = useState("");
   const [symbolicOnly, setSymbolicOnly] = useState(false);
@@ -647,9 +654,21 @@ export default function Home() {
       DEFAULT_LANGUAGE_CONFIG;
     document.documentElement.lang = config.locale;
     document.documentElement.dir = config.direction;
+    const storedFixed = normalizeFixedDayPreference(
+      window.localStorage.getItem(SELECTED_DATE_STORAGE_KEY),
+      DEFAULT_FIXED,
+    );
     const frame = window.requestAnimationFrame(() => {
       setLanguage(next);
       setTodayFixed(currentLocalFixed());
+      if (storedFixed !== DEFAULT_FIXED) {
+        try {
+          setSourceDate(equivalentFor(DEFAULT_SOURCE_CALENDAR, storedFixed));
+        } catch {
+          // Keep the built-in date when the stored day cannot be converted.
+        }
+      }
+      setStoredDateLoaded(true);
       setPlanetarySunrise(
         normalizeTimePreference(
           window.localStorage.getItem(PLANETARY_SUNRISE_STORAGE_KEY),
@@ -697,6 +716,16 @@ export default function Home() {
       };
     }
   }, [from, sourceDate, to]);
+
+  useEffect(() => {
+    // Only persist once the stored preference has been read, so the very first
+    // render cannot overwrite a saved date with the built-in one.
+    if (!storedDateLoaded || calculation.error) return;
+    window.localStorage.setItem(
+      SELECTED_DATE_STORAGE_KEY,
+      String(calculation.fixed),
+    );
+  }, [calculation.error, calculation.fixed, storedDateLoaded]);
 
   const activeCosmicDateDraft =
     cosmicDateDraft.fixed === calculation.fixed
@@ -773,12 +802,18 @@ export default function Home() {
   }
 
   const sourceWeekday = localizedWeekday(calculation.fixed, languageConfig.locale);
-  const selectedWeekdayIndex = ((calculation.fixed - 1) % 7 + 7) % 7;
+  const planetaryFixed =
+    planetaryDateSource === "current" ? todayFixed : calculation.fixed;
+  const planetaryWeekday = localizedWeekday(
+    planetaryFixed,
+    languageConfig.locale,
+  );
+  const planetaryWeekdayIndex = ((planetaryFixed - 1) % 7 + 7) % 7;
   const planetaryCalculation = (() => {
     try {
       return {
         result: calculatePlanetaryHour(
-          selectedWeekdayIndex,
+          planetaryWeekdayIndex,
           planetarySunrise,
           planetarySunset,
           planetaryTime,
@@ -2306,9 +2341,35 @@ export default function Home() {
             <div className="planetary-calculator-title">
               <span>{planetaryCopy.calculatorTitle}</span>
               <strong>
-                {planetaryCopy.selectedDate}: {sourceWeekday} ·{" "}
-                {dateCode(from, dateFromFixed(from, calculation.fixed))}
+                {planetaryDateSource === "current"
+                  ? planetaryCopy.currentDate
+                  : planetaryCopy.selectedDate}
+                : {planetaryWeekday} ·{" "}
+                {dateCode(from, dateFromFixed(from, planetaryFixed))}
               </strong>
+            </div>
+            <div
+              className="planetary-date-source"
+              role="group"
+              aria-label={planetaryCopy.dateSource}
+            >
+              <button
+                type="button"
+                aria-pressed={planetaryDateSource === "selected"}
+                onClick={() => setPlanetaryDateSource("selected")}
+              >
+                ✦ {planetaryCopy.selectedDate}
+              </button>
+              <button
+                type="button"
+                aria-pressed={planetaryDateSource === "current"}
+                onClick={() => {
+                  setTodayFixed(currentLocalFixed());
+                  setPlanetaryDateSource("current");
+                }}
+              >
+                ◷ {planetaryCopy.currentDate}
+              </button>
             </div>
             <div className="planetary-inputs">
               <label>

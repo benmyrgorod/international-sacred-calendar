@@ -75,7 +75,10 @@ module for:
 
 The converter accepts any of the eight calendars as its source and any other as
 its destination. It also shows the uninterrupted weekday and the current
-position in the International Sacred Calendar's long rotation.
+position in the International Sacred Calendar's long rotation. The selected date
+is kept as a device-local preference, so returning to the page restores the last
+date instead of resetting to today. It is restored as a Gregorian date, and an
+unreadable or out-of-range stored value falls back to the built-in date.
 
 The page includes English, Hebrew, Arabic, Italian, Greek, Russian, Simplified
 Chinese, Hindi, Spanish, French, Japanese, and Korean. Only Simplified Chinese
@@ -340,9 +343,9 @@ The hourly sequence repeats continuously as Saturn → Jupiter → Mars → Sun 
 Venus → Mercury → Moon. The first hour after local sunrise takes the ruler of
 that weekday. Daylight and darkness are each divided into twelve equal parts,
 so a planetary hour is generally not sixty clock minutes. Enter local sunrise,
-sunset, and clock time in the calculator; the selected converter date supplies
-the weekday. These correspondences are traditional and symbolic, not a
-scientific prediction.
+sunset, and clock time in the calculator, and choose whether the weekday comes
+from the selected converter date or from the current date. These correspondences
+are traditional and symbolic, not a scientific prediction.
 
 ## Eighty major events
 

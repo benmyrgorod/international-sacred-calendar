@@ -22,6 +22,7 @@ import {
 import {
   formatLocalTime,
   isValidTimePreference,
+  normalizeFixedDayPreference,
   normalizeTimePreference,
 } from "../lib/local-preferences.ts";
 import {
@@ -811,6 +812,34 @@ test("accepts valid saved sunrise and sunset times and rejects invalid values", 
   assert.equal(isValidTimePreference("23:59"), true);
   assert.equal(isValidTimePreference("24:00"), false);
   assert.equal(formatLocalTime(new Date(2026, 0, 1, 3, 4)), "03:04");
+});
+
+test("restores a saved selected date and rejects unusable stored values", () => {
+  const DEFAULT_SELECTED_FIXED = fixedFromDate("gregorian", {
+    year: 2026,
+    month: 7,
+    day: 29,
+  });
+  const saved = fixedFromDate("gregorian", { year: 2031, month: 3, day: 14 });
+  assert.equal(
+    normalizeFixedDayPreference(String(saved), DEFAULT_SELECTED_FIXED),
+    saved,
+  );
+  assert.equal(normalizeFixedDayPreference("-100000", DEFAULT_SELECTED_FIXED), -100000);
+  assert.equal(normalizeFixedDayPreference(null, DEFAULT_SELECTED_FIXED), DEFAULT_SELECTED_FIXED);
+  assert.equal(normalizeFixedDayPreference("", DEFAULT_SELECTED_FIXED), DEFAULT_SELECTED_FIXED);
+  assert.equal(
+    normalizeFixedDayPreference("739812.5", DEFAULT_SELECTED_FIXED),
+    DEFAULT_SELECTED_FIXED,
+  );
+  assert.equal(
+    normalizeFixedDayPreference("not-a-day", DEFAULT_SELECTED_FIXED),
+    DEFAULT_SELECTED_FIXED,
+  );
+  assert.equal(
+    normalizeFixedDayPreference("999999999", DEFAULT_SELECTED_FIXED),
+    DEFAULT_SELECTED_FIXED,
+  );
 });
 
 test("lists international holidays independently of the selected calendar", () => {

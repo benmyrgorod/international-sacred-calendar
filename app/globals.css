@@ -1278,6 +1278,25 @@ h1 em {
   font-weight: 500;
 }
 
+/* Keep the milestone column in view while the table scrolls sideways. */
+.anniversary-table-wrap thead th:first-child,
+.anniversary-table-wrap tbody th {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 3;
+  background: var(--forest);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.09);
+}
+
+.anniversary-table-wrap thead th:first-child {
+  z-index: 4;
+}
+
+[dir="rtl"] .anniversary-table-wrap thead th:first-child,
+[dir="rtl"] .anniversary-table-wrap tbody th {
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.09);
+}
+
 .milestone-button {
   padding: 0;
   border: 0;
@@ -1306,7 +1325,12 @@ h1 em {
 }
 
 .anniversary-table-wrap .featured-anniversary-row th {
-  box-shadow: inset 4px 0 0 var(--gold-light);
+  background:
+    linear-gradient(rgba(93, 137, 111, 0.34), rgba(93, 137, 111, 0.34)),
+    var(--forest);
+  box-shadow:
+    inset 4px 0 0 var(--gold-light),
+    inset -1px 0 0 rgba(255, 255, 255, 0.09);
 }
 
 .anniversary-table-wrap .sapphire-anniversary-row th,
@@ -1315,7 +1339,12 @@ h1 em {
 }
 
 .anniversary-table-wrap .sapphire-anniversary-row th {
-  box-shadow: inset 4px 0 0 #8bb8ff;
+  background:
+    linear-gradient(rgba(15, 82, 186, 0.58), rgba(15, 82, 186, 0.58)),
+    var(--forest);
+  box-shadow:
+    inset 4px 0 0 #8bb8ff,
+    inset -1px 0 0 rgba(255, 255, 255, 0.09);
 }
 
 .anniversary-table-wrap .cosmic-week {
@@ -1328,7 +1357,30 @@ h1 em {
 }
 
 .anniversary-table-wrap .future-twentieth-row th {
-  box-shadow: inset 4px 0 0 #d9c79e;
+  background:
+    linear-gradient(rgba(185, 130, 50, 0.2), rgba(185, 130, 50, 0.2)),
+    var(--forest);
+  box-shadow:
+    inset 4px 0 0 #d9c79e,
+    inset -1px 0 0 rgba(255, 255, 255, 0.09);
+}
+
+[dir="rtl"] .anniversary-table-wrap .featured-anniversary-row th {
+  box-shadow:
+    inset -4px 0 0 var(--gold-light),
+    inset 1px 0 0 rgba(255, 255, 255, 0.09);
+}
+
+[dir="rtl"] .anniversary-table-wrap .sapphire-anniversary-row th {
+  box-shadow:
+    inset -4px 0 0 #8bb8ff,
+    inset 1px 0 0 rgba(255, 255, 255, 0.09);
+}
+
+[dir="rtl"] .anniversary-table-wrap .future-twentieth-row th {
+  box-shadow:
+    inset -4px 0 0 #d9c79e,
+    inset 1px 0 0 rgba(255, 255, 255, 0.09);
 }
 
 .anniversary-table-wrap tr:last-child th,
@@ -2554,11 +2606,46 @@ h1 em {
 }
 
 .planetary-calculator-title {
-  margin-bottom: 26px;
+  margin-bottom: 15px;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 20px;
+}
+
+.planetary-date-source {
+  margin-bottom: 22px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--line);
+}
+
+.planetary-date-source button {
+  min-height: 38px;
+  padding: 8px 15px;
+  border: 0;
+  border-inline-end: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--ink-soft);
+  background: var(--paper);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.planetary-date-source button:last-child {
+  border-inline-end: 0;
+}
+
+.planetary-date-source button[aria-pressed="true"] {
+  color: var(--cream);
+  background: var(--forest);
+}
+
+.planetary-date-source button:not([aria-pressed="true"]):hover {
+  color: var(--forest);
+  background: var(--sage);
 }
 
 .planetary-calculator-title span,
@@ -2691,6 +2778,9 @@ h1 em {
 }
 
 .planetary-table-card {
+  /* Grid items default to a min-content floor; without this the 720px hour
+     table widens the whole page instead of scrolling inside its wrapper. */
+  min-width: 0;
   border: 1px solid var(--line);
   background: #fffdf8;
 }
@@ -2798,8 +2888,34 @@ h1 em {
   text-transform: uppercase;
 }
 
+.planet-hour-table thead th:first-child,
+.planet-hour-table tbody th {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 2;
+  background: #fffdf8;
+  /* Collapsed borders are not painted for sticky cells while scrolling. */
+  box-shadow: inset -1px 0 0 var(--line);
+}
+
+.planet-hour-table thead th:first-child {
+  z-index: 3;
+  background: var(--cream);
+}
+
+[dir="rtl"] .planet-hour-table thead th:first-child,
+[dir="rtl"] .planet-hour-table tbody th {
+  box-shadow: inset 1px 0 0 var(--line);
+}
+
 .night-hour-row {
   background: rgba(21, 56, 45, 0.045);
+}
+
+.planet-hour-table tbody .night-hour-row th {
+  background:
+    linear-gradient(rgba(21, 56, 45, 0.045), rgba(21, 56, 45, 0.045)),
+    #fffdf8;
 }
 
 .planet-hour-cell {
@@ -3119,7 +3235,7 @@ footer > a {
 
   .planetary-calculator,
   .planetary-tables {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .planetary-inputs {
