@@ -226,7 +226,8 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /aria-pressed="true"/);
   assert.match(html, /Current time/);
   assert.match(html, /class="planetary-date-source"/);
-  assert.match(html, /aria-label="Date source"/);
+  assert.match(html, /class="cosmic-date-source"/);
+  assert.equal((html.match(/aria-label="Date source"/g) ?? []).length, 2);
   assert.match(html, /Selected converter date/);
   assert.match(html, /Days and their planets/);
   assert.match(html, /24-hour correspondence/);

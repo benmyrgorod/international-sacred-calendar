@@ -225,10 +225,12 @@ The selected Cosmic Date is measured from the ISC epoch. Each completed
 Cosmic Week: Days #1–#7 make Week 1, Days #8–#14 make Week 2, and so on. The
 date editor therefore accepts both the Cosmic Week and the Monday-through-
 Sunday Cosmic Day, while hour, minute, and second locate the selected date
-proportionally within that 293-year day. Applying those values updates the
-main source date to the nearest civil day. Three decimal places on Cosmic
-Seconds preserve civil-day round trips. This is a proportional calendar model,
-not an astronomical time standard.
+proportionally within that 293-year day. A switch chooses whether the card reads
+the selected converter date or the current date; applying edited values always
+updates the main source date to the nearest civil day and returns the card to
+that selected date. Three decimal places on Cosmic Seconds preserve civil-day
+round trips. This is a proportional calendar model, not an astronomical time
+standard.
 
 ## Approximate 1.48-year moon alignment
 

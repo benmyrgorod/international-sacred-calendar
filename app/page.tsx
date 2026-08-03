@@ -113,7 +113,7 @@ const CALENDARS: CalendarKind[] = [
 ];
 type WeekStart = "sunday" | "monday";
 type HistoryFilter = "all" | HistoryCategory;
-type PlanetaryDateSource = "selected" | "current";
+type DateSource = "selected" | "current";
 
 interface ImportantDateDefinition {
   id: "discovery" | "birthday";
@@ -619,7 +619,9 @@ export default function Home() {
   const [planetaryTime, setPlanetaryTime] = useState("12:00");
   const [planetaryTimeIsLive, setPlanetaryTimeIsLive] = useState(true);
   const [planetaryDateSource, setPlanetaryDateSource] =
-    useState<PlanetaryDateSource>("selected");
+    useState<DateSource>("selected");
+  const [cosmicDateSource, setCosmicDateSource] =
+    useState<DateSource>("selected");
   const [historyFilter, setHistoryFilter] = useState<HistoryFilter>("all");
   const [historyQuery, setHistoryQuery] = useState("");
   const [symbolicOnly, setSymbolicOnly] = useState(false);
@@ -727,10 +729,12 @@ export default function Home() {
     );
   }, [calculation.error, calculation.fixed, storedDateLoaded]);
 
+  const cosmicFixed =
+    cosmicDateSource === "current" ? todayFixed : calculation.fixed;
   const activeCosmicDateDraft =
-    cosmicDateDraft.fixed === calculation.fixed
+    cosmicDateDraft.fixed === cosmicFixed
       ? cosmicDateDraft
-      : cosmicDateDraftFromFixed(calculation.fixed);
+      : cosmicDateDraftFromFixed(cosmicFixed);
 
   function changeFrom(next: CalendarKind, resetGrid = true) {
     let fixed = DEFAULT_FIXED;
@@ -770,9 +774,12 @@ export default function Home() {
       setSourceDate(equivalentFor(from, fixed));
       setGridOffset(0);
       setCosmicDateError(null);
+      // An applied Cosmic Date becomes the selected date, so the card follows it
+      // instead of staying on today.
+      setCosmicDateSource("selected");
     } catch {
       setCosmicDateError({
-        fixed: calculation.fixed,
+        fixed: cosmicFixed,
         message: cosmicTimeCopy.invalid,
       });
     }
@@ -1422,11 +1429,34 @@ export default function Home() {
                   <strong>
                     {formatDate(
                       "gregorian",
-                      dateFromFixed("gregorian", calculation.fixed),
+                      dateFromFixed("gregorian", cosmicFixed),
                       translations,
                       languageConfig.locale,
                     )}
                   </strong>
+                  <div
+                    className="cosmic-date-source"
+                    role="group"
+                    aria-label={cosmicTimeCopy.dateSource}
+                  >
+                    <button
+                      type="button"
+                      aria-pressed={cosmicDateSource === "selected"}
+                      onClick={() => setCosmicDateSource("selected")}
+                    >
+                      ✦ {cosmicTimeCopy.selectedDate}
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={cosmicDateSource === "current"}
+                      onClick={() => {
+                        setTodayFixed(currentLocalFixed());
+                        setCosmicDateSource("current");
+                      }}
+                    >
+                      ◷ {cosmicTimeCopy.currentDate}
+                    </button>
+                  </div>
                 </div>
                 <p>{cosmicTimeCopy.weekHelp}</p>
               </div>
@@ -1528,7 +1558,7 @@ export default function Home() {
                 </label>
                 <button type="submit">{cosmicTimeCopy.apply}</button>
               </form>
-              {cosmicDateError?.fixed === calculation.fixed ? (
+              {cosmicDateError?.fixed === cosmicFixed ? (
                 <p className="cosmic-date-error">{cosmicDateError.message}</p>
               ) : null}
               <small>{cosmicTimeCopy.nearestDayNote}</small>

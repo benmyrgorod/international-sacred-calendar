@@ -1205,6 +1205,41 @@ h1 em {
   font-weight: 600;
 }
 
+.cosmic-date-source {
+  margin-top: 13px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.cosmic-date-source button {
+  min-height: 38px;
+  padding: 8px 15px;
+  border: 0;
+  border-inline-end: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.74);
+  background: rgba(7, 36, 30, 0.52);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.cosmic-date-source button:last-child {
+  border-inline-end: 0;
+}
+
+.cosmic-date-source button[aria-pressed="true"] {
+  color: var(--forest);
+  background: var(--gold-light);
+}
+
+.cosmic-date-source button:not([aria-pressed="true"]):hover {
+  color: #f7f0e2;
+  background: rgba(15, 82, 186, 0.38);
+}
+
 .cosmic-date-title p {
   margin: 0;
   color: rgba(255, 255, 255, 0.58);
