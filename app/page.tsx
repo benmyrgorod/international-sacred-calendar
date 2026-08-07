@@ -97,6 +97,7 @@ import {
   LANGUAGES,
   MOON_TRANSLATIONS,
   TRANSLATIONS,
+  type ImportantDateTranslationPack,
   type LanguageCode,
   type TranslationPack,
 } from "@/lib/translations";
@@ -115,10 +116,13 @@ type WeekStart = "sunday" | "monday";
 type HistoryFilter = "all" | HistoryCategory;
 type DateSource = "selected" | "current";
 
+type ImportantDateId = "discovery" | "birthday" | "publication";
+
 interface ImportantDateDefinition {
-  id: "discovery" | "birthday";
+  id: ImportantDateId;
   fixed: number;
   baseBirthday?: number;
+  link?: string;
 }
 
 interface CosmicDateDraft {
@@ -144,7 +148,36 @@ const IMPORTANT_DATES: ImportantDateDefinition[] = [
     fixed: fixedFromGregorian({ year: 2026, month: 7, day: 28 }),
     baseBirthday: 40,
   },
+  {
+    id: "publication",
+    fixed: fixedFromGregorian({ year: 2026, month: 8, day: 7 }),
+    link: "https://earthly.top/",
+  },
 ];
+
+function importantDateTitle(
+  event: ImportantDateDefinition,
+  copy: ImportantDateTranslationPack,
+): string {
+  if (event.id === "discovery") return copy.discovery;
+  if (event.id === "publication") return copy.publication;
+  return copy.birthday;
+}
+
+/** Labels one ISC recurrence of an important date with its running count. */
+function importantDateAnniversaryLabel(
+  event: ImportantDateDefinition,
+  copy: ImportantDateTranslationPack,
+  anniversaryNumber: number,
+): string {
+  if (event.id === "discovery") {
+    return `${copy.anniversary} #${anniversaryNumber}`;
+  }
+  if (event.id === "publication") {
+    return `${copy.publicationAnniversary} #${anniversaryNumber}`;
+  }
+  return `${(event.baseBirthday ?? 0) + anniversaryNumber} ${copy.birthdayLabel}`;
+}
 
 const ALIGNMENT_STORY_IMAGES: Record<
   FeaturedAlignmentEventId | "egypt-midpoint" | "babylonian-exile",
@@ -1647,21 +1680,22 @@ export default function Home() {
 
         <div className="important-dates-grid">
           {importantDates.map((event) => {
-            const title =
-              event.id === "discovery"
-                ? importantDateCopy.discovery
-                : importantDateCopy.birthday;
-            const firstRepeatLabel =
-              event.id === "discovery"
-                ? `${importantDateCopy.anniversary} #1`
-                : `${(event.baseBirthday ?? 0) + 1} ${importantDateCopy.birthdayLabel}`;
+            const title = importantDateTitle(event, importantDateCopy);
+            const firstRepeatLabel = importantDateAnniversaryLabel(
+              event,
+              importantDateCopy,
+              1,
+            );
+            const isoDate = [
+              String(event.gregorian.year).padStart(4, "0"),
+              String(event.gregorian.month).padStart(2, "0"),
+              String(event.gregorian.day).padStart(2, "0"),
+            ].join("-");
 
             return (
               <article className={`important-date-card ${event.id}`} key={event.id}>
                 <div className="important-date-card-heading">
-                  <time dateTime={
-                    event.id === "discovery" ? "2026-07-27" : "2026-07-28"
-                  }>
+                  <time dateTime={isoDate}>
                     <strong>{event.gregorian.day}</strong>
                     <span>
                       {monthLabel(
@@ -1700,6 +1734,16 @@ export default function Home() {
                 >
                   {importantDateCopy.viewInCalendar} →
                 </button>
+                {event.link ? (
+                  <a
+                    className="important-date-link"
+                    href={event.link}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {importantDateCopy.visitSite} ↗
+                  </a>
+                ) : null}
               </article>
             );
           })}
@@ -2205,18 +2249,27 @@ export default function Home() {
                         ✧ {moonTranslations.halfRotationAnniversary} #{gridHalfRotationAnniversary}
                       </span>
                     ) : null}
-                    {importantEvents.map((event) => (
-                      <span
-                        className={`event-pill important-pill ${event.id}-pill`}
-                        key={event.id}
-                      >
-                        {event.id === "discovery"
-                          ? event.anniversaryNumber === 0
-                            ? importantDateCopy.discovery
-                            : `${importantDateCopy.anniversary} #${event.anniversaryNumber}`
-                          : `Ovadia Binyamin · ${(event.baseBirthday ?? 0) + event.anniversaryNumber} ${importantDateCopy.birthdayLabel}`}
-                      </span>
-                    ))}
+                    {importantEvents.map((event) => {
+                      const label =
+                        event.anniversaryNumber === 0 && event.id !== "birthday"
+                          ? importantDateTitle(event, importantDateCopy)
+                          : importantDateAnniversaryLabel(
+                              event,
+                              importantDateCopy,
+                              event.anniversaryNumber,
+                            );
+
+                      return (
+                        <span
+                          className={`event-pill important-pill ${event.id}-pill`}
+                          key={event.id}
+                        >
+                          {event.id === "birthday"
+                            ? `Ovadia Binyamin · ${label}`
+                            : label}
+                        </span>
+                      );
+                    })}
                     {historyEvents.map(({
                       event,
                       localizedTitle,

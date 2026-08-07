@@ -260,6 +260,9 @@ test("server-renders the International Sacred Calendar converter", async () => {
   assert.match(html, /Discovery of the International Sacred Calendar/);
   assert.match(html, /40th birthday of Ovadia Binyamin/);
   assert.match(html, /Discovery anniversary/);
+  assert.match(html, /Light of Earthly Path/);
+  assert.match(html, /href="https:\/\/earthly\.top\/"/);
+  assert.match(html, /class="important-date-card publication"/);
   assert.match(html, /class="new-moon-marker"/);
   assert.match(html, /New moon/);
   assert.match(html, /class="full-moon-marker"/);

@@ -1500,7 +1500,7 @@ h1 em {
 
 .important-dates-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 22px;
 }
 
@@ -1523,6 +1523,10 @@ h1 em {
 
 .important-date-card.birthday::before {
   background: var(--forest);
+}
+
+.important-date-card.publication::before {
+  background: #607e8d;
 }
 
 .important-date-card-heading {
@@ -1605,6 +1609,21 @@ h1 em {
 }
 
 .important-date-card > button:hover {
+  color: var(--gold);
+}
+
+.important-date-link {
+  display: inline-block;
+  margin-inline-start: 14px;
+  padding: 6px 0;
+  color: var(--forest);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.important-date-link:hover {
   color: var(--gold);
 }
 
@@ -2447,6 +2466,10 @@ h1 em {
 
 .birthday-pill {
   background: var(--forest);
+}
+
+.publication-pill {
+  background: #4c6675;
 }
 
 .history-event-pill {

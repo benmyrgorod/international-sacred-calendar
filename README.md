@@ -311,7 +311,7 @@ The prefix for International Sacred dates is **ISC**, for example
 
 ## Important dates
 
-Two founding milestones are anchored to their Gregorian dates and then repeat
+Three founding milestones are anchored to their Gregorian dates and then repeat
 annually on the same International Sacred month and day:
 
 - **27 July 2026 — Discovery of the International Sacred Calendar:**
@@ -320,11 +320,15 @@ annually on the same International Sacred month and day:
 - **28 July 2026 — 40th birthday of Ovadia Binyamin, discoverer of the Sacred
   Calendar:** `ISC 5805 · 09 · 23`. The next annual occurrence is his 41st
   Sacred-calendar birthday at `ISC 5806 · 09 · 23`.
+- **7 August 2026 — “The Light of Earthly Path” books published online:**
+  `ISC 5805 · 10 · 05`. Its first Sacred publication anniversary is
+  `ISC 5806 · 10 · 05`. The card links to
+  [earthly.top](https://earthly.top/).
 
 The grid labels the original dates and every future annual occurrence. The
-discovery marker shows its anniversary number, while the birthday marker shows
-Ovadia Binyamin’s advancing age. Its legend also identifies approximate moon
-alignments and 293-year rotation anniversaries.
+discovery and publication markers show their anniversary numbers, while the
+birthday marker shows Ovadia Binyamin’s advancing age. Its legend also
+identifies approximate moon alignments and 293-year rotation anniversaries.
 
 ## Planetary hour correspondence
 
